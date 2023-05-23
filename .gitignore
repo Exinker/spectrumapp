@@ -1,0 +1,16 @@
+
+.git/
+*.egg-info/
+__pycache__/
+
+config.json
+*/config.json
+setting.ini
+*/setting.ini
+
+article/
+docs/
+literature/
+
+env/
+build/
