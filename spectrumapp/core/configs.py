@@ -9,6 +9,8 @@ from .exceptions import eprint
 from .routing import pave
 
 
+DEBUG = True
+
 # ---------        CONTACTS        ---------
 APPLICATION_NAME = 'Spectrum'
 APPLICATION_DESCRIPTION = '''Example of a simple PySide6 (PyQt5) application.'''

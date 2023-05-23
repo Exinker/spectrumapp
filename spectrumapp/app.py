@@ -7,6 +7,7 @@ TODO:
     - logging device operations
 '''
 
+import logging
 import os
 import sys
 
@@ -14,6 +15,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 from core.configs import ORGANIZATION_NAME, APPLICATION_NAME, APPLICATION_VERSION
 from core.configs import Config
+from core.loggings import setdefault_logging, log
 from core.routing import pave
 
 
@@ -85,6 +87,10 @@ class Window(QtWidgets.QMainWindow):
         #
         self.show()
 
+    @log(msg='close app')
+    def closeEvent(self, event: QtCore.QEvent):
+        return super().closeEvent(event)
+
 
 class Application(QtWidgets.QApplication):
 
@@ -98,6 +104,7 @@ class Application(QtWidgets.QApplication):
         #
         self.window = None
 
+    @log(msg='run app')
     def run(self):
 
         # config
@@ -107,12 +114,14 @@ class Application(QtWidgets.QApplication):
         # window
         self.window = Window()
 
+    @log(msg='refresh app')
     def refresh(self):
         '''Refresh all windows and widgets of an application.'''
 
         # refresh
         self.window._onRefreshAction()
 
+    @log(msg='reset app')
     def reset(self, refresh: bool = True):
         '''Update setting, config and refresh the app.'''
 
@@ -125,6 +134,9 @@ class Application(QtWidgets.QApplication):
 
 
 if __name__ == '__main__':
+
+    # logging
+    setdefault_logging()
 
     # app
     app = Application(sys.argv)

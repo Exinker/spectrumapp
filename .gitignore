@@ -3,6 +3,7 @@
 *.egg-info/
 __pycache__/
 
+app.log
 config.json
 */config.json
 setting.ini
