@@ -7,17 +7,16 @@ TODO:
     - logging device operations
 '''
 
-import logging
 import os
 import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from core.configs import ORGANIZATION_NAME, APPLICATION_NAME, APPLICATION_VERSION
-from core.configs import Config
+from core.configs import setdefault_config
 from core.loggings import setdefault_logging, log
-from core.routing import pave
-
+from core.settings import setdefault_setting, get_setting, set_setting
+from core.utils import pave
 
 
 class EmptyWidget(QtWidgets.QWidget):
@@ -59,12 +58,10 @@ class CentralWidget(QtWidgets.QWidget):
         )
 
 
-class Window(QtWidgets.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        config = Config.from_json()
+        super().__init__(objectName='mainWindow', *args, **kwargs)
 
         # style        
         filepath = pave(os.path.join('.', 'static', 'app.css'))
@@ -77,18 +74,32 @@ class Window(QtWidgets.QMainWindow):
         self.setWindowIcon(icon)
 
         # title
-        title = f'{APPLICATION_NAME} - [{config.filepath}]'
+        filepath = get_setting(key='config/filepath')
+        title = f'{APPLICATION_NAME} - [{filepath}]'
         self.setWindowTitle(title)
 
         # widget
         widget = CentralWidget(parent=self)
         self.setCentralWidget(widget)
 
+        # geometry
+        geometry = get_setting(key=f'geometry/{self.objectName()}')
+        if geometry:
+            self.setGeometry(geometry)
+            self.setWindowState(QtCore.Qt.WindowActive)
+        else:
+            self.setWindowState(QtCore.Qt.WindowMaximized | QtCore.Qt.WindowActive)
+
         #
         self.show()
 
     @log(msg='close app')
     def closeEvent(self, event: QtCore.QEvent):
+
+        # geometry
+        set_setting(key=f'geometry/{self.objectName()}', value=self.geometry())
+
+        #
         return super().closeEvent(event)
 
 
@@ -107,12 +118,8 @@ class Application(QtWidgets.QApplication):
     @log(msg='run app')
     def run(self):
 
-        # config
-        config = Config.default()
-        config.to_json()
-
         # window
-        self.window = Window()
+        self.window = MainWindow()
 
     @log(msg='refresh app')
     def refresh(self):
@@ -134,6 +141,12 @@ class Application(QtWidgets.QApplication):
 
 
 if __name__ == '__main__':
+
+    # config
+    setdefault_config()
+
+    # setting
+    setdefault_setting()
 
     # logging
     setdefault_logging()

@@ -1,19 +1,65 @@
 
+import json
 import logging
 import logging.config
 import os
 from typing import Callable
 
-from .configs import DEBUG
+from PySide6 import QtWidgets, QtCore, QtGui
+
+from .exceptions import eprint
 
 
-def log(msg: str) -> Callable:
+def _to_str(value, key: str | None = None) -> str:
+
+    try:
+        if key:
+            if isinstance(value, QtCore.QRect):
+                value = value.getRect()
+
+            return '{key}: {value}'.format(
+                key=key,
+                value=json.dumps(value),
+            )
+
+        else:
+            return '{value}'.format(
+                value=json.dumps(value),
+            )
+
+    except TypeError as error:
+        eprint(error)
+        return ''
+
+
+def _get_log_context(*args, **kwargs) -> str:
+    context = []
+
+    for value in args:
+        context.append(_to_str(value=value))
+
+    for key, value in kwargs.items():
+        context.append(_to_str(value=value, key=key))
+
+    return '; '.join(context)
+
+
+def log(msg: str, level: int = logging.DEBUG) -> Callable:
     logger = logging.getLogger('app')
 
     def decorator(func: Callable):
         def wrapper(*args, **kwargs):
-            if DEBUG:
-                logger.debug(msg)
+            is_debugging = json.loads(
+                os.environ.get('DEBUG', False)
+            )
+
+            if is_debugging or (level > logging.DEBUG):
+                context = _get_log_context(*args, **kwargs)
+                if context:
+                    logger.log(level, f'{msg} ({context})')
+
+                else:
+                    logger.log(level, msg)
 
             return func(*args, **kwargs)
         return wrapper
