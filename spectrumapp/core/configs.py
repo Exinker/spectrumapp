@@ -27,7 +27,7 @@ if os.path.isfile(filepath):
 
 # ---------        CONTACTS        ---------
 APPLICATION_NAME = 'Spectrum'
-APPLICATION_DESCRIPTION = '''Example of a simple PySide6 (PyQt5) application.'''
+APPLICATION_DESCRIPTION = """Example of a simple PySide6 (PyQt5) application."""
 APPLICATION_VERSION = '0.0.1'
 
 AUTHOR_NAME = 'Pavel Vaschenko'
@@ -39,7 +39,7 @@ ORGANIZATION_NAME = 'VMK-Optoelektronika'
 # ---------        CONFIG        ---------
 @dataclass(frozen=True)
 class Config():
-    '''Config of an application (not GUI)'''
+    """Config of an application (not GUI)"""
     version: str  # config version (corresponds to the application's version)
 
     filedir: str
