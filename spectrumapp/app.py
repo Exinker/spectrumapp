@@ -42,9 +42,6 @@ class EmptyFrame(QtWidgets.QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        layout.addStretch()
-        layout.addWidget(EmptyWidget())
-
 
 class CentralWidget(QtWidgets.QWidget):
 
@@ -59,6 +56,9 @@ class CentralWidget(QtWidgets.QWidget):
             EmptyFrame(parent=self)
         )
 
+        self.window = Window()
+        self.window.show()
+
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -66,7 +66,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(objectName='mainWindow', *args, **kwargs)
 
-        # style        
+        # style
         filepath = pave(os.path.join('.', 'static', 'app.css'))
         style = open(filepath, 'r').read()
         self.setStyleSheet(style)
