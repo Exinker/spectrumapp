@@ -1,11 +1,11 @@
-'''
+"""
 
 TODO:
     - pluging for `Read Mode` control (read by timetable)
     - alerts for `Read Dark Signal` control (update signal)
 
     - logging device operations
-'''
+"""
 
 import os
 import sys
@@ -17,6 +17,8 @@ from core.configs import setdefault_config
 from core.loggings import setdefault_logging, log
 from core.settings import setdefault_setting, get_setting, set_setting
 from core.utils import pave
+
+from windows.splashScreenWindow import splashscreen
 
 
 class EmptyWidget(QtWidgets.QWidget):
@@ -60,6 +62,7 @@ class CentralWidget(QtWidgets.QWidget):
 
 class MainWindow(QtWidgets.QMainWindow):
 
+    @splashscreen(progress=70, info='<strong>LOADING</strong> user interface...')
     def __init__(self, *args, **kwargs):
         super().__init__(objectName='mainWindow', *args, **kwargs)
 
@@ -123,14 +126,14 @@ class Application(QtWidgets.QApplication):
 
     @log(msg='refresh app')
     def refresh(self):
-        '''Refresh all windows and widgets of an application.'''
+        """Refresh all windows and widgets of an application."""
 
         # refresh
         self.window._onRefreshAction()
 
     @log(msg='reset app')
     def reset(self, refresh: bool = True):
-        '''Update setting, config and refresh the app.'''
+        """Update setting, config and refresh the app."""
 
         # reset 
         pass

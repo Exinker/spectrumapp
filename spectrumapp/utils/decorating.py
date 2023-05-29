@@ -11,7 +11,7 @@ from ..windows.exceptionWindow import ExceptionWindow
 
 # ----------------        decotators        ----------------
 def committing(func: Callable) -> Callable:
-    '''commit editors decorator for PySide6 table views'''
+    """commit editors decorator for PySide6 table views"""
 
     def inner(self, event):
 
@@ -24,7 +24,7 @@ def committing(func: Callable) -> Callable:
 
 
 def trying(func: Callable) -> Callable:
-    '''try/except decorator for PySide6 applications'''
+    """try/except decorator for PySide6 applications"""
 
     def inner(*args, **kwargs):
 
@@ -40,7 +40,7 @@ def trying(func: Callable) -> Callable:
 
 
 def waiting(func) -> Callable:
-    '''waiting cursor decorator for PySide6 applications'''
+    """waiting cursor decorator for PySide6 applications"""
 
     def inner(*args, **kwargs):
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -60,7 +60,7 @@ def waiting(func) -> Callable:
 
 
 def refreshing(func: Callable):
-    '''refresh the main window decorator for PySide6 applications'''
+    """refresh the main window decorator for PySide6 applications"""
 
     def inner(*args, **kwargs):
 
