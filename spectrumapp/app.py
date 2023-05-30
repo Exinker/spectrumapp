@@ -56,9 +56,6 @@ class CentralWidget(QtWidgets.QWidget):
             EmptyFrame(parent=self)
         )
 
-        self.window = Window()
-        self.window.show()
-
 
 class MainWindow(QtWidgets.QMainWindow):
 
