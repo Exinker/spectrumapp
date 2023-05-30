@@ -50,7 +50,7 @@ def log(msg: str, level: int = logging.DEBUG) -> Callable:
     def decorator(func: Callable):
         def wrapper(*args, **kwargs):
             is_debugging = json.loads(
-                os.environ.get('DEBUG', False)
+                os.environ.get('DEBUG', 'false')
             )
 
             if is_debugging or (level > logging.DEBUG):
