@@ -5,8 +5,8 @@ from typing import Callable
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from .find import find_window
-from ..windows.exceptionWindow import ExceptionWindow
+from spectrumapp.utils.find import find_window
+# from spectrumapp.windows.exceptionWindow import ExceptionWindow  # FIXME: implement ExceptionWindow
 
 
 # ----------------        decotators        ----------------

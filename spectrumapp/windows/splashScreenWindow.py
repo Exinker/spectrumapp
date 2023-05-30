@@ -4,8 +4,8 @@ from typing import Any, Callable, Generator, Iterable
 
 from PySide6 import QtWidgets, QtCore, QtGui
 
+from spectrumapp import APPLICATION_NAME, APPLICATION_VERSION
 from spectrumapp.core.utils import pave
-from spectrumapp.core.configs import APPLICATION_NAME, APPLICATION_VERSION
 from spectrumapp.utils import find_window
 
 

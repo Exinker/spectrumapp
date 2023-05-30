@@ -12,11 +12,11 @@ import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from core.configs import ORGANIZATION_NAME, APPLICATION_NAME, APPLICATION_VERSION
-from core.configs import setdefault_config
-from core.loggings import setdefault_logging, log
-from core.settings import setdefault_setting, get_setting, set_setting
-from core.utils import pave
+from spectrumapp import ORGANIZATION_NAME, APPLICATION_NAME, APPLICATION_VERSION
+from spectrumapp.core.configs import setdefault_config
+from spectrumapp.core.loggings import setdefault_logging, log
+from spectrumapp.core.settings import setdefault_setting, get_setting, set_setting
+from spectrumapp.core.utils import pave
 
 from windows.splashScreenWindow import splashscreen
 
