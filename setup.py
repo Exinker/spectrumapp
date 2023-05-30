@@ -10,7 +10,7 @@ setup(
     name=APPLICATION_NAME,
 	description=APPLICATION_DESCRIPTION,
 	license='MIT',
-    keywords=['spectroscopy', 'emulation'],
+    keywords=['spectroscopy', 'app'],
 
 	# version
     version=APPLICATION_VERSION,
@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
 
 	# requires
-    install_requires=['PySide6', ],
+    install_requires=['pyside6'],
     python_requires='>=3.10',
 
 )
