@@ -4,14 +4,14 @@ import os
 from setuptools import setup, find_packages
 
 
-APPLICATION_NAME = os.environ['APPLICATION_NAME']
-APPLICATION_DESCRIPTION = os.environ['APPLICATION_DESCRIPTION']
-APPLICATION_VERSION = os.environ['APPLICATION_VERSION']
+APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
+APPLICATION_DESCRIPTION = os.environ.get('APPLICATION_DESCRIPTION', '')
+APPLICATION_VERSION = os.environ.get('APPLICATION_VERSION', '')
 
-AUTHOR_NAME = os.environ['AUTHOR_NAME']
-AUTHOR_EMAIL = os.environ['AUTHOR_EMAIL']
+AUTHOR_NAME = os.environ.get('AUTHOR_NAME', '')
+AUTHOR_EMAIL = os.environ.get('AUTHOR_EMAIL', '')
 
-ORGANIZATION_NAME = os.environ['ORGANIZATION_NAME']
+ORGANIZATION_NAME = os.environ.get('ORGANIZATION_NAME', '')
 
 
 setup(

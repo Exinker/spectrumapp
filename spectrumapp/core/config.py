@@ -30,7 +30,7 @@ class Config():
     @classmethod
     def default(cls) -> 'Config':
         return Config(
-            version=os.environ['APPLICATION_VERSION'],
+            version=os.environ.get('APPLICATION_VERSION', ''),
             filedir=os.getcwd(),
         )
 

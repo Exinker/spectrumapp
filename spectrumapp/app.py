@@ -19,9 +19,9 @@ from spectrumapp.core.utils import pave
 from spectrumapp.windows.splashScreenWindow import splashscreen
 
 
-APPLICATION_NAME = os.environ['APPLICATION_NAME']
-APPLICATION_VERSION = os.environ['APPLICATION_VERSION']
-ORGANIZATION_NAME = os.environ['ORGANIZATION_NAME']
+APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
+APPLICATION_VERSION = os.environ.get('APPLICATION_VERSION', '')
+ORGANIZATION_NAME = os.environ.get('ORGANIZATION_NAME', '')
 
 
 class EmptyWidget(QtWidgets.QWidget):

@@ -17,4 +17,4 @@ if os.path.isfile(filepath):
                 eprint(error)
 
 # ---------        others        ---------
-__version__ = os.environ['APPLICATION_VERSION']
+__version__ = os.environ.get('APPLICATION_VERSION', '')
