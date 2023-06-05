@@ -1,13 +1,20 @@
+import os
 
-# ---------        CONTACTS        ---------
-APPLICATION_NAME = 'Spectrum'
-APPLICATION_DESCRIPTION = """Example of a simple PySide6 (PyQt5) application."""
-APPLICATION_VERSION = '0.0.1'
+from spectrumapp.core.exception import eprint
 
-AUTHOR_NAME = 'Pavel Vaschenko'
-AUTHOR_EMAIL = 'vaschenko@vmk.ru'
+# ---------        env        ---------
+filepath = os.path.join('.', '.env')
+if os.path.isfile(filepath):
 
-ORGANIZATION_NAME = 'VMK-Optoelektronika'
+    with open(filepath, 'r') as file:
+        for line in file.readlines():
+            try:
+                key, value = line.rstrip().split('=')
+                os.environ[key] = value
 
+            except Exception as error:
+                print(f'line: {repr(line)}')
+                eprint(error)
 
-__version__ = APPLICATION_VERSION
+# ---------        others        ---------
+__version__ = os.environ['APPLICATION_VERSION']

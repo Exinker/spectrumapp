@@ -12,13 +12,16 @@ import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from spectrumapp import ORGANIZATION_NAME, APPLICATION_NAME, APPLICATION_VERSION
-from spectrumapp.core.configs import setdefault_config
-from spectrumapp.core.loggings import setdefault_logging, log
-from spectrumapp.core.settings import setdefault_setting, get_setting, set_setting
+from spectrumapp.core.config import setdefault_config
+from spectrumapp.core.logging import setdefault_logging, log
+from spectrumapp.core.setting import setdefault_setting, get_setting, set_setting
 from spectrumapp.core.utils import pave
+from spectrumapp.windows.splashScreenWindow import splashscreen
 
-from windows.splashScreenWindow import splashscreen
+
+APPLICATION_NAME = os.environ['APPLICATION_NAME']
+APPLICATION_VERSION = os.environ['APPLICATION_VERSION']
+ORGANIZATION_NAME = os.environ['ORGANIZATION_NAME']
 
 
 class EmptyWidget(QtWidgets.QWidget):

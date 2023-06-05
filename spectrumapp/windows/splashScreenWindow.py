@@ -4,9 +4,12 @@ from typing import Any, Callable, Generator, Iterable
 
 from PySide6 import QtWidgets, QtCore, QtGui
 
-from spectrumapp import APPLICATION_NAME, APPLICATION_VERSION
 from spectrumapp.core.utils import pave
 from spectrumapp.utils import find_window
+
+
+APPLICATION_NAME = os.environ['APPLICATION_NAME']
+APPLICATION_VERSION = os.environ['APPLICATION_VERSION']
 
 
 def splashscreen(progress: int | None = None, info: str | None = None, message: str | None = None) -> Callable:
@@ -65,7 +68,7 @@ def iterate(items: Iterable[Any], info: str | None = '') -> Generator:
 
 class SplashScreenWindow(QtWidgets.QWidget):
 
-    def __init__(self, flags=(QtCore.Qt.WindowType.Window, QtCore.Qt.WindowType.WindowStaysOnTopHint, )):  # 
+    def __init__(self, flags=(QtCore.Qt.WindowType.Window, QtCore.Qt.WindowType.WindowStaysOnTopHint, )):
         # super().__init__(flags=flags)
         super().__init__()
 

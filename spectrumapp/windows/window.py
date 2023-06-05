@@ -1,7 +1,7 @@
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from spectrumapp.core.settings import get_setting, set_setting
+from spectrumapp.core.setting import get_setting, set_setting
 
 
 class Window(QtWidgets.QWidget):

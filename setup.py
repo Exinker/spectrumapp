@@ -1,8 +1,17 @@
 # python setup.py sdist --dist-dir //10.11.12.11/Users/vaschenko/spectrumapp/dist/
 
+import os
 from setuptools import setup, find_packages
 
-from spectrumapp import APPLICATION_NAME, APPLICATION_DESCRIPTION, APPLICATION_VERSION, AUTHOR_NAME, AUTHOR_EMAIL
+
+APPLICATION_NAME = os.environ['APPLICATION_NAME']
+APPLICATION_DESCRIPTION = os.environ['APPLICATION_DESCRIPTION']
+APPLICATION_VERSION = os.environ['APPLICATION_VERSION']
+
+AUTHOR_NAME = os.environ['AUTHOR_NAME']
+AUTHOR_EMAIL = os.environ['AUTHOR_EMAIL']
+
+ORGANIZATION_NAME = os.environ['ORGANIZATION_NAME']
 
 
 setup(

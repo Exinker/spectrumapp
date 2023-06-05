@@ -7,7 +7,7 @@ from typing import Callable
 
 from PySide6 import QtWidgets, QtCore, QtGui
 
-from .exceptions import eprint
+from .exception import eprint
 
 
 def _to_str(value, key: str | None = None) -> str:

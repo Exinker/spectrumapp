@@ -5,8 +5,8 @@ from typing import Any
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from .configs import Config
-from .loggings import log
+from .config import Config
+from .logging import log
 
 
 # ---------        settings        ---------

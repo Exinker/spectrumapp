@@ -6,23 +6,8 @@ import os
 from dataclasses import dataclass, field
 from typing import Any
 
-from .exceptions import eprint
-from .loggings import log
-from .utils import pave
-
-
-# ---------        env        ---------
-filepath = pave(os.path.join('.', '.env'))
-if os.path.isfile(filepath):
-
-    with open(filepath, 'r') as file:
-        for line in file.readlines():
-            try:
-                key, value = line.rstrip().split('=')
-                os.environ[key] = value
-
-            except Exception as error:
-                eprint(error)
+from .exception import eprint
+from .logging import log
 
 
 # ---------        CONFIG        ---------
@@ -45,12 +30,12 @@ class Config():
     @classmethod
     def default(cls) -> 'Config':
         return Config(
-            version=APPLICATION_VERSION,
+            version=os.environ['APPLICATION_VERSION'],
             filedir=os.getcwd(),
         )
 
     def to_json(self) -> None:
-        filepath = pave(os.path.join('.', 'config.json'))
+        filepath = os.path.join('.', 'config.json')
         with open(filepath, 'w', encoding='utf-8') as file:
             json.dump(self.to_dict(), file)
 
@@ -61,7 +46,7 @@ class Config():
     def from_json(cls) -> 'Config':
         try:
             # load data
-            filepath = pave(os.path.join('.', 'config.json'))
+            filepath = os.path.join('.', 'config.json')
             with open(filepath, 'r', encoding='utf-8') as file:
                 data = json.load(file)
 
@@ -82,7 +67,7 @@ class Config():
     def update(cls, key: str, value: Any, filepath: str | None = None) -> None:
 
         # load data
-        filepath = pave(os.path.join('.', 'config.json'))
+        filepath = os.path.join('.', 'config.json')
         with open(filepath, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
