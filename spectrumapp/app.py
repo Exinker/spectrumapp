@@ -16,6 +16,7 @@ from spectrumapp.core.config import setdefault_config
 from spectrumapp.core.logging import setdefault_logging, log
 from spectrumapp.core.setting import setdefault_setting, get_setting, set_setting
 from spectrumapp.core.utils import pave
+from spectrumapp.utils.modifier import wait
 from spectrumapp.windows.splashScreenWindow import splashscreen
 
 
@@ -123,12 +124,14 @@ class Application(QtWidgets.QApplication):
         self.window = None
 
     @splashscreen()
+    @wait
     @log(msg='run app')
     def run(self):
 
         # window
         self.window = MainWindow()
 
+    @wait
     @log(msg='refresh app')
     def refresh(self):
         """Refresh all windows and widgets of an application."""
@@ -137,6 +140,7 @@ class Application(QtWidgets.QApplication):
         self.window._onRefreshAction()
 
     @splashscreen()
+    @wait
     @log(msg='reset app')
     def reset(self, refresh: bool = True):
         """Update setting, config and refresh the app."""
