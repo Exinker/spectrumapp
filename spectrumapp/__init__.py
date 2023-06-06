@@ -1,6 +1,8 @@
 import os
 
+from spectrumapp.core.color import *
 from spectrumapp.core.exception import eprint
+
 
 # ---------        env        ---------
 filepath = os.path.join('.', '.env')
