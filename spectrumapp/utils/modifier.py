@@ -4,13 +4,13 @@ from typing import Callable
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.utils.find import find_window
-# from spectrumapp.windows.exceptionWindow import ExceptionWindow  # FIXME: implement ExceptionWindow
+from spectrumapp.windows.messageWindow import show_message_dialog, MessageLevel
 
 
 def wait(func: Callable) -> Callable:
     """Waiting cursor decorator for long time processes."""
 
-    def inner(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
 
         try:
@@ -19,29 +19,32 @@ def wait(func: Callable) -> Callable:
         finally:
             QtWidgets.QApplication.restoreOverrideCursor()
 
-    return inner
+    return wrapper
 
 
-def attempt(func: Callable) -> Callable:
+def attempt(level: MessageLevel = MessageLevel.warning) -> Callable:
     """Attempt decorator for not save windows or process."""
 
-    def inner(*args, **kwargs):
+    def decorator(func: Callable):
+        def wrapper(*args, **kwargs):
 
-        try:
-            return func(*args, **kwargs)
+            try:
+                return func(*args, **kwargs)
 
-        except Exception as error:
-            ExceptionWindow(
-                error=error,
-            )
+            except Exception:
+                show_message_dialog(
+                    message=f'The attempt to complete {func.__name__} failed.',
+                    level=level,
+                )
 
-    return inner
+        return wrapper
+    return decorator
 
 
 def refresh(func: Callable):
     """Refresh decorator for the main window."""
 
-    def inner(*args, **kwargs):
+    def wrapper(*args, **kwargs):
 
         try:
             return func(*args, **kwargs)
@@ -50,17 +53,17 @@ def refresh(func: Callable):
             window = find_window('mainWindow')
             window._onRefreshAppAction()
 
-    return inner
+    return wrapper
 
 
 def commit(func: Callable) -> Callable:
     """Сommit editors decorator for PySide6 table views."""
 
-    def inner(widget: QtWidgets.QTableView, event: QtCore.QEvent):
+    def wrapper(widget: QtWidgets.QTableView, event: QtCore.QEvent):
 
         # commit all editors of the view
         editors = widget.findChildren(QtWidgets.QWidget, 'editor')
         for editor in editors:
             widget.commitData(editor)
 
-    return inner
+    return wrapper
