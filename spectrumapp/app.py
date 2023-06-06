@@ -118,6 +118,7 @@ class Application(QtWidgets.QApplication):
         #
         self.window = None
 
+    @splashscreen()
     @log(msg='run app')
     def run(self):
 
@@ -131,6 +132,7 @@ class Application(QtWidgets.QApplication):
         # refresh
         self.window._onRefreshAction()
 
+    @splashscreen()
     @log(msg='reset app')
     def reset(self, refresh: bool = True):
         """Update setting, config and refresh the app."""

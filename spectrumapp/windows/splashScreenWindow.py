@@ -1,5 +1,6 @@
 
 import os
+import time
 from typing import Any, Callable, Generator, Iterable
 
 from PySide6 import QtWidgets, QtCore, QtGui
@@ -12,8 +13,8 @@ APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
 APPLICATION_VERSION = os.environ.get('APPLICATION_VERSION', '')
 
 
-def splashscreen(progress: int | None = None, info: str | None = None, message: str | None = None) -> Callable:
-    """Splash screen decorator for PyQt5 applications"""
+def splashscreen(progress: int | None = None, info: str | None = None, message: str | None = None, delay: float = 0) -> Callable:
+    """Splash screen decorator for Qt applications."""
     window_name = 'splashScreenWindow'
 
     def decorator(func):
@@ -24,6 +25,7 @@ def splashscreen(progress: int | None = None, info: str | None = None, message: 
             if window is None:
                 window = SplashScreenWindow()
 
+            # update window
             window.show()
             window.set(
                 progress=progress,
@@ -31,6 +33,11 @@ def splashscreen(progress: int | None = None, info: str | None = None, message: 
                 message=message,
             )
 
+            # delay
+            if delay:
+                time.sleep(time)
+
+            #
             return func(*args, **kwargs)
 
         return wrapper
@@ -67,6 +74,7 @@ def iterate(items: Iterable[Any], info: str | None = '') -> Generator:
 
 
 class SplashScreenWindow(QtWidgets.QWidget):
+    """Splash screen decorator for Qt applications and long time processes."""
 
     def __init__(self, flags=(QtCore.Qt.WindowType.Window, QtCore.Qt.WindowType.WindowStaysOnTopHint, )):
         # super().__init__(flags=flags)
@@ -148,14 +156,14 @@ class SplashScreenWindow(QtWidgets.QWidget):
 
 
 if __name__ == '__main__':
-    from time import sleep
-
 
     app = QtWidgets.QApplication()
 
     window = SplashScreenWindow()
     window.show()
     for i in range(1, 100+1):
+
+        # update window
         window.set(
             progress=i,
             info='<strong>PLEASE, WAIT!</strong>',
@@ -164,6 +172,8 @@ if __name__ == '__main__':
                 label='percent' if i == 1 else 'percents',
             )
         )
-        sleep(.1)
+
+        # delay
+        time.sleep(.1)
 
     app.quit()
