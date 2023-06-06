@@ -96,6 +96,10 @@ class MainWindow(QtWidgets.QMainWindow):
         #
         self.show()
 
+    def _onRefreshAction(self):
+        """Refresh the widgets at the window and refresh all sub windows."""
+        pass
+
     @log(msg='close app')
     def closeEvent(self, event: QtCore.QEvent):
 
