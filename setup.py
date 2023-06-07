@@ -36,7 +36,7 @@ setup(
     include_package_data=True,
 
 	# requires
-    install_requires=['pyside6'],
+    install_requires=['pyside6', 'matplotlib', 'numpy'],
     python_requires='>=3.10',
 
 )

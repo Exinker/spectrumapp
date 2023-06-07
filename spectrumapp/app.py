@@ -17,7 +17,7 @@ from spectrumapp.core.logging import setdefault_logging, log
 from spectrumapp.core.setting import setdefault_setting, get_setting, set_setting
 from spectrumapp.core.utils import pave
 from spectrumapp.utils.modifier import wait
-from spectrumapp.windows.splashScreenWindow import splashscreen
+from spectrumapp.window.splashScreenWindow import splashscreen
 
 
 APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
