@@ -34,8 +34,7 @@ def splashscreen(progress: int | None = None, info: str | None = None, message: 
             )
 
             # delay
-            if delay:
-                time.sleep(time)
+            time.sleep(delay)
 
             #
             return func(*args, **kwargs)
