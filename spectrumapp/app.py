@@ -1,11 +1,3 @@
-"""
-
-TODO:
-    - pluging for `Read Mode` control (read by timetable)
-    - alerts for `Read Dark Signal` control (update signal)
-
-    - logging device operations
-"""
 
 import os
 import sys
@@ -61,20 +53,20 @@ class CentralWidget(QtWidgets.QWidget):
             EmptyFrame(parent=self)
         )
 
-    @attempt()
     @wait
+    @attempt()
     def reset(self, refresh: bool = True):
         """Reset the widget all sub widget."""
-        raise NotImplementedError
+        pass
     
         if refresh:
             self.refresh()
 
-    @attempt()
     @wait
+    @attempt()
     def refresh(self):
         """Refresh the widget and all sub widgets."""
-        raise NotImplementedError
+        pass
 
 
 class BaseMainWindow(QtWidgets.QMainWindow):
@@ -195,8 +187,8 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             # reset app
             self._onResetAppAction()
 
-    @splashscreen(delay=5)
     @wait
+    @splashscreen(delay=5)
     def _onResetAppAction(self, *args, **kwargs):
         '''An action occurs due to change file.'''
 
@@ -263,14 +255,20 @@ class BaseMainWindow(QtWidgets.QMainWindow):
                     flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
                 )
 
-            if window_name == 'keyboardShortcutsWindow':
-                window = KeyboardShortcutsWindow(
+            if window_name == 'helpWindow':
+                window = HelpWindow(
                     parent=self,
                     flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
                 )
 
-            if window_name == 'helpWindow':
-                window = HelpWindow(
+            if window_name == 'reportIssueWindow':
+                window = ReportIssueWindow(
+                    parent=self,
+                    flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
+                )
+
+            if window_name == 'aboutWindow':
+                window = AboutWindow(
                     parent=self,
                     flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
                 )
@@ -298,8 +296,8 @@ class Application(QtWidgets.QApplication):
         #
         self.window = None
 
-    @splashscreen()
     @wait
+    @splashscreen()
     @log(msg='run app event')
     def run(self):
 
@@ -314,8 +312,8 @@ class Application(QtWidgets.QApplication):
         # refresh
         self.window._onRefreshAppAction()
 
-    @splashscreen()
     @wait
+    @splashscreen()
     @log(msg='reset app')
     def reset(self, refresh: bool = True):
         """Update setting, config and refresh the app."""
@@ -325,7 +323,7 @@ class Application(QtWidgets.QApplication):
 
         # refresh (windows and widgets)
         if refresh:
-            self.window.refresh()
+            self.window._onRefreshAppAction()
 
 
 if __name__ == '__main__':
