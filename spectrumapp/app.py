@@ -40,7 +40,7 @@ class EmptyFrame(QtWidgets.QFrame):
         layout.setSpacing(0)
 
 
-class CentralWidget(QtWidgets.QWidget):
+class EmptyCentralWidget(QtWidgets.QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -86,12 +86,12 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         self.setWindowIcon(icon)
 
         # title
-        filepath = get_setting(key='config/filepath')
+        filepath = ''
         title = f'{APPLICATION_NAME} - [{filepath}]'
         self.setWindowTitle(title)
 
         # widget
-        widget = CentralWidget(parent=self)
+        widget = EmptyCentralWidget(parent=self)
         self.setCentralWidget(widget)
 
         # menu
@@ -155,7 +155,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         #
         self.show()
 
-    # --------        handlers        --------
+    # --------        slots        --------
     @wait
     def _onOpenAction(self):
         """Open new file action."""
