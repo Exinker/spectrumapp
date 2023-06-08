@@ -4,20 +4,24 @@ from typing import Callable
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.utils.find import find_window
-from spectrumapp.windows.messageWindow import show_message_dialog, MessageLevel
+from spectrumapp.window.messageWindow import show_message_dialog, MessageLevel
 
 
 def wait(func: Callable) -> Callable:
     """Waiting cursor decorator for long time processes."""
 
     def wrapper(*args, **kwargs):
-        QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+        to_decorate = QtWidgets.QApplication.overrideCursor() is None  # check nested decorations
+
+        if to_decorate:
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
 
         try:
             return func(*args, **kwargs)
 
         finally:
-            QtWidgets.QApplication.restoreOverrideCursor()
+            if to_decorate:
+                QtWidgets.QApplication.restoreOverrideCursor()
 
     return wrapper
 
