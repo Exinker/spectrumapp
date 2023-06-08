@@ -122,26 +122,24 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         fileMenu.addAction(action)
 
         instrumentsMenu = menuBar.addMenu('&Instruments')
-        action = QtGui.QAction('&Filtrate', self)
-        action.setShortcut(QtGui.QKeySequence('Ctrl+F'))
-        action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.setStatusTip('Filtrate probes by condition...')
-        action.triggered.connect(self._onOpenWindowAction)
-        instrumentsMenu.addAction(action)
+        # action = QtGui.QAction('&Filtrate', self)
+        # action.setShortcut(QtGui.QKeySequence('Ctrl+F'))
+        # action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        # action.setStatusTip('Filtrate probes by condition...')
+        # action.triggered.connect(self._onOpenFiltrateWindowAction)
+        # instrumentsMenu.addAction(action)
 
         helpMenu = menuBar.addMenu('&Help')
         action = QtGui.QAction('&Help', self)
-        action.setShortcut(QtGui.QKeySequence('Ctrl+H'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._onOpenWindowAction)
+        action.triggered.connect(self._onOpenHelpWindowAction)
         helpMenu.addAction(action)
-        action = QtGui.QAction('&Report Issue', self)
-        action.setShortcut(QtGui.QKeySequence('Ctrl+Shift+H'))
-        action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._onOpenWindowAction)
-        helpMenu.addAction(action)
+        # action = QtGui.QAction('&Report Issue', self)
+        # action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        # action.triggered.connect(self._onOpenReportIssueWindowAction)
+        # helpMenu.addAction(action)
         action = QtGui.QAction('&About', self)
-        action.triggered.connect(self._onOpenWindowAction)
+        action.triggered.connect(self._onOpenAboutWindowAction)
         helpMenu.addAction(action)
 
         # geometry
@@ -197,8 +195,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         app.reset()
 
         # update title
-        filedir = get_setting(key='file/filedir')
-
+        filedir = ''
         title = f"{APPLICATION_NAME} - [{filedir}]"
         self.setWindowTitle(title)
 
@@ -230,51 +227,42 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             if window_name in ('filtrationWindow', 'helpWindow', 'reportIssueWindow', 'aboutWindow'):
                 window.close()
 
+    @wait
     def _onQuitAction(self):
         self.close()
 
+    @wait
     @attempt(level=MessageLevel.error)
-    def _onOpenWindowAction(self):
-        action = self.sender()
-
-        window_name = {
-            '&Filtrate': 'filtrationWindow',
-            '&Help': 'helpWindow',
-            '&Report Issue': 'reportIssueWindow',
-            '&About': 'aboutWindow',
-        }.get(action.text(), '')
+    def _onOpenHelpWindowAction(self):
+        window_name = 'helpWindow'
 
         window = find_window(window_name)
         if window is not None:
             window.show()
 
         else:
-            if window_name == 'filtrationWindow':
-                window = FiltrationWindow(
-                    parent=self,
-                    flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-                )
+            window = HelpWindow(
+                parent=self,
+                flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
+            )
 
-            if window_name == 'helpWindow':
-                window = HelpWindow(
-                    parent=self,
-                    flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-                )
+    @wait
+    @attempt(level=MessageLevel.error)
+    def _onOpenAboutWindowAction(self):
+        window_name = 'aboutWindow'
 
-            if window_name == 'reportIssueWindow':
-                window = ReportIssueWindow(
-                    parent=self,
-                    flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-                )
+        window = find_window(window_name)
+        if window is not None:
+            window.show()
 
-            if window_name == 'aboutWindow':
-                window = AboutWindow(
-                    parent=self,
-                    flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-                )
+        else:
+            window = AboutWindow(
+                parent=self,
+                flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
+            )
 
     # --------        events        --------
-    @log(msg='close app event')
+    @log(msg='app: close event')
     def closeEvent(self, event: QtCore.QEvent):
 
         # geometry
@@ -298,14 +286,14 @@ class Application(QtWidgets.QApplication):
 
     @wait
     @splashscreen()
-    @log(msg='run app event')
+    @log(msg='app: run')
     def run(self):
 
         # window
         self.window = BaseMainWindow()
 
     @wait
-    @log(msg='refresh app')
+    @log(msg='app: refresh')
     def refresh(self):
         """Refresh all windows and widgets of an application."""
 
@@ -314,7 +302,7 @@ class Application(QtWidgets.QApplication):
 
     @wait
     @splashscreen()
-    @log(msg='reset app')
+    @log(msg='app: reset')
     def reset(self, refresh: bool = True):
         """Update setting, config and refresh the app."""
 
