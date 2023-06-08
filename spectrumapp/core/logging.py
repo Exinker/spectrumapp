@@ -10,7 +10,7 @@ from PySide6 import QtWidgets, QtCore, QtGui
 from .exception import eprint
 
 
-def _to_str(value, key: str | None = None) -> str:
+def _format(value, key: str | None = None) -> str:
 
     try:
         if key:
@@ -32,14 +32,14 @@ def _to_str(value, key: str | None = None) -> str:
         return ''
 
 
-def _get_log_context(*args, **kwargs) -> str:
+def _get_context(*args, **kwargs) -> str:
     context = []
 
     for value in args:
-        context.append(_to_str(value=value))
+        context.append(_format(value=value))
 
     for key, value in kwargs.items():
-        context.append(_to_str(value=value, key=key))
+        context.append(_format(value=value, key=key))
 
     return '; '.join(context)
 
@@ -49,12 +49,12 @@ def log(msg: str, level: int = logging.DEBUG) -> Callable:
 
     def decorator(func: Callable):
         def wrapper(*args, **kwargs):
-            is_debugging = json.loads(
+            debug = json.loads(
                 os.environ.get('DEBUG', 'false')
             )
 
-            if is_debugging or (level > logging.DEBUG):
-                context = _get_log_context(*args, **kwargs)
+            if debug or (level > logging.DEBUG):
+                context = _get_context(*args, **kwargs)
                 if context:
                     logger.log(level, f'{msg} ({context})')
 
