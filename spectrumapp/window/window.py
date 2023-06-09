@@ -18,6 +18,7 @@ APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
 
 class BaseMainWindow(QtWidgets.QMainWindow):
     _actions: Mapping[str, QtGui.QAction] = dict()
+    _menus: Mapping[str, QtWidgets.QMenu] = dict()
 
     @splashscreen(progress=70, info='<strong>LOADING</strong> user interface...')
     def __init__(self, *args, show: bool = False, **kwargs):
@@ -86,19 +87,25 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         action.triggered.connect(self._onQuitAction)
         self._register_action(action, key='quit')
 
-        action = QtGui.QAction('&Help', self)
+        action = QtGui.QAction('&View Help', self)
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.triggered.connect(self._onOpenHelpWindowAction)
-        self._register_action(action, key='help')
+        self._register_action(action, key='help-window')
 
         action = QtGui.QAction('&About', self)
         action.triggered.connect(self._onOpenAboutWindowAction)
-        self._register_action(action, key='about')
+        self._register_action(action, key='about-window')
+
+    def _register_menu(self, menu: QtWidgets.QMenu, key: str) -> None:
+
+        # add menu to menubar
+        menubar = self.menuBar()
+        menubar.addMenu(menu)
+
+        # register action
+        self._menus[key] = menu
 
     def _setdefault_menubar(self) -> None:
-
-        menubar = QtWidgets.QMenuBar()
-        self.setMenuBar(menubar)
 
         menu = QtWidgets.QMenu(title='&File', parent=self)
         menu.addAction(self._actions['open'])
@@ -107,21 +114,21 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         menu.addAction(self._actions['reset'])
         menu.addSeparator()
         menu.addAction(self._actions['quit'])
-        menubar.addMenu(menu)
+        self._register_menu(menu, 'file')
 
-        menu = QtWidgets.QMenu(title='&Instrument', parent=self)
+        menu = QtWidgets.QMenu(title='&Instruments', parent=self)
         menu.setEnabled(False)
-        menubar.addMenu(menu)
+        self._register_menu(menu, 'instruments')
 
         menu = QtWidgets.QMenu(title='&Settings', parent=self)
         menu.setEnabled(False)
-        menubar.addMenu(menu)
+        self._register_menu(menu, 'settings')
 
-        menu = QtWidgets.QMenu(title='&Information', parent=self)
-        menu.addAction(self._actions['help'])
+        menu = QtWidgets.QMenu(title='&Help', parent=self)
+        menu.addAction(self._actions['help-window'])
         menu.addSeparator()
-        menu.addAction(self._actions['about'])
-        menubar.addMenu(menu)
+        menu.addAction(self._actions['about-window'])
+        self._register_menu(menu, 'help')
 
     # --------        slots        --------
     @wait
