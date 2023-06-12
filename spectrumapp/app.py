@@ -73,7 +73,10 @@ class Window(BaseMainWindow):
     def __init__(self, *args, show: bool = False, **kwargs):
         super().__init__(*args, show=show, **kwargs)
 
+        # actions
         self._setdefault_actions()
+
+        # menubar
         self._setdefault_menubar()
 
         # widget

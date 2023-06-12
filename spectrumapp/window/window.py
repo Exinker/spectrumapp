@@ -52,57 +52,57 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             self.show()
 
     # --------        setup        --------
-    def _register_action(self, action: QtGui.QAction, key: str) -> None:
+    def _add_action(self, action: QtGui.QAction, key: str) -> None:
 
         # add action to window 
         self.addAction(action)
 
-        # register action
+        # map action
         self._actions[key] = action
 
     def _setdefault_actions(self) -> None:
 
         action = QtGui.QAction('&Open...', self)
         action.setShortcut('Ctrl+O')
-        action.setShortcutContext(QtCore.Qt.ShortcutContext.WindowShortcut)
+        action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.setToolTip('Open file...')
         action.triggered.connect(self._onOpenAction)
-        self._register_action(action, key='open')
+        self._add_action(action, key='open')
 
         action = QtGui.QAction('&Refresh', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+R'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.triggered.connect(self._onRefreshAppAction)
-        self._register_action(action, key='refresh')
+        self._add_action(action, key='refresh')
 
         action = QtGui.QAction('&Reset', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Shift+R'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.triggered.connect(self._onResetAppAction)
-        self._register_action(action, key='reset')
+        self._add_action(action, key='reset')
 
         action = QtGui.QAction('&Quit', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Q'))
+        action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.setStatusTip('Quit')
         action.triggered.connect(self._onQuitAction)
-        self._register_action(action, key='quit')
+        self._add_action(action, key='quit')
 
         action = QtGui.QAction('&View Help', self)
-        action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.triggered.connect(self._onOpenHelpWindowAction)
-        self._register_action(action, key='help-window')
+        self._add_action(action, key='help-window')
 
         action = QtGui.QAction('&About', self)
         action.triggered.connect(self._onOpenAboutWindowAction)
-        self._register_action(action, key='about-window')
+        self._add_action(action, key='about-window')
 
-    def _register_menu(self, menu: QtWidgets.QMenu, key: str) -> None:
+    def _add_menu(self, menu: QtWidgets.QMenu, key: str) -> None:
 
         # add menu to menubar
         menubar = self.menuBar()
         menubar.addMenu(menu)
 
-        # register action
+        # map menu
         self._menus[key] = menu
 
     def _setdefault_menubar(self) -> None:
@@ -114,23 +114,24 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         menu.addAction(self._actions['reset'])
         menu.addSeparator()
         menu.addAction(self._actions['quit'])
-        self._register_menu(menu, 'file')
+        self._add_menu(menu, 'file')
 
         menu = QtWidgets.QMenu(title='&Instruments', parent=self)
         menu.setEnabled(False)
-        self._register_menu(menu, 'instruments')
+        self._add_menu(menu, 'instruments')
 
         menu = QtWidgets.QMenu(title='&Settings', parent=self)
         menu.setEnabled(False)
-        self._register_menu(menu, 'settings')
+        self._add_menu(menu, 'settings')
 
         menu = QtWidgets.QMenu(title='&Help', parent=self)
         menu.addAction(self._actions['help-window'])
         menu.addSeparator()
         menu.addAction(self._actions['about-window'])
-        self._register_menu(menu, 'help')
+        self._add_menu(menu, 'help')
 
     # --------        slots        --------
+    @log(msg='app: open action')
     @wait
     def _onOpenAction(self):
         """Open new file action."""
@@ -162,8 +163,9 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             # reset app
             self._onResetAppAction()
 
+    @log(msg='app: reset action')
     @wait
-    @splashscreen(delay=5)
+    @splashscreen(delay=1)
     def _onResetAppAction(self, *args, **kwargs):
         '''An action occurs due to change file.'''
 
@@ -185,6 +187,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             else:
                 window.close()
 
+    @log(msg='app: refresh action')
     @wait
     def _onRefreshAppAction(self, *args, **kwargs):
         """Refresh the widgets at the window and refresh all sub windows."""
@@ -204,10 +207,12 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             if window_name in ('filtrationWindow', 'helpWindow', 'reportIssueWindow', 'aboutWindow'):
                 window.close()
 
+    @log(msg='app: quit action')
     @wait
     def _onQuitAction(self):
         self.close()
 
+    @log(msg='app: open "help" window')
     @wait
     @attempt(level=MessageLevel.error)
     def _onOpenHelpWindowAction(self):
@@ -223,6 +228,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
                 flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
             )
 
+    @log(msg='app: open "about" window')
     @wait
     @attempt(level=MessageLevel.error)
     def _onOpenAboutWindowAction(self):
@@ -250,20 +256,14 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
 
 class BaseWindow(QtWidgets.QWidget):
+    _actions: Mapping[str, QtGui.QAction] = dict()
+    _menus: Mapping[str, QtWidgets.QMenu] = dict()
 
-    def __init__(self, *args, shortcuts: dict[str, str] | None = None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         #
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-
-        # shortcut
-        QtGui.QShortcut('Ctrl+W', self).activated.connect(self.close)
-        QtGui.QShortcut('Esc', self).activated.connect(self.close)
-
-        if shortcuts:
-            for key, value in shortcuts.items():
-                QtGui.QShortcut(key, self).activated.connect(value)
 
         # geometry
         geometry = get_setting(key=f'geometry/{self.objectName()}')
@@ -278,6 +278,25 @@ class BaseWindow(QtWidgets.QWidget):
 
         self.setGeometry(geometry)
 
+    # --------        setup        --------
+    def _add_action(self, action: QtGui.QAction, key: str) -> None:
+
+        # add action to window 
+        self.addAction(action)
+
+        # map action
+        self._actions[key] = action
+
+    def _setdefault_actions(self) -> None:
+
+        action = QtGui.QAction('&Close', self)
+        action.setShortcuts(['Ctrl+W', 'Esc'])
+        action.setShortcutContext(QtCore.Qt.WindowShortcut)
+        action.setToolTip('Close window')
+        action.triggered.connect(self.close)
+        self._add_action(action, key='close')
+
+    # --------        events        --------
     def closeEvent(self, event):
 
         # set geometry
