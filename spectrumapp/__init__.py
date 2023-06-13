@@ -2,7 +2,7 @@ import os
 
 from spectrumapp.core.config import APPLICATION_VERSION
 from spectrumapp.core.color import *
-from spectrumapp.core.exception import eprint
+from spectrumapp.core.exception import format_exception
 
 
 # ---------        env        ---------
@@ -19,9 +19,8 @@ if os.path.isfile(filepath):
                 key, value = line.rstrip().split('=', maxsplit=1)
                 os.environ[key] = value
 
-            except Exception as error:
-                print(f'line: {repr(line)}')
-                eprint(error)
+            except Exception:
+                eprint(msg=f'env: {repr(line)}')
 
 # ---------        others        ---------
 __version__ = APPLICATION_VERSION

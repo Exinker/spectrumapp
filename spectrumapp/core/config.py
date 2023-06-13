@@ -70,7 +70,7 @@ class Config():
             config = Config(**data)
 
         except (FileNotFoundError, json.JSONDecodeError, TypeError, ValueError, KeyError) as error:
-            eprint(error)
+            eprint(msg=f'config: from json')
             config = cls.default()
 
         return config

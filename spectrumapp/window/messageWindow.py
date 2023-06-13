@@ -6,6 +6,7 @@ from typing import Callable
 from PySide6 import QtWidgets, QtCore, QtGui
 
 from spectrumapp.utils.find import find_window
+from spectrumapp.core.exception import format_exception
 
 
 class MessageLevel(Enum):
@@ -41,8 +42,9 @@ def show_message_dialog(message: str | None = None, info: str | None = None, lev
         To show exception traceback `info` have to be `None`!
         """
         template = '{info}' if message is None else '{message}\n\n\n{info}'
-        info = traceback.format_exc(limit=2) if info is None else info
+        info = format_exception() if info is None else info
 
+        dialog = _fetch_dialog(level)
         parent = find_window('mainWindow')
         title = _fetch_title(level)
         text = template.format(
@@ -50,7 +52,6 @@ def show_message_dialog(message: str | None = None, info: str | None = None, lev
             info=info,
         )
 
-        dialog = _fetch_dialog(level)
         dialog(
             parent,
             title,
