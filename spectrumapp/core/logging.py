@@ -3,58 +3,63 @@ import json
 import logging
 import logging.config
 import os
-from typing import Callable
+from typing import Any, Callable
 
 from PySide6 import QtWidgets, QtCore, QtGui
 
-from .exception import eprint
 
+def _format_context(value: Any, key: str | None = None) -> str | None:
+    """Format param of the executed function's."""
 
-def _format(value, key: str | None = None) -> str:
-
+    # template
+    template = '{key}: {value}' if key else '{value}'
+    
+    #
     try:
-        if key:
-            if isinstance(value, QtCore.QRect):
-                value = value.getRect()
-
-            return '{key}: {value}'.format(
+        if isinstance(value, QtCore.QRect):
+            return template.format(
                 key=key,
-                value=json.dumps(value),
+                value=json.dumps(value.getRect()),
             )
 
-        else:
-            return '{value}'.format(
-                value=json.dumps(value),
-            )
+        return '{value}'.format(
+            value=json.dumps(value),
+        )
 
     except TypeError as error:
-        eprint(error)
         return ''
 
 
-def _get_context(*args, **kwargs) -> str:
-    context = []
+def _parse_context(*args, **kwargs) -> str:
+    """Parse params of the executed function's."""
+    items = []
 
+    # parse args
     for value in args:
-        context.append(_format(value=value))
+        item = _format_context(value=value)
+        if item:
+            items.append(item)
 
+    # parse kwargs
     for key, value in kwargs.items():
-        context.append(_format(value=value, key=key))
+        item = _format_context(value=value, key=key)
+        if item:
+            items.append(item)
 
-    return '; '.join(context)
+    #
+    return '; '.join(items)
 
 
-def log(msg: str, level: int = logging.DEBUG) -> Callable:
+def log(msg: str, debug: bool, level: int = logging.DEBUG) -> Callable:
+    """Logging decorator."""
     logger = logging.getLogger('app')
 
     def decorator(func: Callable):
         def wrapper(*args, **kwargs):
-            debug = json.loads(
-                os.environ.get('DEBUG', 'false')
-            )
 
             if debug or (level > logging.DEBUG):
-                context = _get_context(*args, **kwargs)
+
+                context = _parse_context(*args, **kwargs)
                 if context:
                     logger.log(level, f'{msg} ({context})')
 
@@ -68,8 +73,9 @@ def log(msg: str, level: int = logging.DEBUG) -> Callable:
 
 
 def setdefault_logging():
+    """Setup default logger."""
 
-    LOGGING_CONFIG = {
+    config = {
         'version': 1,
         'disable_existing_loggers': False,
 
@@ -98,4 +104,5 @@ def setdefault_logging():
             }
         }
     }
-    logging.config.dictConfig(LOGGING_CONFIG)
+
+    logging.config.dictConfig(config)

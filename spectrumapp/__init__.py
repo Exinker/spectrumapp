@@ -1,5 +1,6 @@
 import os
 
+from spectrumapp.core.config import APPLICATION_VERSION
 from spectrumapp.core.color import *
 from spectrumapp.core.exception import eprint
 
@@ -10,8 +11,12 @@ if os.path.isfile(filepath):
 
     with open(filepath, 'r') as file:
         for line in file.readlines():
+
+            if line == '':
+                continue
+
             try:
-                key, value = line.rstrip().split('=')
+                key, value = line.rstrip().split('=', maxsplit=1)
                 os.environ[key] = value
 
             except Exception as error:
@@ -19,4 +24,4 @@ if os.path.isfile(filepath):
                 eprint(error)
 
 # ---------        others        ---------
-__version__ = os.environ.get('APPLICATION_VERSION', '')
+__version__ = APPLICATION_VERSION

@@ -10,6 +10,19 @@ from .exception import eprint
 from .logging import log
 
 
+# ---------        CONSTANTS        ---------
+APPLICATION_NAME = 'Example'
+APPLICATION_DESCRIPTION = '''Example of a simple PySide6 (PyQt5) application.'''
+APPLICATION_VERSION = '0.0.1'
+
+AUTHOR_NAME = 'Pavel Vaschenko'
+AUTHOR_EMAIL = 'vaschenko@vmk.ru'
+
+ORGANIZATION_NAME = 'VMK-Optoelektronika'
+
+DEBUG = True
+
+
 # ---------        CONFIG        ---------
 @dataclass(frozen=True)
 class Config():
@@ -30,7 +43,7 @@ class Config():
     @classmethod
     def default(cls) -> 'Config':
         return Config(
-            version=os.environ.get('APPLICATION_VERSION', ''),
+            version=APPLICATION_VERSION,
             filedir=os.getcwd(),
         )
 
@@ -63,7 +76,7 @@ class Config():
         return config
 
     @classmethod
-    @log('update config', level=logging.INFO)
+    @log('config changed', debug=DEBUG, level=logging.INFO)
     def update(cls, key: str, value: Any, filepath: str | None = None) -> None:
 
         # load data

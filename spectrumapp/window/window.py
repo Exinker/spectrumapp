@@ -4,8 +4,8 @@ from collections.abc import Mapping
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from spectrumapp.core.config import setdefault_config
-from spectrumapp.core.logging import setdefault_logging, log
+from spectrumapp.core.config import APPLICATION_NAME, DEBUG
+from spectrumapp.core.logging import log
 from spectrumapp.core.setting import setdefault_setting, get_setting, set_setting
 from spectrumapp.core.utils import pave
 from spectrumapp.utils.find import find_window
@@ -13,16 +13,16 @@ from spectrumapp.utils.modifier import wait, attempt, MessageLevel
 from spectrumapp.window.splashScreenWindow import splashscreen
 
 
-APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
-
-
 class BaseMainWindow(QtWidgets.QMainWindow):
     _actions: Mapping[str, QtGui.QAction] = dict()
     _menus: Mapping[str, QtWidgets.QMenu] = dict()
 
     @splashscreen(progress=70, info='<strong>LOADING</strong> user interface...')
-    def __init__(self, *args, show: bool = False, **kwargs):
-        super().__init__(objectName='mainWindow', *args, **kwargs)
+    def __init__(self, *args, objectName: str | None = None, maximize: bool = False, show: bool = False, **kwargs):
+        if objectName is None:
+            objectName = 'mainWindow'
+
+        super().__init__(*args, objectName=objectName, **kwargs)
 
         # style
         filepath = pave(os.path.join('.', 'static', 'app.css'))
@@ -41,11 +41,14 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
         # geometry
         geometry = get_setting(key=f'geometry/{self.objectName()}')
+        state  = QtCore.Qt.WindowActive
         if geometry:
             self.setGeometry(geometry)
-            self.setWindowState(QtCore.Qt.WindowActive)
+            self.setWindowState(state)
         else:
-            self.setWindowState(QtCore.Qt.WindowMaximized | QtCore.Qt.WindowActive)
+            if maximize:
+                state = state | QtCore.Qt.WindowMaximized
+            self.setWindowState(state)
 
         #
         if show:
@@ -131,7 +134,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         self._add_menu(menu, 'help')
 
     # --------        slots        --------
-    @log(msg='app: open action')
+    @log(msg='app: open action', debug=DEBUG)
     @wait
     def _onOpenAction(self):
         """Open new file action."""
@@ -163,7 +166,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             # reset app
             self._onResetAppAction()
 
-    @log(msg='app: reset action')
+    @log(msg='app: reset action', debug=DEBUG)
     @wait
     @splashscreen(delay=1)
     def _onResetAppAction(self, *args, **kwargs):
@@ -187,7 +190,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             else:
                 window.close()
 
-    @log(msg='app: refresh action')
+    @log(msg='app: refresh action', debug=DEBUG)
     @wait
     def _onRefreshAppAction(self, *args, **kwargs):
         """Refresh the widgets at the window and refresh all sub windows."""
@@ -198,7 +201,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
             # update core window
             if window_name in ('mainWindow',):
-                window.centralWidget().refresh()
+                window.centralWidget()._onRefreshAction()
 
             # update instrument windows
             pass
@@ -207,12 +210,12 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             if window_name in ('filtrationWindow', 'helpWindow', 'reportIssueWindow', 'aboutWindow'):
                 window.close()
 
-    @log(msg='app: quit action')
+    @log(msg='app: quit action', debug=DEBUG)
     @wait
     def _onQuitAction(self):
         self.close()
 
-    @log(msg='app: open "help" window')
+    @log(msg='app: open "help" window', debug=DEBUG)
     @wait
     @attempt(level=MessageLevel.error)
     def _onOpenHelpWindowAction(self):
@@ -228,7 +231,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
                 flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
             )
 
-    @log(msg='app: open "about" window')
+    @log(msg='app: open "about" window', debug=DEBUG)
     @wait
     @attempt(level=MessageLevel.error)
     def _onOpenAboutWindowAction(self):
@@ -245,7 +248,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             )
 
     # --------        events        --------
-    @log(msg='app: close event')
+    @log(msg='app: close event', debug=DEBUG)
     def closeEvent(self, event: QtCore.QEvent):
 
         # geometry
@@ -259,7 +262,7 @@ class BaseWindow(QtWidgets.QWidget):
     _actions: Mapping[str, QtGui.QAction] = dict()
     _menus: Mapping[str, QtWidgets.QMenu] = dict()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, maximize: bool = False, **kwargs):
         super().__init__(*args, **kwargs)
 
         #
@@ -267,18 +270,21 @@ class BaseWindow(QtWidgets.QWidget):
 
         # geometry
         geometry = get_setting(key=f'geometry/{self.objectName()}')
-        if geometry is None:
-            app = QtWidgets.QApplication.instance()
-            screen_size = app.primaryScreen().size()
-            layout = self.layout()
+        if geometry:
+            self.setGeometry(geometry)
 
-            width = layout.sizeHint().width() if layout else int(screen_size.width() / 4)
-            height = int(screen_size.height() / 2)
-            geometry = QtCore.QRect(int(screen_size.width()/2 - width/2), int(screen_size.height()/2 - height/2), width, height)
+    # --------        setup        --------
+    def _setdefault_geometry(self) -> None:
+        app = QtWidgets.QApplication.instance()
+        screen_size = app.primaryScreen().size()
+        layout = self.layout()
+
+        width = layout.sizeHint().width() if layout else int(screen_size.width() / 4)
+        height = int(screen_size.height() / 2)
+        geometry = QtCore.QRect(int(screen_size.width()/2 - width/2), int(screen_size.height()/2 - height/2), width, height)
 
         self.setGeometry(geometry)
 
-    # --------        setup        --------
     def _add_action(self, action: QtGui.QAction, key: str) -> None:
 
         # add action to window 

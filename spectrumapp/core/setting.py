@@ -5,7 +5,7 @@ from typing import Any
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from .config import Config
+from .config import Config, DEBUG
 from .logging import log
 
 
@@ -23,7 +23,7 @@ def fetch_setting() -> QtCore.QSettings:
     return inner(filepath)
 
 
-@log('get setting')
+@log('setting: get', debug=DEBUG)
 def get_setting(key: str) -> Any:
     key_category, key_name = key.split('/')
 
@@ -43,7 +43,7 @@ def get_setting(key: str) -> Any:
         return value
 
 
-@log('set setting')
+@log('setting: set', debug=DEBUG)
 def set_setting(key: str, value: str | int | float | list) -> None:
     key_category, key_name = key.split('/')
 

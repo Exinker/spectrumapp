@@ -4,17 +4,12 @@ import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from spectrumapp.core.config import setdefault_config
+from spectrumapp.core.config import setdefault_config, APPLICATION_NAME, APPLICATION_VERSION, ORGANIZATION_NAME, DEBUG
 from spectrumapp.core.logging import setdefault_logging, log
 from spectrumapp.core.setting import setdefault_setting
 from spectrumapp.utils.modifier import wait, attempt
 from spectrumapp.window.window import BaseMainWindow
 from spectrumapp.window.splashScreenWindow import splashscreen
-
-
-APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
-APPLICATION_VERSION = os.environ.get('APPLICATION_VERSION', '')
-ORGANIZATION_NAME = os.environ.get('ORGANIZATION_NAME', '')
 
 
 class EmptyWidget(QtWidgets.QWidget):
@@ -54,16 +49,16 @@ class EmptyCentralWidget(QtWidgets.QWidget):
 
     @wait
     @attempt()
-    def reset(self, refresh: bool = True):
+    def _onResetAction(self, refresh: bool = True):
         """Reset the widget all sub widget."""
         pass
     
         if refresh:
-            self.refresh()
+            self._onRefreshAction()
 
     @wait
     @attempt()
-    def refresh(self):
+    def _onRefreshAction(self):
         """Refresh the widget and all sub widgets."""
         pass
 
@@ -101,12 +96,12 @@ class Application(QtWidgets.QApplication):
 
     @wait
     @splashscreen()
-    @log(msg='app: run')
+    @log(msg='app: run', debug=DEBUG)
     def run(self):
         self.window = Window()
 
     @wait
-    @log(msg='app: refresh')
+    @log(msg='app: refresh', debug=DEBUG)
     def refresh(self):
         """Refresh all windows and widgets of an application."""
 
@@ -115,7 +110,7 @@ class Application(QtWidgets.QApplication):
 
     @wait
     @splashscreen()
-    @log(msg='app: reset')
+    @log(msg='app: reset', debug=DEBUG)
     def reset(self, refresh: bool = True):
         """Update setting, config and refresh the app."""
 

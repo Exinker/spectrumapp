@@ -9,8 +9,7 @@ from spectrumapp.core.utils import pave
 from spectrumapp.utils import find_window
 
 
-APPLICATION_NAME = os.environ.get('APPLICATION_NAME', '')
-APPLICATION_VERSION = os.environ.get('APPLICATION_VERSION', '')
+from spectrumapp.core.config import APPLICATION_NAME, APPLICATION_VERSION
 
 
 def splashscreen(progress: int | None = None, info: str | None = None, message: str | None = None, delay: float = 0) -> Callable:
