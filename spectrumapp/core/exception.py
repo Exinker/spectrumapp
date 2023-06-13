@@ -1,12 +1,20 @@
-"""
-TODO:
-    - add logging of eprint
-"""
 
 import sys
 import traceback
 
 
-def eprint(error: Exception) -> None:
+def format_exception() -> str:
+    return traceback.format_exc(limit=2)
+
+
+def eprint(msg: str, info: str | None = None) -> None:
     """Print exception traceback to stdout."""
-    traceback.print_exception(error, limit=2, file=sys.stdout)
+    template = '{info}' if msg is None else '{message}{info}'
+
+    info = format_exception() if info is None else info
+    text = template.format(
+        msg=msg,
+        info=info,
+    )
+
+    print(text, file=sys.stdout)
