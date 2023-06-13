@@ -36,19 +36,19 @@ def _fetch_dialog(__level: MessageLevel) -> Callable:
     }.get(__level)
 
 
-def show_message_dialog(message: str | None = None, info: str | None = None, level: MessageLevel = MessageLevel.warning):
+def show_message_dialog(msg: str | None = None, info: str | None = None, level: MessageLevel = MessageLevel.warning):
         """Show exception message box.
-        
+
         To show exception traceback `info` have to be `None`!
         """
-        template = '{info}' if message is None else '{message}\n\n\n{info}'
+        template = '{info}' if msg is None else '{msg}\n\n\n{info}'
         info = format_exception() if info is None else info
 
         dialog = _fetch_dialog(level)
         parent = find_window('mainWindow')
         title = _fetch_title(level)
         text = template.format(
-            message=message,
+            msg=msg,
             info=info,
         )
 
@@ -69,6 +69,6 @@ if __name__ == '__main__':
     try:
         1/0
     except ZeroDivisionError as error:
-        show_message_dialog(message=message, level=MessageLevel.info)
+        show_message_dialog(msg=message, level=MessageLevel.info)
 
     app.quit()
