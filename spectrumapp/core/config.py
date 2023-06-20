@@ -1,13 +1,11 @@
 
 import dataclasses
 import json
-import logging
 import os
 from dataclasses import dataclass, field
 from typing import Any
 
 from .exception import eprint
-from .logging import log
 
 
 # ---------        CONSTANTS        ---------
@@ -76,7 +74,6 @@ class Config():
         return config
 
     @classmethod
-    @log('config changed', debug=DEBUG, level=logging.INFO)
     def update(cls, key: str, value: Any, filepath: str | None = None) -> None:
 
         # load data

@@ -1,7 +1,6 @@
 import os
 
 from spectrumapp.core.config import APPLICATION_VERSION
-from spectrumapp.core.color import *
 from spectrumapp.core.exception import eprint
 
 
