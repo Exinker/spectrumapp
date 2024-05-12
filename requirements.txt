@@ -1,0 +1,6 @@
+matplotlib
+numpy
+telepot
+zipfile
+
+PySide6
