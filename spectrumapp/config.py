@@ -14,16 +14,8 @@ class AbstractConfig(ABC):
 
     def __init__(self, version: str, filedir: DirPath, filename: str):
         self.version = version  # config's version (have to be corresponded to the application's version)
-        self.filedir = filedir
-        self.filename = filename
 
-    @property
-    def filepath(self) -> str:
-        return os.path.join(self.filedir, self.filename)
-
-    def to_json(self, filepath: FilePath | None = None) -> None:
-        filepath = filepath or self.filepath
-
+    def to_json(self, filepath: FilePath) -> None:
         with open(filepath, 'w', encoding='utf-8') as file:
             json.dump(self.to_dict(), file)
 
@@ -32,10 +24,9 @@ class AbstractConfig(ABC):
         raise NotImplementedError
 
     @classmethod
-    def update(cls, key: str, value: Any, filepath: str | None = None) -> None:
+    def update(cls, key: str, value: Any, filepath: FilePath) -> None:
 
         # load data
-        filepath = filepath or self.filepath
         with open(filepath, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
@@ -52,8 +43,7 @@ class AbstractConfig(ABC):
         raise NotImplementedError
 
     @classmethod
-    def from_json(cls, filepath: FilePath | None = None) -> 'AbstractConfig':
-        filepath = filepath or self.filepath
+    def from_json(cls, filepath: FilePath) -> 'AbstractConfig':
 
         # load data
         try:
