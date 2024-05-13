@@ -1,3 +1,7 @@
+from typing import TypeAlias
+
+
+# ---------        constants        ---------
 ALPHA = {
     'default': .6,
     'is_not_active': .2,
@@ -7,8 +11,12 @@ ALPHA = {
 }
 
 
+# ---------        types        ---------
+Alpha: TypeAlias = float
+
+
 # ---------        handlers        ---------
-def format_alpha(alpha: float, is_faded: bool) -> int:
+def format_alpha(alpha: Alpha, is_faded: bool) -> int:
     if is_faded:
         alpha = alpha * 8/10
 
