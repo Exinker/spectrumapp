@@ -5,7 +5,6 @@ from PySide6 import QtWidgets
 
 from spectrumapp import ORGANIZATION_NAME, VERSION
 from spectrumapp.application import AbstractApplication
-from spectrumapp.config import BaseConfig, setdefault_config
 from spectrumapp.file import File
 from spectrumapp.loggers import log, setdefault_logger
 from spectrumapp.settings import setdefault_setting
@@ -131,9 +130,6 @@ if __name__ == '__main__':
 
     # setup env
     setdefault_environ()
-
-    # setup config
-    setdefault_config(BaseConfig)
 
     # setup settings
     setdefault_setting()
