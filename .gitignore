@@ -9,6 +9,7 @@ __pycache__/
 .VSCodeCounter/
 *.egg-info/
 
+.env
 /env/
 /build/
 /data/
