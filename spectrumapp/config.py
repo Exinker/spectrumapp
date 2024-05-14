@@ -1,11 +1,6 @@
-import dataclasses
 import json
-import os
-from abc import ABC, abstractclassmethod, abstractmethod, abstractproperty
-from dataclasses import dataclass
+from abc import ABC, abstractclassmethod, abstractmethod
 from typing import Mapping
-
-from spectrumapp.types import DirPath, FilePath
 
 
 ENCODING = 'utf-8'

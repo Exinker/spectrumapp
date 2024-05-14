@@ -5,6 +5,7 @@ from typing import Any
 from PySide6 import QtCore
 
 from .loggers import log
+from .types import DirPath
 
 
 def load_settings(filedir: DirPath | None = None) -> QtCore.QSettings:
