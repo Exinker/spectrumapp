@@ -7,42 +7,32 @@ from PySide6 import QtCore
 from .loggers import log
 
 
-def load_settings() -> QtCore.QSettings:
-    """Load settings object from .ini file."""
+def load_settings(filedir: DirPath | None = None) -> QtCore.QSettings:
+    """Load settings (GUI only) object from settings.ini file."""
+    filedir = filedir or os.getcwd()
 
-    def load(__filepath: str) -> QtCore.QSettings:
-        return QtCore.QSettings(__filepath, QtCore.QSettings.IniFormat)
-
-    # load settings from <root>
-    filepath = os.path.join(os.getcwd(), 'settings.ini')
-    settings = load(filepath)
-
-    #
-    return settings
+    filepath = os.path.join(filedir, 'settings.ini')
+    return QtCore.QSettings(filepath, QtCore.QSettings.IniFormat)
 
 
 @log('settings: get')
 def get_setting(key: str) -> Any:
-    """Get setting by key."""
-    key_category, key_name = key.split('/')
+    """Get setting by key from settings.ini file."""
 
     # load data
     settings = load_settings()
     value = settings.value(key)
 
-    # parse data
-    try:
-        value = json.loads(value)
-    except Exception:
-        pass
-
     #
-    return value
+    try:
+        return json.loads(value)
+    except Exception:
+        return value
 
 
 @log('settings: set')
 def set_setting(key: str, value: str | int | float | list) -> None:
-    """Set setting by key."""
+    """Set setting by key to settings.ini file."""
 
     # update settings
     settings = load_settings()
