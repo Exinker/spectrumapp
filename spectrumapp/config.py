@@ -47,7 +47,7 @@ class AbstractConfig(ABC):
 
     @abstractmethod
     def serialize(self) -> Mapping[str, str | int | float | list]:
-        """Serialize config."""
+        """Serialize config to mapping object."""
         raise NotImplementedError
 
     # ---------        factory        ---------
