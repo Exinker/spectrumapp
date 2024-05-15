@@ -7,7 +7,7 @@ import telepot
 from PySide6 import QtWidgets
 from zipfile import ZipFile
 
-from spectrumapp.file import File
+from spectrumapp.config import File
 from spectrumapp.types import FilePath
 from spectrumapp.utils.modifier import attempt, wait
 from spectrumapp.windows.window import BaseWindow
