@@ -53,7 +53,7 @@ class File(AbstractConfig):
         except FileNotFoundError as error:
             eprint(msg=f'{cls.__name__}.load: {error}')
 
-            setdefault_config()
+            setdefault_file()
             return cls.load()
 
         # parse data
@@ -66,7 +66,7 @@ class File(AbstractConfig):
         except (json.JSONDecodeError, TypeError, ValueError, KeyError) as error:
             eprint(msg=f'{cls.__name__}.load: {error}')
 
-            setdefault_config(force=True)
+            setdefault_file(force=True)
             return cls.load()
 
         #
@@ -83,7 +83,7 @@ class File(AbstractConfig):
         }
 
 
-def setdefault_config(force: bool = False) -> None:
+def setdefault_file(force: bool = False) -> None:
     """Create default config file."""
 
     filepath = File.FILEPATH
