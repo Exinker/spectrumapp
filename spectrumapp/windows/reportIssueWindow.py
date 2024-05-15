@@ -53,13 +53,13 @@ class PushButton(QtWidgets.QPushButton):
 
         if button_name == 'dumpLocallyPushButton':
             archive_dump(
-                files=walk(file=app.file),
+                files=walk(file=File.load()),
                 timestamp=parent.findChild(QtWidgets.QLabel, 'timestampLabel').text(),
             )
 
         if button_name == 'dumpRemotePushButton':
             archive_dump(
-                files=walk(file=app.file),
+                files=walk(file=File.load()),
                 timestamp=parent.findChild(QtWidgets.QLabel, 'timestampLabel').text(),
             )
             send_dump(
@@ -198,7 +198,7 @@ def walk(file: File) -> Iterator[FilePath]:
             yield filepath
 
     # data's folder
-    for filedir, _, filenames in os.walk(file.filedir):
+    for filedir, _, filenames in os.walk(file.directory):
         for filename in filenames:
             filepath = os.path.join(filedir, filename)
 

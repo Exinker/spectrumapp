@@ -5,7 +5,6 @@ from PySide6 import QtWidgets
 
 from spectrumapp import ORGANIZATION_NAME, VERSION
 from spectrumapp.application import AbstractApplication
-from spectrumapp.file import File
 from spectrumapp.loggers import log, setdefault_logger
 from spectrumapp.settings import setdefault_setting
 from spectrumapp.windows.mainWindow import BaseMainWindow
@@ -88,10 +87,6 @@ class Application(AbstractApplication):
 
         #
         self._window = None
-
-    @property
-    def file(self) -> File:
-        return File(filedir='./data/')
 
     @property
     def window(self) -> QtWidgets.QWidget:

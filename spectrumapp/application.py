@@ -3,8 +3,6 @@ from abc import abstractmethod, abstractproperty
 
 from PySide6 import QtWidgets
 
-from .file import File
-
 
 try:  # change app id for correct icon present
     from PySide6.QtWinExtras import QtWin
@@ -28,11 +26,6 @@ class AbstractApplication(QtWidgets.QApplication):
         self.setApplicationName(os.environ['APPLICATION_NAME'])
         self.setApplicationVersion(os.environ['APPLICATION_VERSION'])
         self.setOrganizationName(os.environ['ORGANIZATION_NAME'])
-
-    @abstractproperty
-    def file(self) -> File:
-        """The current file."""
-        raise NotImplementedError
 
     @abstractproperty
     def window(self) -> QtWidgets.QWidget:
