@@ -2,7 +2,7 @@ import os
 import pytest
 
 from spectrumapp import ORGANIZATION_NAME, VERSION
-from spectrumapp.file import File, setdefault_file
+from spectrumapp.config import File, setdefault_file
 from spectrumapp.types import DirPath, FilePath
 
 
