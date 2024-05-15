@@ -8,3 +8,6 @@ flake8-builtins
 pep8-naming
 
 mypy
+
+pytest
+pytest-qt
