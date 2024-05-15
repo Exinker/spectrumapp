@@ -2,7 +2,7 @@ from typing import Any, Callable
 
 from PySide6 import QtCore, QtWidgets
 
-from spectrumapp.windows.exceptionWindow import ExceptionLevel, ExceptionDialog
+from spectrumapp.windows.exceptionWindow import ExceptionDialog, ExceptionLevel
 
 from .finder import find_window
 
@@ -56,7 +56,7 @@ def refresh(__window_name: str = 'mainWindow') -> Callable:
 
             try:
                 return func(*args, **kwargs)
-            except:
+            except Exception:
                 raise
             finally:
                 window = find_window(__window_name)

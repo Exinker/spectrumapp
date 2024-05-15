@@ -47,7 +47,7 @@ class AbstractConfig(ABC):
 
     # ---------        factory        ---------
     @abstractclassmethod
-    def default(cls) -> 'AbstractConfig':
+    def default(cls) -> 'AbstractConfig':  # noqa: N805
         """Default config."""
         data = cls._default()
 
@@ -59,16 +59,16 @@ class AbstractConfig(ABC):
 
         # load data
         try:
-            data = self._load()
+            data = cls._load()
 
-        except FileNotFoundError as error:
+        except FileNotFoundError:
             raise NotImplementedError
 
         # parse data
         try:
             config = cls(**data)
 
-        except (json.JSONDecodeError, TypeError, ValueError, KeyError) as error:
+        except (json.JSONDecodeError, TypeError, ValueError, KeyError):
             raise NotImplementedError
 
         #
@@ -76,14 +76,14 @@ class AbstractConfig(ABC):
 
     # ---------        private        ---------
     @abstractclassmethod
-    def _default(cls) -> Mapping[str, str | int | float | list]:
+    def _default(cls) -> Mapping[str, str | int | float | list]:  # noqa: N805
         """Get default serialized data."""
         raise NotImplementedError
 
     @classmethod
-    def _load(self) -> Mapping[str, str | int | float | list]:
+    def _load(cls) -> Mapping[str, str | int | float | list]:
         """Load serialized data."""
-        filepath = self.FILEPATH
+        filepath = cls.FILEPATH
 
         with open(filepath, 'r', encoding=ENCODING) as file:
             data = json.load(file)

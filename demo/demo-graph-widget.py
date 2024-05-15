@@ -7,8 +7,8 @@ from matplotlib.backend_bases import PickEvent
 from matplotlib.widgets import RectangleSelector
 from PySide6 import QtWidgets
 
-from spectrumapp.widgets.graphWidget import BaseGraphWidget
 from spectrumapp.types import Array
+from spectrumapp.widgets.graphWidget import BaseGraphWidget
 
 
 @dataclass

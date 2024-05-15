@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-from spectrumapp import DESCRIPTION, NAME, VERSION, AUTHOR_EMAIL, AUTHOR_NAME
+from spectrumapp import AUTHOR_EMAIL, AUTHOR_NAME, DESCRIPTION, NAME, VERSION
 
 
 setup(

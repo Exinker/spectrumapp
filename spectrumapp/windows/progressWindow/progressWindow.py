@@ -1,7 +1,7 @@
 import os
 from typing import Iterable, Sequence
 
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.paths import pave
 from spectrumapp.utils import find_window
