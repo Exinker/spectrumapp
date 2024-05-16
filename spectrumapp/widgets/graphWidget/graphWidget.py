@@ -4,6 +4,7 @@ from matplotlib.backend_bases import KeyEvent, MouseEvent, PickEvent
 from PySide6 import QtCore, QtWidgets
 
 from spectrumapp.types import Lims
+from spectrumapp.utils.getter import getdefault_object_name
 
 from .canvas import MplCanvas
 
@@ -21,10 +22,12 @@ class BaseGraphWidget(QtWidgets.QWidget):
         update zoom - right mouse button;
     """
 
-    def __init__(self, *args, size: tuple[int, int] = (640, 480), tight_layout: bool = True, **kwargs):
+    def __init__(self, *args, object_name: str | None = None, size: tuple[int, int] = (640, 480), tight_layout: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._size = size
+        # object name
+        object_name = object_name or getdefault_object_name(self)
+        self.setObjectName(object_name)
 
         #
         self._data: Data | None = None
@@ -63,15 +66,14 @@ class BaseGraphWidget(QtWidgets.QWidget):
         layout.addWidget(self.canvas)
 
         # geometry
-        width, height = self._size
-        self.setFixedSize(width, height)
+        self._size = size
+        self.setFixedSize(*self._size)
 
         #
         self.show()
 
     def sizeHint(self):
-        width, height = self._size
-        return QtCore.QSize(width, height)
+        return QtCore.QSize(*self._size)
 
     def keyPressEvent(self, event: KeyEvent):
 
