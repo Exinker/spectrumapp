@@ -1,6 +1,20 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 
 
+# --------        windows        --------
+def find_window(__window_name: str) -> QtCore.QObject | None:
+    """Find window by name."""
+    app = QtWidgets.QApplication.instance()
+
+    if app:
+        for widget in app.topLevelWidgets():
+            if widget.objectName() == __window_name:
+                return widget
+
+    return None
+
+
+# --------        widgets        --------
 def find_action(__widget: QtWidgets.QWidget, text: str) -> QtGui.QAction | None:
     """Find action by text."""
     actions = __widget.actions()
@@ -19,21 +33,9 @@ def find_menu(__widget: QtWidgets.QWidget, title: str) -> QtWidgets.QMenu | None
     return None
 
 
-def find_widget(__widget_name: str, parent: QtWidgets.QWidget) -> QtWidgets.QWidget | None:
-    """Find widget by name."""
+def find_tab(__widget: QtWidgets.QTabWidget, text: str) -> QtWidgets.QWidget:
+    """Find tab by text."""
 
-    for widget in parent.children():
-        if widget.objectName() == __widget_name:
-            return widget
-
-
-def find_window(__window_name: str) -> QtCore.QObject | None:
-    """Find window by name."""
-    app = QtWidgets.QApplication.instance()
-
-    if app:
-        for widget in app.topLevelWidgets():
-            if widget.objectName() == __window_name:
-                return widget
-
-    return None
+    for i in range(__widget.count()):
+        if text == __widget.tabText(i):
+            return __widget.widget(i)

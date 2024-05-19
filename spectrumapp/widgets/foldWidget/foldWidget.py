@@ -2,8 +2,6 @@ import sys
 
 from PySide6 import QtCore, QtWidgets
 
-from spectrumapp.utils.finder import find_widget
-
 
 ICONS = {
     True: b'\xE2\x8F\xB5'.decode(),
@@ -91,7 +89,7 @@ class ToggleWidget(QtWidgets.QPushButton):
             is_folded=self.isChecked(),
         )
 
-        widget = find_widget('wrappedWidget', parent=self.parent())
+        widget = self.parent().findChild(QtWidgets.QFrame, 'wrappedWidget')
         widget._update_height(
             is_folded=self.isChecked(),
         )
@@ -119,8 +117,8 @@ class FoldWidget(QtWidgets.QWidget):
 
     def sizeHint(self) -> QtCore.QSize:
         children = [
-            find_widget('wrappedWidget', parent=self),
-            find_widget('toggleWidget', parent=self),
+            self.findChild(QtCore.QObject, object_name)
+            for object_name in ('wrappedWidget', 'toggleWidget')
         ]
 
         return QtCore.QSize(
