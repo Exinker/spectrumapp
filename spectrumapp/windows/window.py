@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.settings import get_setting, set_setting
-from spectrumapp.utils.getter import getdefault_object_name
+from spectrumapp.utils import setup
 
 
 class BaseWindow(QtWidgets.QWidget):
@@ -14,7 +14,7 @@ class BaseWindow(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         # object name
-        object_name = object_name or getdefault_object_name(self)
+        object_name = object_name or setup.getdefault_object_name(self)
         self.setObjectName(object_name)
 
         # flags
@@ -35,15 +35,6 @@ class BaseWindow(QtWidgets.QWidget):
         self.setGeometry(geometry)
 
     # --------        setup        --------
-    def _getdefault_object_name(self) -> str:
-        """Get a default object name for given class."""
-        cls = self.__class__
-
-        name = cls.__name__
-        name = name[0].lower() + name[1:]
-
-        return name
-
     def _getdefault_geometry(self) -> QtCore.QRect:
         screen_width, screen_height = get_screen_size()
 
