@@ -4,7 +4,7 @@ from datetime import datetime
 from PySide6 import QtWidgets
 
 from spectrumapp.config import File
-from spectrumapp.utils.modifier import attempt, wait
+from spectrumapp.utils import handler
 from spectrumapp.windows.window import BaseWindow
 
 from .archiver import AbstractArchiver, ZipArchiver
@@ -42,8 +42,8 @@ class DumpLocallyPushButton(QtWidgets.QPushButton):
 
         self.archiver = archiver
 
-    @wait
-    @attempt()
+    @handler.wait
+    @handler.attempt()
     def _onClicked(self, *args, **kwargs):
         archiver = self.archiver
         parent = self.parent()
@@ -68,8 +68,8 @@ class DumpRemotePushButton(QtWidgets.QPushButton):
         self.archiver = archiver
         self.delivery = delivery
 
-    @wait
-    @attempt()
+    @handler.wait
+    @handler.attempt()
     def _onClicked(self, *args, **kwargs):
         archiver = self.archiver
         delivery = self.delivery
@@ -97,8 +97,8 @@ class CancelPushButton(QtWidgets.QPushButton):
         self.setFixedWidth(120)
         self.clicked.connect(self._onClicked)
 
-    @wait
-    @attempt()
+    @handler.wait
+    @handler.attempt()
     def _onClicked(self, *args, **kwargs):
         parent = self.parent()
         parent.close()

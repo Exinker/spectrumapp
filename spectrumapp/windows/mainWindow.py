@@ -6,7 +6,7 @@ from spectrumapp.loggers import log
 from spectrumapp.paths import pave
 from spectrumapp.settings import get_setting, set_setting
 from spectrumapp.utils.finder import find_action, find_window
-from spectrumapp.utils.modifier import attempt, wait
+from spectrumapp.utils import handler
 from spectrumapp.windows.exceptionWindow import ExceptionLevel
 from spectrumapp.windows.keyboardShortcutsWindow import BaseKeyboardShortcutsWindow
 from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
@@ -130,30 +130,30 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
     # --------        slots        --------
     @log(message='main-window: open action')
-    @wait
+    @handler.wait
     def _onOpenTriggered(self):
         """Open new file action."""
         pass
 
     @log(message='main-window: reset action')
-    @wait
+    @handler.wait
     def _onRefreshTriggered(self, *args, **kwargs):
         """Refresh the app."""
         pass
 
     @log(message='main-window: reset action')
-    @wait
+    @handler.wait
     def _onResetTriggered(self, *args, **kwargs):
         """Update settings, config and refresh (optionally) the app."""
         pass
 
     @log(message='main-window: quit action')
-    @wait
+    @handler.wait
     def _onQuitTriggered(self):
         self.close()
 
     @log(message='main-window: report issue')
-    @wait
+    @handler.wait
     def _onOpenReportIssueWindowTriggered(self, *args, **kwargs):
         """Report an issue."""
 
@@ -167,8 +167,8 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             )
 
     @log(message='main-window: open help-window')
-    @wait
-    @attempt(level=ExceptionLevel.error)
+    @handler.wait
+    @handler.attempt(level=ExceptionLevel.error)
     def _onOpenHelpWindowTriggered(self):
         window_name = 'helpWindow'
 
@@ -184,8 +184,8 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             # )
 
     @log(message='main-window: open keyboard-shortcuts-window')
-    @wait
-    @attempt(level=ExceptionLevel.error)
+    @handler.wait
+    @handler.attempt(level=ExceptionLevel.error)
     def _onOpenKeyboardShortcutsWindowTriggered(self):
         window_name = 'keyboardShortcutsWindow'
 
@@ -200,8 +200,8 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             )
 
     @log(message='main-window: open about-window')
-    @wait
-    @attempt(level=ExceptionLevel.error)
+    @handler.wait
+    @handler.attempt(level=ExceptionLevel.error)
     def _onOpenAboutWindowTriggered(self):
         window_name = 'aboutWindow'
 
