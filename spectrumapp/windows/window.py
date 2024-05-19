@@ -31,18 +31,8 @@ class BaseWindow(QtWidgets.QWidget):
         self.addAction(action)
 
         # geometry
-        geometry = get_setting(key=f'geometry/{self.objectName()}') or self._getdefault_geometry()
+        geometry = get_setting(key=f'geometry/{self.objectName()}') or setup.getdefault_geometry(self)
         self.setGeometry(geometry)
-
-    # --------        setup        --------
-    def _getdefault_geometry(self) -> QtCore.QRect:
-        screen_width, screen_height = get_screen_size()
-
-        window_width = self.layout().sizeHint().width() if self.layout() else int(screen_width / 4)
-        window_height = int(screen_height / 2)
-        geometry = QtCore.QRect(int(screen_width/2 - window_width/2), int(screen_height/2 - window_height/2), window_width, window_height)
-
-        return geometry
 
     # --------        events        --------
     def closeEvent(self, event):
@@ -55,9 +45,3 @@ class BaseWindow(QtWidgets.QWidget):
 
 
 # --------        utils        --------
-def get_screen_size() -> tuple[int, int]:
-    from tkinter import Tk
-    root = Tk()
-    root.withdraw()
-
-    return root.winfo_screenwidth(), root.winfo_screenheight()
