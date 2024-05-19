@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.settings import get_setting, set_setting
-from spectrumapp.utils import setup
+from spectrumapp.utils import setuper
 
 
 class BaseWindow(QtWidgets.QWidget):
@@ -14,7 +14,7 @@ class BaseWindow(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         # object name
-        object_name = object_name or setup.getdefault_object_name(self)
+        object_name = object_name or setuper.getdefault_object_name(self)
         self.setObjectName(object_name)
 
         # flags
@@ -31,7 +31,7 @@ class BaseWindow(QtWidgets.QWidget):
         self.addAction(action)
 
         # geometry
-        geometry = get_setting(key=f'geometry/{self.objectName()}') or setup.getdefault_geometry(self)
+        geometry = get_setting(key=f'geometry/{self.objectName()}') or setuper.getdefault_geometry(self)
         self.setGeometry(geometry)
 
     # --------        events        --------

@@ -4,7 +4,7 @@ from matplotlib.backend_bases import KeyEvent, MouseEvent, PickEvent
 from PySide6 import QtCore, QtWidgets
 
 from spectrumapp.types import Lims
-from spectrumapp.utils import setup
+from spectrumapp.utils import setuper
 
 from .canvas import MplCanvas
 
@@ -26,7 +26,7 @@ class BaseGraphWidget(QtWidgets.QWidget):
         super().__init__(*args, **kwargs)
 
         # object name
-        object_name = object_name or setup.getdefault_object_name(self)
+        object_name = object_name or setuper.getdefault_object_name(self)
         self.setObjectName(object_name)
 
         #
