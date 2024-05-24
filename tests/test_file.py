@@ -31,7 +31,7 @@ def cleanup_files(filepath: FilePath) -> None:
 
 
 def test_setdefault_file(filepath: FilePath):
-    setdefault_file(force=True)
+    setdefault_file()
 
     file = File.load()
     assert file.FILEPATH == filepath
@@ -43,7 +43,7 @@ def test_setdefault_file(filepath: FilePath):
     os.path.join(os.getcwd(), 'tests'),
 ])
 def test_update_directory(directory: DirPath):
-    setdefault_file(force=True)
+    setdefault_file()
 
     file = File.load()
     file.update({

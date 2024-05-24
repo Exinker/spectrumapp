@@ -55,7 +55,7 @@ class File(AbstractConfig):
         except (json.JSONDecodeError, TypeError, ValueError, KeyError) as error:
             eprint(msg=f'{cls.__name__}.load: {error}')
 
-            setdefault_file(force=True)
+            setdefault_file()
             return cls.load()
 
         #
@@ -72,13 +72,11 @@ class File(AbstractConfig):
         }
 
 
-def setdefault_file(force: bool = False) -> None:
+def setdefault_file() -> None:
     """Create default config file."""
 
-    filepath = File.FILEPATH
-    if (not os.path.exists(filepath)) or force:
-        config = File.default()
-        config.dump()
+    config = File.default()
+    config.dump()
 
 
 if __name__ == '__main__':
