@@ -34,13 +34,9 @@ class File(AbstractConfig):
     @classmethod
     def default(cls) -> 'File':
         """Get config file by default."""
+        data = cls._default()
 
-        config = cls(
-            **cls._default(),
-        )
-
-        #
-        return config
+        return cls(**data)
 
     @classmethod
     def load(cls) -> 'File':

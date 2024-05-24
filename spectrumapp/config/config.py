@@ -46,14 +46,8 @@ class AbstractConfig(ABC):
         raise NotImplementedError
 
     # ---------        factory        ---------
-    @abstractclassmethod
-    def default(cls) -> 'AbstractConfig':  # noqa: N805
-        """Default config."""
-        data = cls._default()
-
-        return cls(**data)
-
     @classmethod
+    @abstractclassmethod
     def load(cls) -> 'AbstractConfig':
         """Load config from file (json)."""
 
@@ -75,6 +69,7 @@ class AbstractConfig(ABC):
         return config
 
     # ---------        private        ---------
+    @classmethod
     @abstractclassmethod
     def _default(cls) -> Mapping[str, str | int | float | list]:  # noqa: N805
         """Get default serialized data."""
