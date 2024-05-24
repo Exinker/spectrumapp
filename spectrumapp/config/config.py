@@ -47,6 +47,13 @@ class AbstractConfig(ABC):
 
     # ---------        factory        ---------
     @classmethod
+    def default(cls) -> 'AbstractConfig':
+        """Default config."""
+        data = cls._default()
+
+        return cls(**data)
+
+    @classmethod
     @abstractclassmethod
     def load(cls) -> 'AbstractConfig':
         """Load config from file (json)."""

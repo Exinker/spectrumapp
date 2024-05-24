@@ -32,13 +32,6 @@ class File(AbstractConfig):
 
     # ---------        factory        ---------
     @classmethod
-    def default(cls) -> 'File':
-        """Get config file by default."""
-        data = cls._default()
-
-        return cls(**data)
-
-    @classmethod
     def load(cls) -> 'File':
         """Load config from file (json)."""
 
