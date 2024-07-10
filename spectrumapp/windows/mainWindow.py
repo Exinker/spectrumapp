@@ -3,7 +3,7 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.loggers import log
-from spectrumapp.paths import pave
+from spectrumapp.paths import pave, LIBDIR
 from spectrumapp.settings import get_setting, set_setting
 from spectrumapp.utils.finder import find_action, find_window
 from spectrumapp.utils import handler
@@ -20,12 +20,12 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         super().__init__(*args, objectName=object_name, **kwargs)
 
         # style
-        filepath = pave(os.path.join('.', 'static', 'app.css'))
+        filepath = pave(os.path.join(LIBDIR, 'static', 'app.css'))
         style = open(filepath, 'r').read()
         self.setStyleSheet(style)
 
         # icon
-        filepath = pave(os.path.join('.', 'static', 'icon.ico'))
+        filepath = pave(os.path.join(LIBDIR, 'static', 'icon.ico'))
         icon = QtGui.QIcon(filepath)
         self.setWindowIcon(icon)
 
