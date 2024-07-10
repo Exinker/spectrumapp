@@ -1,5 +1,11 @@
 import os
 import sys
+from importlib import resources
+
+import spectrumapp
+
+
+LIBDIR = resources.files(spectrumapp)
 
 
 def pave(relative_path: str) -> str:
