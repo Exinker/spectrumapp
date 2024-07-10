@@ -21,7 +21,9 @@ setup(
     packages=find_packages(),
 
     # setup data
-    include_package_data=True,
+    package_data={
+        '': ['*.ico', '*.css'],
+    },
 
     # requires
     install_requires=[
