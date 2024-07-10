@@ -1,21 +1,21 @@
 from setuptools import find_packages, setup
 
-from spectrumapp import AUTHOR_EMAIL, AUTHOR_NAME, DESCRIPTION, NAME, VERSION
+import spectrumapp
 
 
 setup(
     # info
-    name=NAME,
-    description=DESCRIPTION,
-    license='MIT',
+    name=spectrumapp.__name__,
+    description=spectrumapp.__doc__,
+    license=spectrumapp.__license__,
     keywords=['spectroscopy', 'app'],
 
     # version
-    version=VERSION,
+    version=spectrumapp.__version__,
 
     # author details
-    author=AUTHOR_NAME,
-    author_email=AUTHOR_EMAIL,
+    author=spectrumapp.__author__,
+    author_email=spectrumapp.__email__,
 
     # setup directories
     packages=find_packages(),

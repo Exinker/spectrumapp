@@ -3,7 +3,7 @@ import sys
 
 from PySide6 import QtWidgets
 
-from spectrumapp import ORGANIZATION_NAME, VERSION
+import spectrumapp
 from spectrumapp.application import AbstractApplication
 from spectrumapp.loggers import log, setdefault_logger
 from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
@@ -42,8 +42,8 @@ class Application(AbstractApplication):
 
 def setdefault_environ(debug: bool = False) -> None:
     os.environ['APPLICATION_NAME'] = 'Demo'
-    os.environ['APPLICATION_VERSION'] = VERSION
-    os.environ['ORGANIZATION_NAME'] = ORGANIZATION_NAME
+    os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
+    os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
 
     os.environ['DEBUG'] = str(debug)
 
