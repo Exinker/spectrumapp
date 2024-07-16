@@ -4,7 +4,7 @@ import os
 
 from spectrumapp.exceptions import eprint
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 __author__ = 'Pavel Vaschenko'
 __organization__ = 'VMK-Optoelektronika'
