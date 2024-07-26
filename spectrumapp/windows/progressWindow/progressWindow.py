@@ -3,11 +3,8 @@ from typing import Iterable, Sequence
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from spectrumapp.paths import pave, LIBDIR
+from spectrumapp.paths import pave
 from spectrumapp.utils import find_window
-
-
-PACKAGEDIR, _ = os.path.split(__file__)
 
 
 # --------        windows        --------
@@ -26,12 +23,12 @@ class ProgressWindow(QtWidgets.QWidget):
             self.setWindowFlag(flag, True)
 
         # style
-        filepath = pave(os.path.join(PACKAGEDIR, 'static', 'progress-window.css'))
+        filepath = pave(os.path.join('.', 'static', 'progress-window.css'))
         style = open(filepath, 'r').read()
         self.setStyleSheet(style)
 
         # icon
-        filepath = pave(os.path.join(LIBDIR, 'static', 'icon.ico'))
+        filepath = pave(os.path.join('.', 'static', 'icon.ico'))
         icon = QtGui.QIcon(filepath)
         self.setWindowIcon(icon)
 
