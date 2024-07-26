@@ -5,14 +5,10 @@ import os
 from spectrumapp.exceptions import eprint
 
 __version__ = '0.2.3'
-
 __author__ = 'Pavel Vaschenko'
 __organization__ = 'VMK-Optoelektronika'
-
-
 __name__ = 'spectrumapp'
 __email__ = 'vaschenko@vmk.ru'
-
 __license__ = 'MIT'
 
 
