@@ -25,21 +25,6 @@ class AbstractConfig(ABC):
             data=self.serialize(),
         )
 
-    def update(self, attrs: Mapping[str, str | int | float | list]) -> None:
-        """Update config file."""
-
-        # load data
-        data = self._load()
-
-        # update data
-        for key, value in attrs.items():
-            data[key] = value
-
-        # dump data
-        self._dump(
-            data=data,
-        )
-
     @abstractmethod
     def serialize(self) -> Mapping[str, str | int | float | list]:
         """Serialize config to mapping object."""
@@ -52,6 +37,22 @@ class AbstractConfig(ABC):
         data = cls._default()
 
         return cls(**data)
+
+    @classmethod
+    def update(cls, **kwargs: Mapping[str, str | int | float | list]) -> None:
+        """Update config file."""
+
+        # load data
+        data = cls._load()
+
+        # update data
+        for key, value in kwargs.items():
+            data[key] = value
+
+        # dump data
+        cls._dump(
+            data=data,
+        )
 
     @classmethod
     @abstractclassmethod
@@ -92,9 +93,10 @@ class AbstractConfig(ABC):
 
         return data
 
-    def _dump(self, data: Mapping[str, str | int | float | list]) -> None:
+    @classmethod
+    def _dump(cls, data: Mapping[str, str | int | float | list]) -> None:
         """Dump serialized data."""
-        filepath = self.FILEPATH
+        filepath = cls.FILEPATH
 
         with open(filepath, 'w', encoding=ENCODING) as file:
             json.dump(data, file)
