@@ -1,7 +1,8 @@
+from tkinter import Tk
+
 from PySide6 import QtCore, QtGui, QtWidgets
 
 
-# --------        windows        --------
 def find_window(__window_name: str) -> QtCore.QObject | None:
     """Find window by name."""
     app = QtWidgets.QApplication.instance()
@@ -14,7 +15,6 @@ def find_window(__window_name: str) -> QtCore.QObject | None:
     return None
 
 
-# --------        widgets        --------
 def find_action(__widget: QtWidgets.QWidget, text: str) -> QtGui.QAction | None:
     """Find action by text."""
     actions = __widget.actions()
@@ -39,3 +39,31 @@ def find_tab(__widget: QtWidgets.QTabWidget, text: str) -> QtWidgets.QWidget:
     for i in range(__widget.count()):
         if text == __widget.tabText(i):
             return __widget.widget(i)
+
+
+def getdefault_object_name(obj: QtCore.QObject, prefix: str = '') -> str:
+    """Get a default object name for a given ofject."""
+    cls = obj.__class__
+
+    name = prefix + cls.__name__
+    name = name[0].lower() + name[1:]
+
+    return name
+
+
+def getdefault_geometry(window: QtWidgets.QWidget) -> QtCore.QRect:
+    """Get a default geometry for a given window."""
+
+    def get_screen_size() -> tuple[int, int]:
+        root = Tk()
+        root.withdraw()
+
+        return root.winfo_screenwidth(), root.winfo_screenheight()
+
+    screen_width, screen_height = get_screen_size()
+
+    window_width = window.layout().sizeHint().width() if window.layout() else int(screen_width / 4)
+    window_height = int(screen_height / 2)
+    geometry = QtCore.QRect(int(screen_width/2 - window_width/2), int(screen_height/2 - window_height/2), window_width, window_height)
+
+    return geometry

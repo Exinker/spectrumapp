@@ -1,8 +1,5 @@
 import os
 import sys
-from importlib import resources
-
-import spectrumapp
 
 
 def pave(relative_path: str) -> str:

@@ -14,7 +14,6 @@ class Application(AbstractApplication):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        #
         self._window = None
 
     @property
@@ -40,23 +39,17 @@ class Application(AbstractApplication):
             self.window._onRefreshTriggered()
 
 
-def setdefault_environ(debug: bool = False) -> None:
+def setdefault_environ() -> None:
     os.environ['APPLICATION_NAME'] = 'Demo'
     os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
     os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
 
-    os.environ['DEBUG'] = str(debug)
-
 
 if __name__ == '__main__':
 
-    # setup env
     setdefault_environ()
-
-    # setup loggers
     setdefault_logger()
 
-    # app
     app = Application(sys.argv)
 
     window = ReportIssueWindow()

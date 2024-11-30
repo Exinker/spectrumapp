@@ -4,15 +4,14 @@ import pytest
 from PySide6 import QtWidgets
 
 import spectrumapp
-from spectrumapp.windows.reportIssueWindow import ReportIssueWindow, ZipArchiver
+from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
+from spectrumapp.windows.reportIssueWindow.archiver import ZipArchiver
 
 
 def setup_environ() -> None:
     os.environ['APPLICATION_NAME'] = 'Tests'
     os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
     os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
-
-    os.environ['DEBUG'] = str(True)
 
 
 @pytest.fixture(autouse=True)

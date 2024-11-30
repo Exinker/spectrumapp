@@ -1,13 +1,12 @@
 import os
-from typing import Iterable, Sequence
+from typing import Sequence
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from spectrumapp.helpers import find_window
 from spectrumapp.paths import pave
-from spectrumapp.utils import find_window
 
 
-# --------        windows        --------
 class ProgressWindow(QtWidgets.QWidget):
 
     def __init__(self, *args, flags: Sequence[QtCore.Qt.WindowType] | None = None, **kwargs):
@@ -133,38 +132,3 @@ class LabelWidget(QtWidgets.QLabel):
         super().__init__(*args, **kwargs)
 
         self.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-
-
-# --------        decorators        --------
-def progress(iterable: Iterable, info: str | None = ''):
-    """Progress decorator for long time processes."""
-    window_name = 'processWindow'
-
-    #
-    try:
-        n_items = len(iterable)
-    except (TypeError, AttributeError):
-        n_items = None
-
-    # window
-    window = find_window(window_name)
-    if window is not None:
-        window.show()
-
-    else:
-        window = ProgressWindow()
-
-    # iterate
-    try:
-        for i, item in enumerate(iterable):
-            window.update(
-                progress='' if n_items is None else int(100*(i + 1) / n_items),
-                info=info,
-                message='' if n_items is None else f'<strong>{item}</strong> ({i + 1}/{n_items})',
-            )
-
-            yield item
-
-    finally:
-        window.setParent(None)
-        window.close()

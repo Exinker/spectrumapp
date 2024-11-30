@@ -30,7 +30,6 @@ class File(AbstractConfig):
         #
         return data
 
-    # ---------        factory        ---------
     @classmethod
     def load(cls) -> 'File':
         """Load config from file (json)."""
@@ -61,7 +60,6 @@ class File(AbstractConfig):
         #
         return config
 
-    # ---------        private        ---------
     @classmethod
     def _default(cls) -> Mapping[str, str | int | float | list]:
         """Get default serialized data."""

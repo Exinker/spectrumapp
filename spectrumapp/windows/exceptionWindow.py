@@ -3,19 +3,24 @@ from enum import Enum, auto
 from PySide6 import QtWidgets
 
 from spectrumapp.exceptions import format_exception
-from spectrumapp.utils.finder import find_window
+from spectrumapp.helpers import find_window
 
 
 class ExceptionLevel(Enum):
-    fatal = auto()
-    error = auto()
-    warning = auto()
-    info = auto()
+    ERROR = auto()
+    WARNING = auto()
+    INFO = auto()
 
 
 class ExceptionDialog:
 
-    def __init__(self, message: str | None = None, info: str | None = None, level: ExceptionLevel = ExceptionLevel.warning, parent: QtWidgets.QWidget | None = None):
+    def __init__(
+        self,
+        message: str | None = None,
+        info: str | None = None,
+        level: ExceptionLevel = ExceptionLevel.WARNING,
+        parent: QtWidgets.QWidget | None = None,
+    ):
         self.message = message or ''
         self.info = info or format_exception()
         self.level = level
@@ -26,13 +31,11 @@ class ExceptionDialog:
         level = self.level
 
         window = QtWidgets.QMessageBox()
-        if level == ExceptionLevel.fatal:
+        if level == ExceptionLevel.ERROR:
             return window.critical
-        if level == ExceptionLevel.error:
-            return window.critical
-        if level == ExceptionLevel.warning:
+        if level == ExceptionLevel.WARNING:
             return window.warning
-        if level == ExceptionLevel.info:
+        if level == ExceptionLevel.INFO:
             return window.information
 
         raise ValueError(f'Level {level} is not supported yet!')
@@ -48,13 +51,11 @@ class ExceptionDialog:
     def title(self) -> str:
         level = self.level
 
-        if level == ExceptionLevel.fatal:
-            return 'Fatal'
-        if level == ExceptionLevel.error:
+        if level == ExceptionLevel.ERROR:
             return 'Error'
-        if level == ExceptionLevel.warning:
+        if level == ExceptionLevel.WARNING:
             return 'Warning'
-        if level == ExceptionLevel.info:
+        if level == ExceptionLevel.INFO:
             return 'Info'
 
         raise ValueError(f'Level {level} is not supported yet!')
@@ -88,7 +89,7 @@ if __name__ == '__main__':
     except ZeroDivisionError:
         dialog = ExceptionDialog(
             message=message,
-            level=ExceptionLevel.error,
+            level=ExceptionLevel.ERROR,
         )
         dialog.show()
 

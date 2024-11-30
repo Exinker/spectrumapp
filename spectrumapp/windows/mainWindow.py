@@ -2,11 +2,11 @@ import os
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from spectrumapp.decorators import attempt, wait
+from spectrumapp.helpers import find_action, find_window
 from spectrumapp.loggers import log
 from spectrumapp.paths import pave
 from spectrumapp.settings import get_setting, set_setting
-from spectrumapp.utils.finder import find_action, find_window
-from spectrumapp.utils import handler
 from spectrumapp.windows.exceptionWindow import ExceptionLevel
 from spectrumapp.windows.keyboardShortcutsWindow import BaseKeyboardShortcutsWindow
 from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
@@ -86,7 +86,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
         # menus
         menubar = self.menuBar()
-        menubar.setVisible(get_setting(key='mainWindow/menubar'))
+        menubar.setVisible(get_setting(key='mainWindow/menubar') or False)
 
         menu = QtWidgets.QMenu(title='&File', parent=self)
         menu.addAction(find_action(self, '&Open...'))
@@ -130,30 +130,30 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
     # --------        slots        --------
     @log(message='main-window: open action')
-    @handler.wait
+    @wait
     def _onOpenTriggered(self):
         """Open new file action."""
         pass
 
     @log(message='main-window: reset action')
-    @handler.wait
+    @wait
     def _onRefreshTriggered(self, *args, **kwargs):
         """Refresh the app."""
         pass
 
     @log(message='main-window: reset action')
-    @handler.wait
+    @wait
     def _onResetTriggered(self, *args, **kwargs):
         """Update settings, config and refresh (optionally) the app."""
         pass
 
     @log(message='main-window: quit action')
-    @handler.wait
+    @wait
     def _onQuitTriggered(self):
         self.close()
 
     @log(message='main-window: report issue')
-    @handler.wait
+    @wait
     def _onOpenReportIssueWindowTriggered(self, *args, **kwargs):
         """Report an issue."""
 
@@ -167,8 +167,8 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             )
 
     @log(message='main-window: open help-window')
-    @handler.wait
-    @handler.attempt(level=ExceptionLevel.error)
+    @wait
+    @attempt(level=ExceptionLevel.ERROR)
     def _onOpenHelpWindowTriggered(self):
         window_name = 'helpWindow'
 
@@ -184,8 +184,8 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             # )
 
     @log(message='main-window: open keyboard-shortcuts-window')
-    @handler.wait
-    @handler.attempt(level=ExceptionLevel.error)
+    @wait
+    @attempt(level=ExceptionLevel.ERROR)
     def _onOpenKeyboardShortcutsWindowTriggered(self):
         window_name = 'keyboardShortcutsWindow'
 
@@ -200,8 +200,8 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             )
 
     @log(message='main-window: open about-window')
-    @handler.wait
-    @handler.attempt(level=ExceptionLevel.error)
+    @wait
+    @attempt(level=ExceptionLevel.ERROR)
     def _onOpenAboutWindowTriggered(self):
         window_name = 'aboutWindow'
 
@@ -220,8 +220,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @log(message='main-window: close event')
     def closeEvent(self, event: QtCore.QEvent):
 
-        # geometry
-        set_setting(key=f'geometry/{self.objectName()}', value=self.geometry())
-
-        #
-        super().closeEvent(event)
+        try:
+            set_setting(key=f'geometry/{self.objectName()}', value=self.geometry())
+        finally:
+            super().closeEvent(event)

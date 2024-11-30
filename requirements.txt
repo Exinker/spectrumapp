@@ -1,6 +1,6 @@
 matplotlib
 numpy
 pandas
-telepot
-
 PySide6
+python-dotenv
+telepot

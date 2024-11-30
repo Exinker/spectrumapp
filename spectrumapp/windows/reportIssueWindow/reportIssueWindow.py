@@ -1,15 +1,18 @@
+import logging
 import os
 from datetime import datetime
 
 from PySide6 import QtWidgets
 
 from spectrumapp.config import File
-from spectrumapp.utils import handler
+from spectrumapp.decorators import attempt, wait
+from spectrumapp.windows.reportIssueWindow.archiver import AbstractArchiver, ZipArchiver
+from spectrumapp.windows.reportIssueWindow.delivery import AbstractDelivery, TelegramDelivery
+from spectrumapp.windows.reportIssueWindow.utils import explore
 from spectrumapp.windows.window import BaseWindow
 
-from .archiver import AbstractArchiver, ZipArchiver
-from .delivery import AbstractDelivery, TelegramDelivery
-from .utils import walk
+
+LOGGER = logging.getLogger('spectrumapp')
 
 
 class DescriptionPlainText(QtWidgets.QPlainTextEdit):
@@ -35,31 +38,37 @@ class AttacheDumpCheckBox(QtWidgets.QCheckBox):
 class DumpLocallyPushButton(QtWidgets.QPushButton):
 
     def __init__(self, *args, archiver: AbstractArchiver, **kwargs):
-        super().__init__(*args, text='Dump locally', objectName='dumpLocallyPushButton', **kwargs)
+        super().__init__(
+            *args,
+            text='Dump locally',
+            objectName='dumpLocallyPushButton',
+            **kwargs,
+        )
+
+        self.archiver = archiver
 
         self.setFixedWidth(120)
         self.clicked.connect(self._onClicked)
 
-        self.archiver = archiver
-
-    @handler.wait
-    @handler.attempt()
+    @wait
+    @attempt()
     def _onClicked(self, *args, **kwargs):
-        archiver = self.archiver
-        parent = self.parent()
+        LOGGER.debug('%s clicked.', self.__class__.__name__)
 
-        #
-        timestamp = parent.findChild(QtWidgets.QLabel, 'timestampLabel').text()
-
-        archiver.dump(
-            files=walk(file=File.load()),
-            timestamp=timestamp,
+        self.archiver.dump(
+            files=explore(file=File.load()),
         )
 
 
 class DumpRemotePushButton(QtWidgets.QPushButton):
 
-    def __init__(self, *args, archiver: AbstractArchiver, delivery: AbstractDelivery, **kwargs):
+    def __init__(
+        self,
+        *args,
+        archiver: AbstractArchiver,
+        delivery: AbstractDelivery,
+        **kwargs,
+    ):
         super().__init__(*args, text='Dump remote', objectName='dumpRemotePushButton', **kwargs)
 
         self.setFixedWidth(120)
@@ -68,24 +77,17 @@ class DumpRemotePushButton(QtWidgets.QPushButton):
         self.archiver = archiver
         self.delivery = delivery
 
-    @handler.wait
-    @handler.attempt()
+    @wait
+    @attempt()
     def _onClicked(self, *args, **kwargs):
-        archiver = self.archiver
-        delivery = self.delivery
-        parent = self.parent()
+        LOGGER.debug('%s clicked.', self.__class__.__name__)
 
-        #
-        timestamp = parent.findChild(QtWidgets.QLabel, 'timestampLabel').text()
-
-        archiver.dump(
-            files=walk(file=File.load()),
-            timestamp=timestamp,
+        self.archiver.dump(
+            files=explore(file=File.load()),
         )
-        delivery.send(
-            filepath=archiver.get_filepath(timestamp),
-            description=parent.findChild(QtWidgets.QPlainTextEdit, 'descriptionPlainText').toPlainText(),
-            timestamp=timestamp,
+        self.delivery.send(
+            filepath=self.archiver.filepath,
+            description=self.parent().findChild(QtWidgets.QPlainTextEdit, 'descriptionPlainText').toPlainText(),
         )
 
 
@@ -97,22 +99,34 @@ class CancelPushButton(QtWidgets.QPushButton):
         self.setFixedWidth(120)
         self.clicked.connect(self._onClicked)
 
-    @handler.wait
-    @handler.attempt()
+    @wait
+    @attempt()
     def _onClicked(self, *args, **kwargs):
+        LOGGER.debug('%s clicked.', self.__class__.__name__)
+
         parent = self.parent()
         parent.close()
 
 
 class ReportIssueWindow(BaseWindow):
 
-    def __init__(self, *args, archiver: AbstractArchiver | None = None, delivery: AbstractDelivery | None = None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        archiver: AbstractArchiver | None = None,
+        delivery: AbstractDelivery | None = None,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
 
-        archiver = archiver or ZipArchiver()
+        timestamp = datetime.now().strftime('%Y.%m.%d %H:%M')
+        archiver = archiver or ZipArchiver(
+            filename=timestamp,
+        )
         delivery = delivery or TelegramDelivery(
-            token=os.environ['API_TOKEN'],
-            chat_id=os.environ['CHAT_ID'],
+            timestamp=timestamp,
+            token=os.environ.get('TELEGRAM_TOKEN', ''),
+            chat_id=os.environ.get('TELEGRAM_CHAT_ID', ''),
         )
 
         # title
@@ -139,7 +153,7 @@ class ReportIssueWindow(BaseWindow):
             parent=self,
         ))
         layout.addRow('Timestamp:', QtWidgets.QLabel(
-            datetime.now().strftime('%Y.%m.%d %H:%M'),
+            timestamp,
             objectName='timestampLabel',
             parent=self,
         ))
@@ -175,7 +189,7 @@ class ReportIssueWindow(BaseWindow):
         # geometry
         self.setFixedSize(480, self.sizeHint().height())
 
-        #
+        # show
         self.show()
 
     def closeEvent(self, event):

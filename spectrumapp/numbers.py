@@ -1,9 +1,8 @@
 import numpy as np
 
-from .types import Array
+from spectrumapp.types import Array
 
 
-# --------        utils        --------
 def format_number(__value: float, precision: int = 4) -> str:
     """Format the value for clear representaion in TableView."""
 

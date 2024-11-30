@@ -2,9 +2,8 @@ from typing import Any, Callable
 
 from PySide6 import QtCore, QtWidgets
 
+from spectrumapp.helpers import find_window
 from spectrumapp.windows.exceptionWindow import ExceptionDialog, ExceptionLevel
-
-from .finder import find_window
 
 
 def wait(func: Callable) -> Callable:
@@ -28,7 +27,7 @@ def wait(func: Callable) -> Callable:
     return wrapper
 
 
-def attempt(level: ExceptionLevel = ExceptionLevel.warning) -> Callable:
+def attempt(level: ExceptionLevel = ExceptionLevel.WARNING) -> Callable:
     """Attempt decorator for not save windows or process."""
 
     def decorator(func: Callable) -> Callable:

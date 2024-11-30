@@ -21,7 +21,6 @@ BASE_CONTENT = {
 }
 
 
-# --------        windows        --------
 class BaseKeyboardShortcutsWindow(BaseWindow):
 
     def __init__(self, *args, content: Mapping[str, Mapping[str, str]] | None = None, **kwargs):
@@ -48,7 +47,7 @@ class BaseKeyboardShortcutsWindow(BaseWindow):
         # geometry
         self.setFixedSize(480, self.sizeHint().height())
 
-        #
+        # show
         self.show()
 
 

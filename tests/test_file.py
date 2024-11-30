@@ -17,8 +17,6 @@ def setup_environ() -> None:
     os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
     os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
 
-    os.environ['DEBUG'] = str(True)
-
     yield
 
 

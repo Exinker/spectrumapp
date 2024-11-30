@@ -4,17 +4,15 @@ from matplotlib.backend_bases import KeyEvent, MouseEvent, PickEvent
 from PySide6 import QtCore, QtWidgets
 
 from spectrumapp.types import Lims
-from spectrumapp.utils import setuper
-
-from .canvas import MplCanvas
+from spectrumapp import helpers
+from spectrumapp.widgets.graphWidget.canvas import MplCanvas
 
 
 Data: TypeAlias = Any
 
 
 class BaseGraphWidget(QtWidgets.QWidget):
-    """
-    Base class for graph widgets.
+    """Base class for graph widgets.
 
     Events:
         reset zoom and pan - double click of rigth mouse button;
@@ -22,11 +20,18 @@ class BaseGraphWidget(QtWidgets.QWidget):
         update zoom - right mouse button;
     """
 
-    def __init__(self, *args, object_name: str | None = None, size: tuple[int, int] = (640, 480), tight_layout: bool = True, **kwargs):
+    def __init__(
+        self,
+        *args,
+        object_name: str | None = None,
+        size: tuple[int, int] = (640, 480),
+        tight_layout: bool = True,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
 
         # object name
-        object_name = object_name or setuper.getdefault_object_name(self)
+        object_name = object_name or helpers.getdefault_object_name(self)
         self.setObjectName(object_name)
 
         #
@@ -69,7 +74,7 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self._size = size
         self.setFixedSize(*self._size)
 
-        #
+        # show
         self.show()
 
     def sizeHint(self):
@@ -89,7 +94,18 @@ class BaseGraphWidget(QtWidgets.QWidget):
         if event.key() == QtCore.Qt.Key_Shift:
             self._pressed_shift = False
 
-    # --------        handlers        --------
+    def update(
+        self,
+        data: Data | None = None,
+        pattern: Mapping[str, Any] | None = None,
+    ) -> None:
+        """Update graph's data."""
+        raise NotImplementedError
+
+    def filtrate(self, pattern: Mapping[str, Any] | None = None):
+        """Filtrate graph's data with given pattern."""
+        self._update(pattern=pattern)
+
     def _pick_event(self, event: PickEvent) -> None:
         raise NotImplementedError
 
@@ -207,12 +223,3 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self.canvas.axes.set_xlim(xlim)
         self.canvas.axes.set_ylim(ylim)
         self.canvas.draw_idle()
-
-    # --------        handlers        --------
-    def update(self, data: Data | None = None, pattern: Mapping[str, Any] | None = None) -> None:
-        """Update graph's data."""
-        raise NotImplementedError
-
-    def filtrate(self, pattern: Mapping[str, Any] | None = None):
-        """Filtrate graph's data with given pattern."""
-        self._update(pattern=pattern)

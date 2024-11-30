@@ -1,5 +1,5 @@
 import os
-from abc import abstractmethod, abstractproperty
+from abc import abstractmethod
 
 from PySide6 import QtWidgets
 
@@ -27,7 +27,8 @@ class AbstractApplication(QtWidgets.QApplication):
         self.setApplicationVersion(os.environ['APPLICATION_VERSION'])
         self.setOrganizationName(os.environ['ORGANIZATION_NAME'])
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def window(self) -> QtWidgets.QWidget:
         """The main window."""
         raise NotImplementedError

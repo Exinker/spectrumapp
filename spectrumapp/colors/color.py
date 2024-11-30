@@ -3,10 +3,12 @@ from typing import TypeAlias
 
 from PySide6 import QtGui
 
-from .alpha import ALPHA, format_alpha
+from spectrumapp.colors.alpha import ALPHA, format_alpha
 
 
-# ---------        constants        ---------
+Color: TypeAlias = QtGui.QColor | str | Sequence[float, float, float] | Sequence[float, float, float, float]
+
+
 COLOR = {
     'selected': (0, 0.37254902, 0.88627451, .5),
     'is_not_active': '#707C80',
@@ -41,11 +43,6 @@ COLOR_INTENSITY = {
 }
 
 
-# ---------        types        ---------
-Color: TypeAlias = QtGui.QColor | str | Sequence[float, float, float] | Sequence[float, float, float, float]
-
-
-# ---------        handlers        ---------
 def format_color(
     color: Color,
     alpha: float = ALPHA['default'],

@@ -72,7 +72,7 @@ class ToggleWidget(QtWidgets.QPushButton):
         self.setStyleSheet(STYLESHEET)
         self.clicked.connect(self._onPressed)
 
-        #
+        # setup title
         self._title = title
         self._update_title(
             is_folded=is_folded,
@@ -131,9 +131,7 @@ if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
 
-    #
     widget = QtWidgets.QFrame()
-
     layout = QtWidgets.QVBoxLayout(widget)
     layout.setContentsMargins(0, 0, 0, 0)
     layout.setSpacing(0)
@@ -142,8 +140,6 @@ if __name__ == '__main__':
         button.setFixedSize(250, 30)
         button.clicked.connect(lambda state, text=f'clicked: #{i}': print(text))
         layout.addWidget(button)
-
-    #
     window = FoldWidget(widget, title='Title', is_folded=True)
     window.show()
 

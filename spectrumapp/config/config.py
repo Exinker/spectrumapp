@@ -1,9 +1,11 @@
 import json
-from abc import ABC, abstractclassmethod, abstractmethod
+import os
+from abc import ABC, abstractmethod
 from typing import Mapping
 
 
 ENCODING = 'utf-8'
+LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', 'INFO')
 
 
 class AbstractConfig(ABC):
@@ -25,14 +27,14 @@ class AbstractConfig(ABC):
             data=self.serialize(),
         )
 
-    def update(self, attrs: Mapping[str, str | int | float | list]) -> None:
+    def update(self, **kwargs: Mapping[str, str | int | float | list]) -> None:
         """Update config file."""
 
         # load data
         data = self._load()
 
         # update data
-        for key, value in attrs.items():
+        for key, value in kwargs.items():
             data[key] = value
 
         # dump data
@@ -45,7 +47,6 @@ class AbstractConfig(ABC):
         """Serialize config to mapping object."""
         raise NotImplementedError
 
-    # ---------        factory        ---------
     @classmethod
     def default(cls) -> 'AbstractConfig':
         """Default config."""
@@ -54,7 +55,7 @@ class AbstractConfig(ABC):
         return cls(**data)
 
     @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def load(cls) -> 'AbstractConfig':
         """Load config from file (json)."""
 
@@ -75,9 +76,8 @@ class AbstractConfig(ABC):
         #
         return config
 
-    # ---------        private        ---------
     @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def _default(cls) -> Mapping[str, str | int | float | list]:  # noqa: N805
         """Get default serialized data."""
         raise NotImplementedError
@@ -85,8 +85,8 @@ class AbstractConfig(ABC):
     @classmethod
     def _load(cls) -> Mapping[str, str | int | float | list]:
         """Load serialized data."""
-        filepath = cls.FILEPATH
 
+        filepath = cls.FILEPATH
         with open(filepath, 'r', encoding=ENCODING) as file:
             data = json.load(file)
 

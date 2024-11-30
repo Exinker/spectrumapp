@@ -1,51 +1,76 @@
+import logging
 import os
+import time
 from abc import ABC, abstractmethod
-from typing import Iterator
 
 from zipfile import ZipFile
 
 from spectrumapp.types import DirPath, FilePath
 
 
+LOGGER = logging.getLogger('spectrumapp')
+
+
 class AbstractArchiver(ABC):
+
+    def __init__(
+        self,
+        filename: str,
+        filedir: DirPath | None = None,
+    ) -> None:
+        self._filename = filename
+        self._filedir = filedir or os.path.join('.', 'dumps')
+
+    @property
+    def filename(self) -> str:
+        return self._filename.replace('.', '').replace(':', '').replace(' ', '_')
 
     @property
     def filedir(self) -> DirPath:
-        filedir = os.path.join('.', 'dumps')
-        if not os.path.isdir(filedir):
-            os.mkdir(filedir)
+        if not os.path.isdir(self._filedir):
+            os.mkdir(self._filedir)
 
-        return filedir
+        return self._filedir
 
-    def get_filename(self, timestamp: str) -> str:
-        return timestamp.replace('.', '').replace(':', '').replace(' ', '_')
-
+    @property
     @abstractmethod
-    def get_filepath(self, timestamp: str) -> FilePath:
+    def filepath(self) -> FilePath:
         raise NotImplementedError
 
     @abstractmethod
-    def dump(self, filepath: FilePath, files: Iterator[FilePath]) -> None:
+    def dump(self, files: tuple[FilePath]) -> None:
         raise NotImplementedError
 
 
 class ZipArchiver(AbstractArchiver):
+    TIMEOUT = 1  # timeout to realistic
 
-    def get_filepath(self, timestamp: str) -> FilePath:
+    def dump(self, files: tuple[FilePath]) -> None:
+        """Archive files to .zip archive."""
+
+        n_dumped = 0
+        with ZipFile(self.filepath, 'w') as zip:
+            for file in files:
+                try:
+                    zip.write(file)
+                except Exception as error:
+                    LOGGER.warning(
+                        'Write file %r failed with %s: %s',
+                        file,
+                        type(error).__name__,
+                        error,
+                    )
+                else:
+                    n_dumped += 1
+
+        time.sleep(self.TIMEOUT)
+        LOGGER.debug('%s files were dumped successfully.', n_dumped)
+
+    @property
+    def filepath(self) -> FilePath:
         filename = '{filename}.{extension}'.format(
-            filename=self.get_filename(timestamp),
+            filename=self.filename,
             extension='zip',
         )
 
         return os.path.join(self.filedir, filename)
-
-    def dump(self, files: Iterator[FilePath], timestamp: str) -> None:
-        """Archive files to .zip archive."""
-
-        filepath = self.get_filepath(
-            timestamp=timestamp,
-        )
-
-        with ZipFile(filepath, 'w') as zip:
-            for file in files:
-                zip.write(file)
