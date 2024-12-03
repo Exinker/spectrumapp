@@ -1,5 +1,4 @@
 import os
-from typing import Sequence
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -9,7 +8,7 @@ from spectrumapp.paths import pave
 class SplashScreenWindow(QtWidgets.QWidget):
     """Splash screen decorator for Qt applications and long time processes."""
 
-    def __init__(self, flags: Sequence[QtCore.Qt.WindowType] | None = None):
+    def __init__(self, flags: QtCore.Qt.WindowType | None = None):
         super().__init__()
 
         self.setObjectName('splashScreenWindow')
@@ -17,9 +16,8 @@ class SplashScreenWindow(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
         # flags
-        flags = flags or (QtCore.Qt.WindowType.Window, QtCore.Qt.WindowType.WindowStaysOnTopHint)
-        for flag in flags:
-            self.setWindowFlag(flag, True)
+        flags = flags or QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint
+        self.setWindowFlags(flags)
 
         # style
         filepath = pave(os.path.join('.', 'static', 'splash-screen-window.css'))

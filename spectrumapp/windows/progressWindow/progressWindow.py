@@ -1,5 +1,4 @@
 import os
-from typing import Sequence
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -9,7 +8,7 @@ from spectrumapp.paths import pave
 
 class ProgressWindow(QtWidgets.QWidget):
 
-    def __init__(self, *args, flags: Sequence[QtCore.Qt.WindowType] | None = None, **kwargs):
+    def __init__(self, *args, flags: QtCore.Qt.WindowType | None = None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.setObjectName('progressWindow')
@@ -17,9 +16,8 @@ class ProgressWindow(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
         # flags
-        flags = flags or (QtCore.Qt.WindowType.Window, QtCore.Qt.WindowType.WindowStaysOnTopHint)
-        for flag in flags:
-            self.setWindowFlag(flag, True)
+        flags = flags or QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint
+        self.setWindowFlags(flags)
 
         # style
         filepath = pave(os.path.join('.', 'static', 'progress-window.css'))

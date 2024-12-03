@@ -55,8 +55,11 @@ class DumpLocallyPushButton(QtWidgets.QPushButton):
     def _onClicked(self, *args, **kwargs):
         LOGGER.debug('%s clicked.', self.__class__.__name__)
 
+        file = File.load()
+
         self.archiver.dump(
-            files=explore(file=File.load()),
+            files=explore(file),
+            directory=file.directory,
         )
 
 
@@ -67,23 +70,28 @@ class DumpRemotePushButton(QtWidgets.QPushButton):
         *args,
         archiver: AbstractArchiver,
         delivery: AbstractDelivery,
+        is_enabled: bool = False,
         **kwargs,
     ):
         super().__init__(*args, text='Dump remote', objectName='dumpRemotePushButton', **kwargs)
 
-        self.setFixedWidth(120)
-        self.clicked.connect(self._onClicked)
-
         self.archiver = archiver
         self.delivery = delivery
+
+        self.setFixedWidth(120)
+        self.setEnabled(is_enabled)
+        self.clicked.connect(self._onClicked)
 
     @wait
     @attempt()
     def _onClicked(self, *args, **kwargs):
         LOGGER.debug('%s clicked.', self.__class__.__name__)
 
+        file = File.load()
+
         self.archiver.dump(
-            files=explore(file=File.load()),
+            files=explore(file),
+            directory=file.directory,
         )
         self.delivery.send(
             filepath=self.archiver.filepath,
@@ -178,6 +186,10 @@ class ReportIssueWindow(BaseWindow):
         layout.addWidget(DumpRemotePushButton(
             archiver=archiver,
             delivery=delivery,
+            is_enabled=all([
+                os.environ.get('TELEGRAM_TOKEN', ''),
+                os.environ.get('TELEGRAM_CHAT_ID', ''),
+            ]),
             parent=self,
         ))
         layout.addStretch()

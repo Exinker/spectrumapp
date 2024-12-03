@@ -38,21 +38,29 @@ class AbstractArchiver(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def dump(self, files: tuple[FilePath]) -> None:
+    def dump(
+        self,
+        files: tuple[FilePath],
+        prefix: DirPath | None = None,
+    ) -> None:
         raise NotImplementedError
 
 
 class ZipArchiver(AbstractArchiver):
     TIMEOUT = 1  # timeout to realistic
 
-    def dump(self, files: tuple[FilePath]) -> None:
+    def dump(
+        self,
+        files: tuple[FilePath],
+        directory: DirPath | None = None,
+    ) -> None:
         """Archive files to .zip archive."""
 
         n_dumped = 0
         with ZipFile(self.filepath, 'w') as zip:
             for file in files:
                 try:
-                    zip.write(file)
+                    zip.write(file, arcname=_get_arcname(file, directory=directory))
                 except Exception as error:
                     LOGGER.warning(
                         'Write file %r failed with %s: %s',
@@ -74,3 +82,16 @@ class ZipArchiver(AbstractArchiver):
         )
 
         return os.path.join(self.filedir, filename)
+
+
+def _get_arcname(__file: FilePath, directory: DirPath | None = None) -> str:
+
+    if directory:
+        prefix, _ = os.path.split(directory)
+
+        if __file.startswith(prefix):
+
+            arcname = __file[len(prefix):]
+            return arcname
+
+    return __file

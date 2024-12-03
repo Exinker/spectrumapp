@@ -3,8 +3,8 @@ from typing import Any, Mapping, TypeAlias
 from matplotlib.backend_bases import KeyEvent, MouseEvent, PickEvent
 from PySide6 import QtCore, QtWidgets
 
+from spectrumapp.helpers import getdefault_object_name
 from spectrumapp.types import Lims
-from spectrumapp import helpers
 from spectrumapp.widgets.graphWidget.canvas import MplCanvas
 
 
@@ -31,7 +31,7 @@ class BaseGraphWidget(QtWidgets.QWidget):
         super().__init__(*args, **kwargs)
 
         # object name
-        object_name = object_name or helpers.getdefault_object_name(self)
+        object_name = object_name or getdefault_object_name(self)
         self.setObjectName(object_name)
 
         #

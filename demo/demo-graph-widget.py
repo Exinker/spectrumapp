@@ -2,9 +2,9 @@ import sys
 from dataclasses import dataclass
 from typing import Any, Mapping
 
-import numpy as np
 from matplotlib.backend_bases import PickEvent
 from matplotlib.widgets import RectangleSelector
+import numpy as np
 from PySide6 import QtWidgets
 
 from spectrumapp.types import Array

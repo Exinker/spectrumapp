@@ -1,14 +1,12 @@
-from collections.abc import Sequence
-
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from spectrumapp.settings import get_setting, set_setting
 from spectrumapp.helpers import getdefault_geometry, getdefault_object_name
+from spectrumapp.settings import get_setting, set_setting
 
 
 class BaseWindow(QtWidgets.QWidget):
 
-    def __init__(self, *args, object_name: str | None = None, flags: Sequence[QtCore.Qt.WindowType] | None = None, **kwargs):
+    def __init__(self, *args, object_name: str | None = None, flags: QtCore.Qt.WindowType | None = None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -18,9 +16,8 @@ class BaseWindow(QtWidgets.QWidget):
         self.setObjectName(object_name)
 
         # flags
-        flags = flags or (QtCore.Qt.WindowType.Window, )
-        for flag in flags:
-            self.setWindowFlag(flag, True)
+        flags = flags or QtCore.Qt.WindowType.Window
+        self.setWindowFlags(flags)
 
         # actions
         action = QtGui.QAction('&Close', self)

@@ -28,9 +28,9 @@ def walk(__directory: DirPath) -> Iterator[FilePath]:
             yield filepath
 
 
-def explore(file: File) -> tuple[FilePath]:
+def explore(__file: File) -> tuple[FilePath]:
 
-    files = [file for file in walk(file.directory)]
+    files = [file for file in walk(__file.directory)]
 
     if LOGGER.isEnabledFor(logging.DEBUG):
         LOGGER.debug(
