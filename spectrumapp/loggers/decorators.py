@@ -5,23 +5,28 @@ from typing import Any, Callable
 
 from PySide6 import QtCore
 
-from spectrumapp.config import LOGGING_LEVEL
+from spectrumapp.config import (
+    LOGGING_LEVEL,
+    LOGGING_LEVEL_MAP,
+)
+
+
+LOGGER = logging.getLogger('spectrumapp')
 
 
 def log(message: str, level: int = logging.DEBUG) -> Callable:
     """Logging decorator."""
-    logger = logging.getLogger('spectrumapp')
 
     def decorator(func: Callable):
         def wrapper(*args, **kwargs):
 
-            if level or (logging.getLevelNamesMapping[LOGGING_LEVEL] > logging.DEBUG):
+            if level or (LOGGING_LEVEL_MAP[LOGGING_LEVEL] > logging.DEBUG):
 
                 context = _parse_context(*args, **kwargs)
                 if context:
-                    logger.log(level, f'{message} ({context})')
+                    LOGGER.log(level, '%s %s', message, context)
                 else:
-                    logger.log(level, message)
+                    LOGGER.log(level, '%s', message)
 
             return func(*args, **kwargs)
         return wrapper

@@ -1,8 +1,8 @@
 from .exceptions import BaseApplicationError
-from .utils import format_exception, eprint
+from .utils import eprint, format_exception
 
 __all__ = [
     BaseApplicationError,
-    format_exception,
     eprint,
+    format_exception,
 ]

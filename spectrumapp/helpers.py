@@ -64,6 +64,11 @@ def getdefault_geometry(window: QtWidgets.QWidget) -> QtCore.QRect:
 
     window_width = window.layout().sizeHint().width() if window.layout() else int(screen_width / 4)
     window_height = int(screen_height / 2)
-    geometry = QtCore.QRect(int(screen_width/2 - window_width/2), int(screen_height/2 - window_height/2), window_width, window_height)
+    geometry = QtCore.QRect(
+        int(screen_width/2 - window_width/2),
+        int(screen_height/2 - window_height/2),
+        window_width,
+        window_height,
+    )
 
     return geometry

@@ -10,4 +10,5 @@ pep8-naming
 mypy
 
 pytest
+pytest-cov
 pytest-qt

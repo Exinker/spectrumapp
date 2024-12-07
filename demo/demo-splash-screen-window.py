@@ -1,20 +1,12 @@
-import os
 import time
 
 from PySide6 import QtWidgets
 
-import spectrumapp
+from demo.utils import setdefault_environ
 from spectrumapp.windows.splashScreenWindow import SplashScreenWindow
 
 
-def setdefault_environ() -> None:
-    os.environ['APPLICATION_NAME'] = 'Demo'
-    os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
-    os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
-
-
 if __name__ == '__main__':
-
     setdefault_environ()
 
     app = QtWidgets.QApplication()

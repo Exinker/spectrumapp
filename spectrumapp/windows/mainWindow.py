@@ -42,46 +42,46 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         action.setShortcut('Ctrl+O')
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.setToolTip('Open file...')
-        action.triggered.connect(self._onOpenTriggered)
+        action.triggered.connect(self._on_open_triggered)
         self.addAction(action)
 
         action = QtGui.QAction('&Refresh', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+R'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._onRefreshTriggered)
+        action.triggered.connect(self._on_refresh_triggered)
         self.addAction(action)
 
         action = QtGui.QAction('&Reset', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Shift+R'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._onResetTriggered)
+        action.triggered.connect(self._on_reset_triggered)
         self.addAction(action)
 
         action = QtGui.QAction('&Quit', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Q'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.setStatusTip('Quit')
-        action.triggered.connect(self._onQuitTriggered)
+        action.triggered.connect(self._on_quit_triggered)
         self.addAction(action)
 
         action = QtGui.QAction('&View Help', self)
         action.setEnabled(False)
-        action.triggered.connect(self._onOpenHelpWindowTriggered)
+        action.triggered.connect(self._on_open_help_window_triggered)
         self.addAction(action)
 
         action = QtGui.QAction('&Report Issue', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Shift+I'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._onOpenReportIssueWindowTriggered)
+        action.triggered.connect(self._on_open_report_issue_window_triggered)
         self.addAction(action)
 
         action = QtGui.QAction('&Keyboard Shortcuts', self)
-        action.triggered.connect(self._onOpenKeyboardShortcutsWindowTriggered)
+        action.triggered.connect(self._on_open_keyboard_shortcuts_window_triggered)
         self.addAction(action)
 
         action = QtGui.QAction('&About', self)
         action.setEnabled(False)
-        action.triggered.connect(self._onOpenAboutWindowTriggered)
+        action.triggered.connect(self._on_open_about_window_triggered)
         self.addAction(action)
 
         # menus
@@ -131,30 +131,30 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     # --------        slots        --------
     @log(message='main-window: open action')
     @wait
-    def _onOpenTriggered(self):
+    def _on_open_triggered(self):
         """Open new file action."""
         pass
 
-    @log(message='main-window: reset action')
+    @log(message='main-window: refresh action')
     @wait
-    def _onRefreshTriggered(self, *args, **kwargs):
+    def _on_refresh_triggered(self, *args, **kwargs):
         """Refresh the app."""
         pass
 
     @log(message='main-window: reset action')
     @wait
-    def _onResetTriggered(self, *args, **kwargs):
+    def _on_reset_triggered(self, *args, **kwargs):
         """Update settings, config and refresh (optionally) the app."""
         pass
 
     @log(message='main-window: quit action')
     @wait
-    def _onQuitTriggered(self):
+    def _on_quit_triggered(self):
         self.close()
 
     @log(message='main-window: report issue')
     @wait
-    def _onOpenReportIssueWindowTriggered(self, *args, **kwargs):
+    def _on_open_report_issue_window_triggered(self, *args, **kwargs):
         """Report an issue."""
 
         window = find_window('reportIssueWindow')
@@ -169,7 +169,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @log(message='main-window: open help-window')
     @wait
     @attempt(level=ExceptionLevel.ERROR)
-    def _onOpenHelpWindowTriggered(self):
+    def _on_open_help_window_triggered(self):
         window_name = 'helpWindow'
 
         window = find_window(window_name)
@@ -186,7 +186,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @log(message='main-window: open keyboard-shortcuts-window')
     @wait
     @attempt(level=ExceptionLevel.ERROR)
-    def _onOpenKeyboardShortcutsWindowTriggered(self):
+    def _on_open_keyboard_shortcuts_window_triggered(self):
         window_name = 'keyboardShortcutsWindow'
 
         window = find_window(window_name)
@@ -202,7 +202,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @log(message='main-window: open about-window')
     @wait
     @attempt(level=ExceptionLevel.ERROR)
-    def _onOpenAboutWindowTriggered(self):
+    def _on_open_about_window_triggered(self):
         window_name = 'aboutWindow'
 
         window = find_window(window_name)
@@ -218,7 +218,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
     # --------        events        --------
     @log(message='main-window: close event')
-    def closeEvent(self, event: QtCore.QEvent):
+    def closeEvent(self, event: QtCore.QEvent):  # noqa: N802
 
         try:
             set_setting(key=f'geometry/{self.objectName()}', value=self.geometry())

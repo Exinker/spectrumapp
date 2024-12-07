@@ -1,11 +1,22 @@
 import json
+import logging
 import os
 from abc import ABC, abstractmethod
 from typing import Mapping
 
 
 ENCODING = 'utf-8'
-LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL', 'INFO')
+
+LOGGING_LEVEL_MAP = {
+    'NOTSET': logging.NOTSET,
+    'DEBUG': logging.DEBUG,
+    'INFO': logging.INFO,
+    'WARNING': logging.WARNING,
+    'ERROR': logging.ERROR,
+    'FATAL': logging.FATAL,
+    'CRITICAL': logging.CRITICAL,
+}
+LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL') if os.environ.get('LOGGING_LEVEL') is LOGGING_LEVEL_MAP else 'INFO'
 
 
 class AbstractConfig(ABC):
@@ -20,14 +31,7 @@ class AbstractConfig(ABC):
                 name=self.__class__.__name__,
             ))
 
-    def dump(self) -> None:
-        """Dump config to file (json)."""
-
-        self._dump(
-            data=self.serialize(),
-        )
-
-    def update(self, **kwargs: Mapping[str, str | int | float | list]) -> None:
+    def update(self, /, **kwargs: Mapping[str, str | int | float | list]) -> None:
         """Update config file."""
 
         # load data
@@ -43,9 +47,16 @@ class AbstractConfig(ABC):
         )
 
     @abstractmethod
-    def serialize(self) -> Mapping[str, str | int | float | list]:
+    def dumps(self) -> Mapping[str, str | int | float | list]:
         """Serialize config to mapping object."""
         raise NotImplementedError
+
+    def dump(self) -> None:
+        """Dump config to file (json)."""
+
+        self._dump(
+            data=self.dumps(),
+        )
 
     @classmethod
     def default(cls) -> 'AbstractConfig':

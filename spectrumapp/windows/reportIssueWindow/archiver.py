@@ -2,7 +2,6 @@ import logging
 import os
 import time
 from abc import ABC, abstractmethod
-
 from zipfile import ZipFile
 
 from spectrumapp.types import DirPath, FilePath
@@ -23,7 +22,7 @@ class AbstractArchiver(ABC):
 
     @property
     def filename(self) -> str:
-        return self._filename.replace('.', '').replace(':', '').replace(' ', '_')
+        return self._filename.replace('.', '').replace(':', '')
 
     @property
     def filedir(self) -> DirPath:
@@ -54,13 +53,13 @@ class ZipArchiver(AbstractArchiver):
         files: tuple[FilePath],
         directory: DirPath | None = None,
     ) -> None:
-        """Archive files to .zip archive."""
+        """Archive selected `files` to .zip archive."""
 
         n_dumped = 0
-        with ZipFile(self.filepath, 'w') as zip:
+        with ZipFile(self.filepath, 'w') as archive:
             for file in files:
                 try:
-                    zip.write(file, arcname=_get_arcname(file, directory=directory))
+                    archive.write(file, arcname=_get_arcname(file, directory=directory))
                 except Exception as error:
                     LOGGER.warning(
                         'Write file %r failed with %s: %s',

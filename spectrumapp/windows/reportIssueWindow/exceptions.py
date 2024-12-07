@@ -13,5 +13,5 @@ class InternetConnectionError(DeliveryError):
     pass
 
 
-class TelegramAuthorizationError(DeliveryError):
+class AuthorizationError(DeliveryError):
     pass

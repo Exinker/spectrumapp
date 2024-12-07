@@ -1,1 +1,6 @@
-from .keyboardShortcutsWindow import BaseKeyboardShortcutsWindow, BASE_CONTENT
+from .keyboardShortcutsWindow import BASE_CONTENT, BaseKeyboardShortcutsWindow
+
+__all__ = [
+    BASE_CONTENT,
+    BaseKeyboardShortcutsWindow,
+]

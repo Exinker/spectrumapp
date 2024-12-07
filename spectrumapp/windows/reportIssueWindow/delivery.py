@@ -13,7 +13,7 @@ from spectrumapp.types import FilePath
 from spectrumapp.windows.exceptionWindow import ExceptionDialog, ExceptionLevel
 from spectrumapp.windows.reportIssueWindow.exceptions import (
     InternetConnectionError,
-    TelegramAuthorizationError,
+    AuthorizationError,
 )
 
 
@@ -66,12 +66,12 @@ class TelegramDelivery(AbstractDelivery):
                 )
             except RequestError as error:
                 LOGGER.warning(
-                    'Send document failed with %s: %s',
+                    'Send message failed with %s: %s',
                     type(error).__name__,
                     error,
                 )
                 dialog = ExceptionDialog(
-                    message='Send document failed with {}!'.format(
+                    message='Send message failed with {}!'.format(
                         InternetConnectionError.__name__,
                     ),
                     info='Check an internet connection.',
@@ -80,43 +80,43 @@ class TelegramDelivery(AbstractDelivery):
                 dialog.show()
             except UnauthorizedError as error:
                 LOGGER.warning(
-                    'Send document failed with %s: %s',
+                    'Send message failed with %s: %s',
                     type(error).__name__,
                     error,
                 )
                 dialog = ExceptionDialog(
-                    message='Send document failed with {}!'.format(
-                        TelegramAuthorizationError.__name__,
+                    message='Send message failed with {}!'.format(
+                        AuthorizationError.__name__,
                     ),
-                    info='`TELEGRAM_TOKEN` is invalid.',
-                    level=ExceptionLevel.ERROR,
+                    info='TELEGRAM_TOKEN is invalid.',
+                    level=ExceptionLevel.WARNING,
                 )
                 dialog.show()
             except TelegramError as error:
                 LOGGER.warning(
-                    'Send document failed with %s: %s',
+                    'Send message failed with %s: %s',
                     type(error).__name__,
                     error,
                 )
 
                 dialog = ExceptionDialog(
-                    message='Send document failed with {}!'.format(
-                        TelegramAuthorizationError.__name__,
+                    message='Send message failed with {}!'.format(
+                        AuthorizationError.__name__,
                     ),
                     info={
-                        400: '`TELEGRAM_CHAT_ID` is wrong.',
-                        404: '`.env` file is not found.',
+                        400: 'TELEGRAM_CHAT_ID is invalid!',
+                        404: 'File is not found. Create .env file with Telegram credentials!',
                     }.get(error.error_code, error.description),
-                    level=ExceptionLevel.ERROR,
+                    level=ExceptionLevel.WARNING,
                 )
                 dialog.show()
 
             except Exception as error:
                 LOGGER.warning(
-                    'Send document failed with %s: %s',
+                    'Send message failed with %s: %s',
                     type(error).__name__,
                     error,
                 )
                 raise
             else:
-                LOGGER.debug('Document to Telegram is send successfully.')
+                LOGGER.debug('Dump file is send successfully.')

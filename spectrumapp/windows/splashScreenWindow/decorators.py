@@ -5,7 +5,12 @@ from spectrumapp.helpers import find_window
 from spectrumapp.windows.splashScreenWindow.splashScreenWindow import SplashScreenWindow
 
 
-def splashscreen(progress: int | None = None, info: str | None = None, message: str | None = None, delay: float = 0) -> Callable:
+def splashscreen(
+    progress: int | None = None,
+    info: str | None = None,
+    message: str | None = None,
+    delay: float = 0,
+) -> Callable:
     """Splash screen decorator for Qt applications."""
     window_name = 'splashScreenWindow'
 

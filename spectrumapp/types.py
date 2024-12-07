@@ -2,9 +2,9 @@ from enum import Enum
 from pathlib import Path
 from typing import NewType, TypeAlias
 
-from numpy.typing import NDArray  # noqa: I100
 import pandas as pd
 from PySide6 import QtCore, QtWidgets
+from numpy.typing import NDArray  # noqa: I100
 
 from spectrumapp.colors import COLOR_DATASET, Color
 

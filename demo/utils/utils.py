@@ -2,7 +2,16 @@ import logging
 import logging.config
 import os
 
+from PySide6 import QtCore
+
+import spectrumapp
 from spectrumapp.config import LOGGING_LEVEL
+
+
+def setdefault_environ() -> None:
+    os.environ['APPLICATION_NAME'] = 'Demo'
+    os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
+    os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
 
 
 def setdefault_logger():
@@ -48,3 +57,11 @@ def setdefault_logger():
         },
     }
     logging.config.dictConfig(config)
+
+
+def setdefault_setting() -> None:
+
+    filepath = os.path.join(os.getcwd(), 'settings.ini')
+    if not os.path.exists(filepath):
+        settings = QtCore.QSettings(filepath, QtCore.QSettings.IniFormat)
+        settings.sync()

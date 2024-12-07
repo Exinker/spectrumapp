@@ -48,11 +48,11 @@ class DumpLocallyPushButton(QtWidgets.QPushButton):
         self.archiver = archiver
 
         self.setFixedWidth(120)
-        self.clicked.connect(self._onClicked)
+        self.clicked.connect(self._on_clicked)
 
     @wait
     @attempt()
-    def _onClicked(self, *args, **kwargs):
+    def _on_clicked(self, *args, **kwargs):
         LOGGER.debug('%s clicked.', self.__class__.__name__)
 
         file = File.load()
@@ -80,11 +80,11 @@ class DumpRemotePushButton(QtWidgets.QPushButton):
 
         self.setFixedWidth(120)
         self.setEnabled(is_enabled)
-        self.clicked.connect(self._onClicked)
+        self.clicked.connect(self._on_clicked)
 
     @wait
     @attempt()
-    def _onClicked(self, *args, **kwargs):
+    def _on_clicked(self, *args, **kwargs):
         LOGGER.debug('%s clicked.', self.__class__.__name__)
 
         file = File.load()
@@ -105,11 +105,11 @@ class CancelPushButton(QtWidgets.QPushButton):
         super().__init__(*args, text='Cancel', objectName='cancelPushButton', **kwargs)
 
         self.setFixedWidth(120)
-        self.clicked.connect(self._onClicked)
+        self.clicked.connect(self._on_clicked)
 
     @wait
     @attempt()
-    def _onClicked(self, *args, **kwargs):
+    def _on_clicked(self, *args, **kwargs):
         LOGGER.debug('%s clicked.', self.__class__.__name__)
 
         parent = self.parent()
@@ -204,5 +204,5 @@ class ReportIssueWindow(BaseWindow):
         # show
         self.show()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):  # noqa: N802
         super().closeEvent(event=event)

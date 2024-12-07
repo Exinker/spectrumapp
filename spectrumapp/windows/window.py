@@ -31,7 +31,7 @@ class BaseWindow(QtWidgets.QWidget):
         geometry = get_setting(key=f'geometry/{self.objectName()}') or getdefault_geometry(self)
         self.setGeometry(geometry)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):  # noqa: N802
 
         try:
             set_setting(key=f'geometry/{self.objectName()}', value=self.geometry())

@@ -70,7 +70,7 @@ class ToggleWidget(QtWidgets.QPushButton):
         self.setCheckable(True)
         self.setChecked(is_folded)
         self.setStyleSheet(STYLESHEET)
-        self.clicked.connect(self._onPressed)
+        self.clicked.connect(self._on_pressed)
 
         # setup title
         self._title = title
@@ -84,7 +84,7 @@ class ToggleWidget(QtWidgets.QPushButton):
             title=self._title,
         ))
 
-    def _onPressed(self):
+    def _on_pressed(self):
         self._update_title(
             is_folded=self.isChecked(),
         )
@@ -115,7 +115,7 @@ class FoldWidget(QtWidgets.QWidget):
             parent=self,
         ))
 
-    def sizeHint(self) -> QtCore.QSize:
+    def sizeHint(self) -> QtCore.QSize:  # noqa: N802
         children = [
             self.findChild(QtCore.QObject, object_name)
             for object_name in ('wrappedWidget', 'toggleWidget')

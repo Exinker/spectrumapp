@@ -1,12 +1,14 @@
-import os
 import sys
 
 from PySide6 import QtWidgets
 
-import spectrumapp
+from demo.utils import (
+    setdefault_environ,
+    setdefault_logger,
+    setdefault_setting,
+)
 from spectrumapp.application import AbstractApplication
-from spectrumapp.loggers import log, setdefault_logger
-from spectrumapp.settings import setdefault_setting
+from spectrumapp.loggers import log
 from spectrumapp.windows.mainWindow import BaseMainWindow
 from spectrumapp.windows.splashScreenWindow import splashscreen
 
@@ -68,16 +70,16 @@ class Window(BaseMainWindow):
         # show
         self.show()
 
-    def _onOpenTriggered(self, *args, **kwargs):  # noqa: N802
-        super()._onOpenTriggered(*args, **kwargs)
+    def _on_open_triggered(self, *args, **kwargs):  # noqa: N802
+        super()._on_open_triggered(*args, **kwargs)
 
     @splashscreen(progress=50, info='<strong>RESET</strong> user interface...', delay=1)
-    def _onResetTriggered(self, *args, **kwargs):  # noqa: N802
-        super()._onResetTriggered(*args, **kwargs)
+    def _on_reset_triggered(self, *args, **kwargs):  # noqa: N802
+        super()._on_reset_triggered(*args, **kwargs)
 
     @splashscreen(progress=100, info='<strong>REFRESH</strong> user interface...', delay=1)
-    def _onRefreshTriggered(self, *args, **kwargs):  # noqa: N802
-        super()._onRefreshTriggered(*args, **kwargs)
+    def _on_refresh_triggered(self, *args, **kwargs):  # noqa: N802
+        super()._on_refresh_triggered(*args, **kwargs)
 
 
 class Application(AbstractApplication):
@@ -113,14 +115,7 @@ class Application(AbstractApplication):
             self.window._onRefreshTriggered()
 
 
-def setdefault_environ() -> None:
-    os.environ['APPLICATION_NAME'] = 'Demo'
-    os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
-    os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
-
-
 if __name__ == '__main__':
-
     setdefault_environ()
     setdefault_setting()
     setdefault_logger()

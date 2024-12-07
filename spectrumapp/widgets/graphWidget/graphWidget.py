@@ -1,7 +1,7 @@
 from typing import Any, Mapping, TypeAlias
 
 from matplotlib.backend_bases import KeyEvent, MouseEvent, PickEvent
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets  # noqa: I100
 
 from spectrumapp.helpers import getdefault_object_name
 from spectrumapp.types import Lims
@@ -77,17 +77,17 @@ class BaseGraphWidget(QtWidgets.QWidget):
         # show
         self.show()
 
-    def sizeHint(self):
+    def sizeHint(self):  # noqa: N802
         return QtCore.QSize(*self._size)
 
-    def keyPressEvent(self, event: KeyEvent):
+    def keyPressEvent(self, event: KeyEvent):  # noqa: N802
 
         if event.key() == QtCore.Qt.Key_Control:
             self._pressed_ctrl = True
         if event.key() == QtCore.Qt.Key_Shift:
             self._pressed_shift = True
 
-    def keyReleaseEvent(self, event: KeyEvent):
+    def keyReleaseEvent(self, event: KeyEvent):  # noqa: N802
 
         if event.key() == QtCore.Qt.Key_Control:
             self._pressed_ctrl = False
