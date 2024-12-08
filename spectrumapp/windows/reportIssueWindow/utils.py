@@ -31,7 +31,6 @@ def walk(__directory: DirPath) -> Iterator[FilePath]:
 def explore(__file: File) -> tuple[FilePath]:
 
     files = [file for file in walk(__file.directory)]
-
     if LOGGER.isEnabledFor(logging.DEBUG):
         LOGGER.debug(
             '%s files were found: %s',

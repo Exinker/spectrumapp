@@ -16,7 +16,7 @@ LOGGING_LEVEL_MAP = {
     'FATAL': logging.FATAL,
     'CRITICAL': logging.CRITICAL,
 }
-LOGGING_LEVEL = os.environ.get('LOGGING_LEVEL') if os.environ.get('LOGGING_LEVEL') is LOGGING_LEVEL_MAP else 'INFO'
+LOGGING_LEVEL = LOGGING_LEVEL_MAP.get(os.environ.get('LOGGING_LEVEL'), logging.DEBUG)
 
 
 class AbstractConfig(ABC):

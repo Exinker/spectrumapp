@@ -71,7 +71,7 @@ class ZipArchiver(AbstractArchiver):
                     n_dumped += 1
 
         time.sleep(self.TIMEOUT)
-        LOGGER.debug('%s files were dumped successfully.', n_dumped)
+        LOGGER.info('%s files were dumped successfully.', n_dumped)
 
     @property
     def filepath(self) -> FilePath:

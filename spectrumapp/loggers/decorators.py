@@ -5,10 +5,7 @@ from typing import Any, Callable
 
 from PySide6 import QtCore
 
-from spectrumapp.config import (
-    LOGGING_LEVEL,
-    LOGGING_LEVEL_MAP,
-)
+from spectrumapp.config import LOGGING_LEVEL
 
 
 LOGGER = logging.getLogger('spectrumapp')
@@ -20,7 +17,7 @@ def log(message: str, level: int = logging.DEBUG) -> Callable:
     def decorator(func: Callable):
         def wrapper(*args, **kwargs):
 
-            if level or (LOGGING_LEVEL_MAP[LOGGING_LEVEL] > logging.DEBUG):
+            if level or (LOGGING_LEVEL > logging.DEBUG):
 
                 context = _parse_context(*args, **kwargs)
                 if context:

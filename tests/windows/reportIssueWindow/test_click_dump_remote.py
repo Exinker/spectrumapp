@@ -32,5 +32,5 @@ def test_on_click_error_when_env_file_not_found(
     dialog, *_ = FakeExceptionDialog.DIALOGS
     assert len(FakeExceptionDialog.DIALOGS) == 1
     assert dialog.level == ExceptionLevel.WARNING
-    assert dialog.message == 'Send message failed with TelegramAuthorizationError!'
+    assert dialog.message == 'Send message failed with AuthorizationError!'
     assert dialog.info == 'File is not found. Create .env file with Telegram credentials!'

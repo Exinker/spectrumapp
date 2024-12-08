@@ -6,10 +6,9 @@ from spectrumapp.helpers import find_window
 from spectrumapp.paths import pave
 
 
-DAFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint
-
-
 class ProgressWindow(QtWidgets.QWidget):
+
+    DAFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint
 
     def __init__(self, *args, flags: QtCore.Qt.WindowType | None = None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,7 +17,7 @@ class ProgressWindow(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
         # flags
-        flags = flags or DAFAULT_FLAGS
+        flags = flags or self.DAFAULT_FLAGS
         self.setWindowFlags(flags)
 
         # style
