@@ -1,6 +1,0 @@
-matplotlib
-numpy
-pandas
-PySide6
-python-dotenv
-telepot
