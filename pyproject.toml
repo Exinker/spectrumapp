@@ -13,7 +13,6 @@ maintainers = [
 ]
 readme = "README.md"
 license = {text = "MIT License"}
-
 dependencies = [
     "matplotlib==3.9.3",
     "numpy==2.1.3",
@@ -23,8 +22,9 @@ dependencies = [
     "setuptools>=75.6.0",
     "telepot==12.7",
 ]
+requires-python = ">=3.12"
 
-[project.optional-dependencies]
+[dependency-groups]
 lints = [
     "flake8",
     "flake8-commas",
@@ -41,6 +41,6 @@ tests = [
 ]
 dev = [
     "mypy",
-    "spectrumapp[lints]",
-    "spectrumapp[tests]",
+    {include-group = "lints"},
+    {include-group = "tests"},
 ]
