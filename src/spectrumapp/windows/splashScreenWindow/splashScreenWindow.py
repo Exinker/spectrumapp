@@ -5,10 +5,11 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from spectrumapp.paths import pave
 
 
+DAFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint
+
+
 class SplashScreenWindow(QtWidgets.QWidget):
     """Splash screen decorator for Qt applications and long time processes."""
-
-    DAFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint
 
     def __init__(self, flags: QtCore.Qt.WindowType | None = None):
         super().__init__()
@@ -17,7 +18,7 @@ class SplashScreenWindow(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
         # flags
-        flags = flags or self.DAFAULT_FLAGS
+        flags = flags or DAFAULT_FLAGS
         self.setWindowFlags(flags)
 
         # style

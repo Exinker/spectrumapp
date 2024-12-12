@@ -1,6 +1,6 @@
 """This is a template for an any PySide6 (PyQt6) application."""
 
-import dotenv 
+import dotenv
 import pkg_resources
 
 

@@ -54,11 +54,15 @@ def getdefault_object_name(obj: QtCore.QObject, prefix: str = '') -> str:
 def getdefault_geometry(window: QtWidgets.QWidget) -> QtCore.QRect:
     """Get a default geometry for a given window."""
 
-    def get_screen_size() -> tuple[int, int]:
-        root = Tk()
-        root.withdraw()
+    def get_screen_size(default: tuple[int, int] = (1920, 1080)) -> tuple[int, int]:
 
-        return root.winfo_screenwidth(), root.winfo_screenheight()
+        try:
+            root = Tk()
+            root.withdraw()
+        except Exception:
+            return default
+        else:
+            return root.winfo_screenwidth(), root.winfo_screenheight()
 
     screen_width, screen_height = get_screen_size()
 
