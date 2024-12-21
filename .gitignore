@@ -1,24 +1,16 @@
-.coverage
-.DS_Store
-.env
-
-.git/
 .mypy_cache/
 .pytest_cache/
 .venv/
-.vscode/
-__pycache__/
 *.egg-info/
+__pycache__/
+htmlcov/*
 
-build/
-data/
-dumps/
+.coverage
 
-.*.ini
-.*.ipynb
-.*.json
-.*.py
-*.in
+build/*
+data/*
+dumps/*
+
 *.ini
 *.json
 *.log
