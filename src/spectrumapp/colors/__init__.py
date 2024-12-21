@@ -1,24 +1,33 @@
 from .alpha import (
-    ALPHA,
     Alpha,
     format_alpha,
 )
+from .alphasets import (
+    DefaultAlphaset,
+    SampleAlphaset,
+)
 from .color import (
-    COLOR,
-    COLOR_DATASET,
-    COLOR_INFLUENCE,
-    COLOR_INTENSITY,
     Color,
     format_color,
 )
-
+from .colorsets import (
+    BluePinkColorset,
+    DatasetsColorset,
+    FactorInfluenceColorset,
+    IntensityKingColorset,
+    MarkColorset,
+    RedOrangeYellowGreenColorset,
+)
 
 __all__ = [
-    ALPHA,
-    COLOR,
-    COLOR_DATASET,
-    COLOR_INFLUENCE,
-    COLOR_INTENSITY,
+    DefaultAlphaset,
+    SampleAlphaset,
+    BluePinkColorset,
+    DatasetsColorset,
+    FactorInfluenceColorset,
+    IntensityKingColorset,
+    MarkColorset,
+    RedOrangeYellowGreenColorset,
     Alpha,
     Color,
     format_alpha,

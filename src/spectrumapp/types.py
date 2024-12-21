@@ -6,7 +6,7 @@ import pandas as pd
 from PySide6 import QtCore, QtWidgets
 from numpy.typing import NDArray  # noqa: I100
 
-from spectrumapp.colors import COLOR_DATASET, Color
+from spectrumapp.colors import Color, DatasetsColorset
 
 
 # --------        paths        --------
@@ -29,13 +29,13 @@ TableView: TypeAlias = QtWidgets.QTableView
 
 # --------        datasets        --------
 class Dataset(Enum):
-    train = 'train'
-    valid = 'valid'
-    test = 'test'
+    TRAIN = 'train'
+    VALID = 'valid'
+    TEST = 'test'
 
     @property
     def color(self) -> Color:
-        return COLOR_DATASET[self.name]
+        return DatasetsColorset[self.name]
 
 
 # --------        spacial units        --------
