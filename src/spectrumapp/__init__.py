@@ -1,8 +1,9 @@
 """This is a template for an any PySide6 (PyQt6) application."""
 
+from datetime import datetime
+
 import dotenv
 import pkg_resources
-from datetime import datetime
 
 
 dotenv.load_dotenv()

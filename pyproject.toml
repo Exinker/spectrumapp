@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spectrumapp"
-version = "0.3.1"
+version = "0.3.0"
 authors = [
     {name = "Pavel Vaschenko", email="vaschenko@vmk.ru"},
 ]
@@ -40,7 +40,7 @@ tests = [
     "pytest-qt",
 ]
 dev = [
-    "mypy",
     {include-group = "lints"},
     {include-group = "tests"},
+    "pre-commit>=4.0.1",
 ]
