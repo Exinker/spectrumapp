@@ -14,9 +14,9 @@ def test_on_report_issue_window_opened_by_menu(
     main_window: BaseMainWindow,
     qtbot: QtBot,
 ):
-
     menu = find_menu(main_window, '&Help')
     action = find_action(menu, '&Keyboard Shortcuts')
+
     action.trigger()
 
     window = find_window('baseKeyboardShortcutsWindow')

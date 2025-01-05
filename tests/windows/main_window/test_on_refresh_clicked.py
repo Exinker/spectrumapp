@@ -16,9 +16,9 @@ def test_on_refresh_clicked_by_menu(
     main_window: BaseMainWindow,
     qtbot: QtBot,
 ):
-
     menu = find_menu(main_window, '&File')
     action = find_action(menu, '&Refresh')
+
     action.trigger()
 
     mock.assert_called()
