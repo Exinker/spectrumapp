@@ -7,12 +7,15 @@ from spectrumapp.helpers import find_action, find_window
 from spectrumapp.loggers import log
 from spectrumapp.paths import pave
 from spectrumapp.settings import get_setting, set_setting
-from spectrumapp.windows.exceptionWindow import ExceptionLevel
-from spectrumapp.windows.keyboardShortcutsWindow import BaseKeyboardShortcutsWindow
-from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
+from spectrumapp.windows.exception_window import ExceptionLevel
+from spectrumapp.windows.keyboard_shortcuts_window import BaseKeyboardShortcutsWindow
+from spectrumapp.windows.report_issue_window import ReportIssueWindow
 
 
 class BaseMainWindow(QtWidgets.QMainWindow):
+
+    refreshed = QtCore.Signal()
+    reseted = QtCore.Signal()
 
     def __init__(self, *args, maximize: bool = False, object_name: str | None = None, show: bool = False, **kwargs):
         object_name = object_name or 'mainWindow'
@@ -37,51 +40,55 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         )
         self.setWindowTitle(title)
 
+        # signals
+        self.refreshed.connect(self.on_refreshed)
+        self.reseted.connect(self.on_resetted)
+
         # actions
         action = QtGui.QAction('&Open...', self)
         action.setShortcut('Ctrl+O')
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.setToolTip('Open file...')
-        action.triggered.connect(self._on_open_triggered)
+        action.triggered.connect(self.on_directory_opened)
         self.addAction(action)
 
         action = QtGui.QAction('&Refresh', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+R'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._on_refresh_triggered)
+        action.triggered.connect(self.on_refreshed)
         self.addAction(action)
 
         action = QtGui.QAction('&Reset', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Shift+R'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._on_reset_triggered)
+        action.triggered.connect(self.on_resetted)
         self.addAction(action)
 
         action = QtGui.QAction('&Quit', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Q'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.setStatusTip('Quit')
-        action.triggered.connect(self._on_quit_triggered)
+        action.triggered.connect(self.on_quitted)
         self.addAction(action)
 
         action = QtGui.QAction('&View Help', self)
         action.setEnabled(False)
-        action.triggered.connect(self._on_open_help_window_triggered)
+        action.triggered.connect(self.on_help_window_opened)
         self.addAction(action)
 
         action = QtGui.QAction('&Report Issue', self)
         action.setShortcut(QtGui.QKeySequence('Ctrl+Shift+I'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
-        action.triggered.connect(self._on_open_report_issue_window_triggered)
+        action.triggered.connect(self.on_report_issue_window_opened)
         self.addAction(action)
 
         action = QtGui.QAction('&Keyboard Shortcuts', self)
-        action.triggered.connect(self._on_open_keyboard_shortcuts_window_triggered)
+        action.triggered.connect(self.on_keyboard_shortcuts_window_opened)
         self.addAction(action)
 
         action = QtGui.QAction('&About', self)
         action.setEnabled(False)
-        action.triggered.connect(self._on_open_about_window_triggered)
+        action.triggered.connect(self.on_about_window_opened)
         self.addAction(action)
 
         # menus
@@ -129,32 +136,32 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             self.show()
 
     # --------        slots        --------
-    @log(message='main-window: open action')
-    @wait
-    def _on_open_triggered(self):
-        """Open new file action."""
-        pass
-
     @log(message='main-window: refresh action')
     @wait
-    def _on_refresh_triggered(self, *args, **kwargs):
+    def on_refreshed(self, *args, **kwargs):
         """Refresh the app."""
         pass
 
     @log(message='main-window: reset action')
     @wait
-    def _on_reset_triggered(self, *args, **kwargs):
+    def on_resetted(self, *args, **kwargs):
         """Update settings, config and refresh (optionally) the app."""
         pass
 
     @log(message='main-window: quit action')
     @wait
-    def _on_quit_triggered(self):
+    def on_quitted(self):
         self.close()
 
-    @log(message='main-window: report issue')
+    @log(message='main-window: open action')
     @wait
-    def _on_open_report_issue_window_triggered(self, *args, **kwargs):
+    def on_directory_opened(self):
+        """Open new directory action."""
+        pass
+
+    @log(message='main-window: open report-issue-window')
+    @wait
+    def on_report_issue_window_opened(self, *args, **kwargs):
         """Report an issue."""
 
         window = find_window('reportIssueWindow')
@@ -169,7 +176,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @log(message='main-window: open help-window')
     @wait
     @attempt(level=ExceptionLevel.ERROR)
-    def _on_open_help_window_triggered(self):
+    def on_help_window_opened(self):
         window_name = 'helpWindow'
 
         window = find_window(window_name)
@@ -186,7 +193,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @log(message='main-window: open keyboard-shortcuts-window')
     @wait
     @attempt(level=ExceptionLevel.ERROR)
-    def _on_open_keyboard_shortcuts_window_triggered(self):
+    def on_keyboard_shortcuts_window_opened(self):
         window_name = 'keyboardShortcutsWindow'
 
         window = find_window(window_name)
@@ -202,7 +209,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @log(message='main-window: open about-window')
     @wait
     @attempt(level=ExceptionLevel.ERROR)
-    def _on_open_about_window_triggered(self):
+    def on_about_window_opened(self):
         window_name = 'aboutWindow'
 
         window = find_window(window_name)

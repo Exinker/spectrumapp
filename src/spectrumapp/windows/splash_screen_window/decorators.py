@@ -3,7 +3,7 @@ from functools import wraps
 from typing import Any, Callable, Generator, Iterable
 
 from spectrumapp.helpers import find_window
-from spectrumapp.windows.splashScreenWindow.splashScreenWindow import SplashScreenWindow
+from spectrumapp.windows.splash_screen_window.splash_screen_window import SplashScreenWindow
 
 
 def splashscreen(

@@ -8,7 +8,7 @@ from matplotlib.widgets import RectangleSelector
 from PySide6 import QtWidgets  # noqa: I100
 
 from spectrumapp.types import Array
-from spectrumapp.widgets.graphWidget import BaseGraphWidget
+from spectrumapp.widgets.graph_widget import BaseGraphWidget
 
 
 @dataclass

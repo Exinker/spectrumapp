@@ -2,7 +2,7 @@ import time
 
 from PySide6 import QtWidgets
 
-from spectrumapp.windows.splashScreenWindow import SplashScreenWindow
+from spectrumapp.windows.splash_screen_window import SplashScreenWindow
 from utils import setdefault_environ
 
 

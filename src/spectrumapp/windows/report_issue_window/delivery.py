@@ -10,8 +10,8 @@ from telepot.exception import (
 from urllib3.exceptions import RequestError
 
 from spectrumapp.types import FilePath
-from spectrumapp.windows.exceptionWindow import ExceptionDialog, ExceptionLevel
-from spectrumapp.windows.reportIssueWindow.exceptions import (
+from spectrumapp.windows.exception_window import ExceptionDialog, ExceptionLevel
+from spectrumapp.windows.report_issue_window.exceptions import (
     AuthorizationError,
     InternetConnectionError,
 )

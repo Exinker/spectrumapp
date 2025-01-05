@@ -1,5 +1,5 @@
 from .canvas import MplCanvas
-from .graphWidget import BaseGraphWidget
+from .graph_widget import BaseGraphWidget
 
 
 __all__ = [

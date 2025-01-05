@@ -2,7 +2,7 @@ from .decorators import (
     iterate,
     splashscreen,
 )
-from .splashScreenWindow import SplashScreenWindow
+from .splash_screen_window import SplashScreenWindow
 
 
 __all__ = (

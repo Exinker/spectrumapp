@@ -4,7 +4,7 @@ from PySide6 import QtWidgets
 
 from spectrumapp.application import AbstractApplication
 from spectrumapp.loggers import log
-from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
+from spectrumapp.windows.report_issue_window import ReportIssueWindow
 from utils import (
     setdefault_environ,
     setdefault_logger,

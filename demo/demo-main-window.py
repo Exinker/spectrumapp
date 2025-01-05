@@ -4,8 +4,8 @@ from PySide6 import QtWidgets
 
 from spectrumapp.application import AbstractApplication
 from spectrumapp.loggers import log
-from spectrumapp.windows.mainWindow import BaseMainWindow
-from spectrumapp.windows.splashScreenWindow import splashscreen
+from spectrumapp.windows.main_window import BaseMainWindow
+from spectrumapp.windows.splash_screen_window import splashscreen
 from utils import (
     setdefault_environ,
     setdefault_logger,
@@ -70,16 +70,16 @@ class Window(BaseMainWindow):
         # show
         self.show()
 
-    def _on_open_triggered(self, *args, **kwargs):  # noqa: N802
-        super()._on_open_triggered(*args, **kwargs)
+    def on_directory_opened(self, *args, **kwargs):  # noqa: N802
+        super().on_directory_opened(*args, **kwargs)
 
     @splashscreen(progress=50, info='<strong>RESET</strong> user interface...', delay=1)
-    def _on_reset_triggered(self, *args, **kwargs):  # noqa: N802
-        super()._on_reset_triggered(*args, **kwargs)
+    def on_resetted(self, *args, **kwargs):  # noqa: N802
+        super().on_resetted(*args, **kwargs)
 
     @splashscreen(progress=100, info='<strong>REFRESH</strong> user interface...', delay=1)
-    def _on_refresh_triggered(self, *args, **kwargs):  # noqa: N802
-        super()._on_refresh_triggered(*args, **kwargs)
+    def on_refreshed(self, *args, **kwargs):  # noqa: N802
+        super().on_refreshed(*args, **kwargs)
 
 
 class Application(AbstractApplication):

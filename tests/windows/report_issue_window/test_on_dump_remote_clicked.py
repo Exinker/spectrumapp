@@ -4,8 +4,8 @@ import pytest
 from PySide6 import QtWidgets
 from pytestqt.qtbot import QtBot
 
-from spectrumapp.windows.exceptionWindow import ExceptionDialog, ExceptionLevel
-from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
+from spectrumapp.windows.exception_window import ExceptionDialog, ExceptionLevel
+from spectrumapp.windows.report_issue_window import ReportIssueWindow
 
 
 class FakeExceptionDialog(ExceptionDialog):
@@ -23,13 +23,13 @@ class FakeExceptionDialog(ExceptionDialog):
 
 @pytest.mark.skipif(condition=sys.platform == 'darwin', reason='FIXME: fix it in Mac OS')
 def test_on_click_error_when_env_file_not_found(
-    window: ReportIssueWindow,
+    report_issue_window: ReportIssueWindow,
     monkeypatch: pytest.MonkeyPatch,
     qtbot: QtBot,
 ):
-    monkeypatch.setattr('spectrumapp.windows.reportIssueWindow.delivery.ExceptionDialog', FakeExceptionDialog)
+    monkeypatch.setattr('spectrumapp.windows.report_issue_window.delivery.ExceptionDialog', FakeExceptionDialog)
 
-    button = window.findChild(QtWidgets.QPushButton, 'dumpRemotePushButton')
+    button = report_issue_window.findChild(QtWidgets.QPushButton, 'dumpRemotePushButton')
     button.click()
 
     dialog, *_ = FakeExceptionDialog.DIALOGS

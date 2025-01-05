@@ -1,7 +1,7 @@
 from typing import Iterable
 
 from spectrumapp.helpers import find_window
-from spectrumapp.windows.progressWindow.progressWindow import ProgressWindow
+from spectrumapp.windows.progress_window.progress_window import ProgressWindow
 
 
 def progress(iterable: Iterable, info: str | None = ''):

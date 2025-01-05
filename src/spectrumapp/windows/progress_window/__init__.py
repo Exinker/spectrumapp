@@ -1,5 +1,5 @@
 from .decorators import progress
-from .progressWindow import ProgressWindow
+from .progress_window import ProgressWindow
 
 __all__ = [
     ProgressWindow,

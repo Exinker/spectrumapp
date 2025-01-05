@@ -4,7 +4,7 @@ from typing import Any, Callable
 from PySide6 import QtCore, QtWidgets
 
 from spectrumapp.helpers import find_window
-from spectrumapp.windows.exceptionWindow import ExceptionDialog, ExceptionLevel
+from spectrumapp.windows.exception_window import ExceptionDialog, ExceptionLevel
 
 
 def wait(func: Callable) -> Callable:

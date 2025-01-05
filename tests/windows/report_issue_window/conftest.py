@@ -5,16 +5,16 @@ from datetime import datetime
 import pytest
 
 from spectrumapp.config import File
-from spectrumapp.windows.reportIssueWindow import ReportIssueWindow
-from spectrumapp.windows.reportIssueWindow.archiver import (
+from spectrumapp.windows.report_issue_window import ReportIssueWindow
+from spectrumapp.windows.report_issue_window.archiver import (
     AbstractArchiver,
     ZipArchiver,
 )
-from spectrumapp.windows.reportIssueWindow.delivery import (
+from spectrumapp.windows.report_issue_window.delivery import (
     AbstractDelivery,
     TelegramDelivery,
 )
-from spectrumapp.windows.reportIssueWindow.reportIssueWindow import (
+from spectrumapp.windows.report_issue_window.report_issue_window import (
     DescriptionPlainText,
 )
 
@@ -57,7 +57,7 @@ def delivery(
 
 
 @pytest.fixture
-def window(
+def report_issue_window(
     description: str,
     archiver: AbstractArchiver,
     delivery: AbstractDelivery,
@@ -65,15 +65,15 @@ def window(
 ) -> ReportIssueWindow:
     monkeypatch.setattr('time.sleep', lambda *args, **kwargs: ...)
 
-    window = ReportIssueWindow(
+    report_issue_window = ReportIssueWindow(
         archiver=archiver,
         delivery=delivery,
     )
 
-    plain_text = window.findChild(DescriptionPlainText, 'descriptionPlainText')
+    plain_text = report_issue_window.findChild(DescriptionPlainText, 'descriptionPlainText')
     plain_text.setPlainText(description)
 
-    return window
+    return report_issue_window
 
 
 @pytest.fixture(autouse=True)

@@ -1,6 +1,6 @@
 """FoldWidget - обертка для элементов пользовательского интерфейса."""
 
-from .foldWidget import FoldWidget
+from .fold_widget import FoldWidget
 
 
 __all__ = [

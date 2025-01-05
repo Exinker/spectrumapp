@@ -5,7 +5,7 @@ from PySide6 import QtCore, QtWidgets  # noqa: I100
 
 from spectrumapp.helpers import getdefault_object_name
 from spectrumapp.types import Lims
-from spectrumapp.widgets.graphWidget.canvas import MplCanvas
+from spectrumapp.widgets.graph_widget.canvas import MplCanvas
 
 
 Data: TypeAlias = Any
