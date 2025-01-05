@@ -1,3 +1,10 @@
+[run]
+branch = True
+omit =
+	src/**/__init__.py
+	src/**/_*.py
+	tests/
+
 [report]
 exclude_lines =
     import *

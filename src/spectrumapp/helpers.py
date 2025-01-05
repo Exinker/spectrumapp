@@ -4,7 +4,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 
 def find_window(__window_name: str) -> QtCore.QObject | None:
-    """Find window by name."""
+    """Find a window by name."""
     app = QtWidgets.QApplication.instance()
 
     if app:
@@ -16,7 +16,7 @@ def find_window(__window_name: str) -> QtCore.QObject | None:
 
 
 def find_action(__widget: QtWidgets.QWidget, text: str) -> QtGui.QAction | None:
-    """Find action by text."""
+    """Find an action by text."""
     actions = __widget.actions()
 
     for action in actions:
@@ -25,7 +25,7 @@ def find_action(__widget: QtWidgets.QWidget, text: str) -> QtGui.QAction | None:
 
 
 def find_menu(__widget: QtWidgets.QWidget, title: str) -> QtWidgets.QMenu | None:
-    """Find action by title."""
+    """Find a menu by title."""
     for widget in __widget.children():
         if isinstance(widget, QtWidgets.QMenu) and widget.title() == title:
             return widget
@@ -34,7 +34,7 @@ def find_menu(__widget: QtWidgets.QWidget, title: str) -> QtWidgets.QMenu | None
 
 
 def find_tab(__widget: QtWidgets.QTabWidget, text: str) -> QtWidgets.QWidget:
-    """Find tab by text."""
+    """Find a tab by text."""
 
     for i in range(__widget.count()):
         if text == __widget.tabText(i):

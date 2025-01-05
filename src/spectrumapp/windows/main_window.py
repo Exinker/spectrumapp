@@ -68,7 +68,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         action.setShortcut(QtGui.QKeySequence('Ctrl+Q'))
         action.setShortcutContext(QtCore.Qt.ApplicationShortcut)
         action.setStatusTip('Quit')
-        action.triggered.connect(self.on_quitted)
+        action.triggered.connect(self.on_closed)
         self.addAction(action)
 
         action = QtGui.QAction('&View Help', self)
@@ -135,29 +135,28 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         if show:
             self.show()
 
-    # --------        slots        --------
     @log(message='main-window: refresh action')
     @wait
     def on_refreshed(self, *args, **kwargs):
         """Refresh the app."""
-        pass
+        self.not_implemented_plug(*args, **kwargs)
 
     @log(message='main-window: reset action')
     @wait
     def on_resetted(self, *args, **kwargs):
         """Update settings, config and refresh (optionally) the app."""
-        pass
+        self.not_implemented_plug(*args, **kwargs)
 
     @log(message='main-window: quit action')
     @wait
-    def on_quitted(self):
+    def on_closed(self):
         self.close()
 
     @log(message='main-window: open action')
     @wait
-    def on_directory_opened(self):
+    def on_directory_opened(self, *args, **kwargs):
         """Open new directory action."""
-        pass
+        self.not_implemented_plug(*args, **kwargs)
 
     @log(message='main-window: open report-issue-window')
     @wait
@@ -177,18 +176,18 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @wait
     @attempt(level=ExceptionLevel.ERROR)
     def on_help_window_opened(self):
-        window_name = 'helpWindow'
+        raise NotImplementedError
+        # window_name = 'helpWindow'
 
-        window = find_window(window_name)
-        if window is not None:
-            window.show()
+        # window = find_window(window_name)
+        # if window is not None:
+        #     window.show()
 
-        else:
-            raise NotImplementedError
-            # window = HelpWindow(
-            #     parent=self,
-            #     flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-            # )
+        # else:
+        #     window = HelpWindow(
+        #         parent=self,
+        #         flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
+        #     )
 
     @log(message='main-window: open keyboard-shortcuts-window')
     @wait
@@ -210,20 +209,19 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @wait
     @attempt(level=ExceptionLevel.ERROR)
     def on_about_window_opened(self):
-        window_name = 'aboutWindow'
+        raise NotImplementedError
+        # window_name = 'aboutWindow'
 
-        window = find_window(window_name)
-        if window is not None:
-            window.show()
+        # window = find_window(window_name)
+        # if window is not None:
+        #     window.show()
 
-        else:
-            raise NotImplementedError
-            # window = AboutWindow(
-            #     parent=self,
-            #     flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-            # )
+        # else:
+        #     window = AboutWindow(
+        #         parent=self,
+        #         flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
+        #     )
 
-    # --------        events        --------
     @log(message='main-window: close event')
     def closeEvent(self, event: QtCore.QEvent):  # noqa: N802
 
@@ -231,3 +229,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             set_setting(key=f'geometry/{self.objectName()}', value=self.geometry())
         finally:
             super().closeEvent(event)
+
+    @staticmethod
+    def not_implemented_plug(*args, **kwargs):
+        raise NotImplementedError
