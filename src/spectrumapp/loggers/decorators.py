@@ -1,6 +1,7 @@
 import json
 import logging
 import logging.config
+from functools import wraps
 from typing import Any, Callable
 
 from PySide6 import QtCore
@@ -15,6 +16,8 @@ def log(message: str, level: int = logging.DEBUG) -> Callable:
     """Logging decorator."""
 
     def decorator(func: Callable):
+
+        @wraps(func)
         def wrapper(*args, **kwargs):
 
             if level or (LOGGING_LEVEL > logging.DEBUG):

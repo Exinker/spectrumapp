@@ -1,4 +1,5 @@
 import time
+from functools import wraps
 from typing import Any, Callable, Generator, Iterable
 
 from spectrumapp.helpers import find_window
@@ -15,6 +16,7 @@ def splashscreen(
     window_name = 'splashScreenWindow'
 
     def decorator(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
 
             # window

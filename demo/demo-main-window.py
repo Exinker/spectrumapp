@@ -2,15 +2,15 @@ import sys
 
 from PySide6 import QtWidgets
 
-from demo.utils import (
-    setdefault_environ,
-    setdefault_logger,
-    setdefault_setting,
-)
 from spectrumapp.application import AbstractApplication
 from spectrumapp.loggers import log
 from spectrumapp.windows.mainWindow import BaseMainWindow
 from spectrumapp.windows.splashScreenWindow import splashscreen
+from utils import (
+    setdefault_environ,
+    setdefault_logger,
+    setdefault_setting,
+)
 
 
 class EmptyWidget(QtWidgets.QWidget):
