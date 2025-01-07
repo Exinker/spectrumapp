@@ -1,3 +1,4 @@
+import platform
 from tkinter import Tk
 
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -56,13 +57,14 @@ def getdefault_geometry(window: QtWidgets.QWidget) -> QtCore.QRect:
 
     def get_screen_size(default: tuple[int, int] = (1920, 1080)) -> tuple[int, int]:
 
-        try:
-            root = Tk()
-            root.withdraw()
-        except Exception:
-            return default
-        else:
-            return root.winfo_screenwidth(), root.winfo_screenheight()
+        match platform.system():
+            case 'Windows':
+                root = Tk()
+                root.withdraw()
+                return root.winfo_screenwidth(), root.winfo_screenheight()
+
+            case _:
+                return default
 
     screen_width, screen_height = get_screen_size()
 
