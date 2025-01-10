@@ -10,7 +10,7 @@ from spectrumapp.windows.report_issue_window.report_issue_window import (
 )
 
 
-def test_window(
+def test_report_issue_window(
     description: str,
     timestamp: str,
     report_issue_window: ReportIssueWindow,
