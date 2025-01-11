@@ -7,7 +7,7 @@ from spectrumapp.windows.splash_screen_window import (
 )
 
 
-def test_update(
+def test_on_updated(
     splash_screen_window: SplashScreenWindow,
     qtbot: QtBot,
 ):
@@ -26,7 +26,7 @@ def test_update(
     assert splash_screen_window.findChild(QtWidgets.QLabel, 'messageLabel').text() == message
 
 
-def test_update_progress(
+def test_on_updated_progress(
     splash_screen_window: SplashScreenWindow,
     default_info: str,
     default_message: str,
@@ -43,7 +43,7 @@ def test_update_progress(
     assert splash_screen_window.findChild(QtWidgets.QLabel, 'messageLabel').text() == default_message
 
 
-def test_update_info(
+def test_on_updated_info(
     splash_screen_window: SplashScreenWindow,
     default_progress: int,
     default_message: str,
@@ -60,7 +60,7 @@ def test_update_info(
     assert splash_screen_window.findChild(QtWidgets.QLabel, 'messageLabel').text() == default_message
 
 
-def test_update_message(
+def test_on_updated_message(
     splash_screen_window: SplashScreenWindow,
     default_progress: int,
     default_info: str,
