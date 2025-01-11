@@ -4,7 +4,7 @@ from datetime import datetime
 
 from PySide6 import QtWidgets
 
-from spectrumapp.config import File
+from spectrumapp.config import BaseConfig
 from spectrumapp.decorators import attempt, wait
 from spectrumapp.windows.report_issue_window.archiver import AbstractArchiver, ZipArchiver
 from spectrumapp.windows.report_issue_window.delivery import AbstractDelivery, TelegramDelivery
@@ -55,7 +55,7 @@ class DumpLocallyPushButton(QtWidgets.QPushButton):
     def _on_clicked(self, *args, **kwargs):
         LOGGER.debug('%s clicked.', self.__class__.__name__)
 
-        file = File.load()
+        file = BaseConfig.load()
 
         self.archiver.dump(
             files=explore(file),
@@ -87,7 +87,7 @@ class DumpRemotePushButton(QtWidgets.QPushButton):
     def _on_clicked(self, *args, **kwargs):
         LOGGER.debug('%s clicked.', self.__class__.__name__)
 
-        file = File.load()
+        file = BaseConfig.load()
 
         self.archiver.dump(
             files=explore(file),

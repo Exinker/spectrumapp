@@ -29,7 +29,7 @@ def wrapped_widget(
 def parent_widget(
     request,
     qtbot: QtBot,
-) -> QtWidgets.QLabel:
+) -> QtWidgets.QWidget:
     is_exists = request.param
 
     if is_exists:

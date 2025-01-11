@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Iterator
 
-from spectrumapp.config import File
+from spectrumapp.config import BaseConfig
 from spectrumapp.types import DirPath, FilePath
 
 
@@ -28,7 +28,7 @@ def walk(__directory: DirPath) -> Iterator[FilePath]:
             yield filepath
 
 
-def explore(__file: File) -> tuple[FilePath]:
+def explore(__file: BaseConfig) -> tuple[FilePath]:
 
     files = [file for file in walk(__file.directory)]
     if LOGGER.isEnabledFor(logging.DEBUG):

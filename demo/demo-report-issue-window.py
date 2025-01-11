@@ -2,7 +2,7 @@ import sys
 
 from PySide6 import QtWidgets
 
-from spectrumapp.application import AbstractApplication
+from spectrumapp.application import BaseApplication
 from spectrumapp.loggers import log
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
 from utils import (
@@ -11,7 +11,7 @@ from utils import (
 )
 
 
-class Application(AbstractApplication):
+class Application(BaseApplication):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

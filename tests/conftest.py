@@ -1,6 +1,7 @@
 import pytest
 
 import spectrumapp
+from spectrumapp.application import BaseApplication
 
 
 @pytest.fixture(autouse=True)
@@ -12,3 +13,8 @@ def setup_environ(
     monkeypatch.setenv('ORGANIZATION_NAME', spectrumapp.__organization__)
 
     yield
+
+
+@pytest.fixture(scope="session")
+def qapp_cls():
+    return BaseApplication

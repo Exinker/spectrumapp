@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import Type, assert_never
 
 from PySide6 import QtWidgets
 
@@ -16,54 +17,48 @@ class ExceptionDialog:
 
     def __init__(
         self,
-        message: str | None = None,
-        info: str | None = None,
+        message: str = '',
+        info: str = '',
         level: ExceptionLevel = ExceptionLevel.WARNING,
         parent: QtWidgets.QWidget | None = None,
     ):
-        self.message = message or ''
+        self.message = message
         self.info = info or format_exception()
         self.level = level
         self.parent = parent or find_window('mainWindow')
 
     @property
-    def dialog(self) -> type[QtWidgets.QMessageBox]:
-        level = self.level
+    def dialog(self) -> Type[QtWidgets.QMessageBox]:
 
-        window = QtWidgets.QMessageBox()
-        if level == ExceptionLevel.ERROR:
-            return window.critical
-        if level == ExceptionLevel.WARNING:
-            return window.warning
-        if level == ExceptionLevel.INFO:
-            return window.information
-
-        raise ValueError(f'Level {level} is not supported yet!')
-
-    @property
-    def template(self) -> str:
-        if not self.message:
-            return '{info}'
-
-        return '{message}\n\n{info}'
+        match self.level:
+            case ExceptionLevel.ERROR:
+                return QtWidgets.QMessageBox.critical
+            case ExceptionLevel.WARNING:
+                return QtWidgets.QMessageBox.warning
+            case ExceptionLevel.INFO:
+                return QtWidgets.QMessageBox.information
+            case _:
+                assert_never(self.level)
 
     @property
     def title(self) -> str:
-        level = self.level
 
-        if level == ExceptionLevel.ERROR:
-            return 'Error'
-        if level == ExceptionLevel.WARNING:
-            return 'Warning'
-        if level == ExceptionLevel.INFO:
-            return 'Info'
-
-        raise ValueError(f'Level {level} is not supported yet!')
+        match self.level:
+            case ExceptionLevel.ERROR:
+                return 'Error'
+            case ExceptionLevel.WARNING:
+                return 'Warning'
+            case ExceptionLevel.INFO:
+                return 'Info'
+            case _:
+                assert_never(self.level)
 
     @property
     def text(self) -> str:
-        template = self.template
 
+        template = get_text_template(
+            message=self.message,
+        )
         return template.format(
             message=self.message,
             info=self.info,
@@ -77,6 +72,13 @@ class ExceptionDialog:
             buttons=QtWidgets.QMessageBox.Close,
             defaultButton=QtWidgets.QMessageBox.Close,
         )
+
+
+def get_text_template(message: str) -> str:
+
+    if message:
+        return '{message}\n\n{info}'
+    return '{info}'
 
 
 if __name__ == '__main__':

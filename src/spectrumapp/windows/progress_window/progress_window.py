@@ -1,4 +1,5 @@
 import os
+from dataclasses import dataclass, field
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -6,9 +7,19 @@ from spectrumapp.helpers import find_window
 from spectrumapp.paths import pave
 
 
+@dataclass
+class ProgressState:
+    progress: int | None = field(default=None)
+    info: str | None = field(default=None)
+    message: str | None = field(default=None)
+
+
 class ProgressWindow(QtWidgets.QWidget):
 
-    DAFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint  # noqa: E501
+    updated = QtCore.Signal(ProgressState)
+
+    DEFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint  # noqa: E501
+    DEFAULT_SIZE = QtCore.QSize(680, 200)
 
     def __init__(self, *args, flags: QtCore.Qt.WindowType | None = None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -16,8 +27,10 @@ class ProgressWindow(QtWidgets.QWidget):
         self.setObjectName('progressWindow')
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
+        self.updated.connect(self.on_updated)
+
         # flags
-        flags = flags or self.DAFAULT_FLAGS
+        flags = flags or self.DEFAULT_FLAGS
         self.setWindowFlags(flags)
 
         # style
@@ -37,7 +50,7 @@ class ProgressWindow(QtWidgets.QWidget):
         ))
 
         # geometry
-        self.setFixedSize(QtCore.QSize(680, 200))
+        self.setFixedSize(self.DEFAULT_SIZE)
 
         # show window
         self.show()
@@ -50,30 +63,34 @@ class ProgressWindow(QtWidgets.QWidget):
                 window.geometry().bottom(),
             )
 
-    def update(self, progress: int | None = None, info: str | None = None, message: str | None = None):
+    def on_updated(self, state: ProgressState) -> None:
 
-        if progress:
+        if state.progress:
             widget = self.findChild(QtWidgets.QProgressBar, 'progressBar')
-            widget.setValue(progress)
-        if info:
+            widget.setValue(state.progress)
+        if state.info:
             widget = self.findChild(QtWidgets.QLabel, 'infoLabel')
-            widget.setText(info)
-        if message:
+            widget.setText(state.info)
+        if state.message:
             widget = self.findChild(QtWidgets.QLabel, 'messageLabel')
-            widget.setText(message)
+            widget.setText(state.message)
 
-        #
+        # process events on the main window
         app = QtWidgets.QApplication.instance()
         app.processEvents()
 
     def closeEvent(self, event):  # noqa: N802
 
-        # set empty widget
         self.setParent(None)
         event.accept()
 
 
 class ContentWidget(QtWidgets.QFrame):
+
+    DEFAULT_LOGGING_TEXT = ''
+    DEFAULT_PROGRESS = 0
+    DEFAULT_INFO = '<strong>LOADING</strong>...'
+    DEFAULT_MESSAGE = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -84,21 +101,23 @@ class ContentWidget(QtWidgets.QFrame):
         layout = QtWidgets.QVBoxLayout(self)
         layout.addSpacing(50)
         layout.addWidget(LoggingPlainTextEditWidget(
-            '',
+            self.DEFAULT_LOGGING_TEXT,
+            objectName='loggingPlainText',
             parent=self,
         ))
         layout.addWidget(ProgressBarWidget(
             objectName='progressBar',
+            value=self.DEFAULT_PROGRESS,
             parent=self,
         ))
         layout.addWidget(LabelWidget(
             objectName='infoLabel',
-            text='<strong>LOADING</strong>...',
+            text=self.DEFAULT_INFO,
             parent=self,
         ))
         layout.addWidget(LabelWidget(
             objectName='messageLabel',
-            text='',
+            text=self.DEFAULT_MESSAGE,
             parent=self,
         ))
         layout.addSpacing(50)
@@ -109,7 +128,6 @@ class LoggingPlainTextEditWidget(QtWidgets.QPlainTextEdit):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setObjectName('loggingPlainText')
         self.setPlaceholderText('')
         self.setEnabled(False)
 
@@ -119,10 +137,10 @@ class LoggingPlainTextEditWidget(QtWidgets.QPlainTextEdit):
 
 class ProgressBarWidget(QtWidgets.QProgressBar):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.setValue(0)
+        self.setValue(value)
 
 
 class LabelWidget(QtWidgets.QLabel):

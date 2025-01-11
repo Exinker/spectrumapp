@@ -2,7 +2,7 @@ import sys
 
 from PySide6 import QtWidgets
 
-from spectrumapp.application import AbstractApplication
+from spectrumapp.application import BaseApplication
 from spectrumapp.loggers import log
 from spectrumapp.windows.main_window import BaseMainWindow
 from spectrumapp.windows.splash_screen_window import splashscreen
@@ -82,7 +82,7 @@ class Window(BaseMainWindow):
         super().on_refreshed(*args, **kwargs)
 
 
-class Application(AbstractApplication):
+class Application(BaseApplication):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -52,10 +52,7 @@ class SplashScreenWindow(QtWidgets.QWidget):
         # geometry
         self.setFixedSize(self.DEFAULT_SIZE)
 
-    def on_updated(
-        self,
-        state: SplashScreenState,
-    ) -> None:
+    def on_updated(self, state: SplashScreenState) -> None:
 
         if state.progress:
             widget = self.findChild(QtWidgets.QProgressBar, 'progressBar')
@@ -121,17 +118,17 @@ class ContentWidget(QtWidgets.QFrame):
         layout.addSpacing(50)
 
 
-class LabelWidget(QtWidgets.QLabel):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-
-
 class ProgressBarWidget(QtWidgets.QProgressBar):
 
     def __init__(self, value: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.setValue(value)
+
+
+class LabelWidget(QtWidgets.QLabel):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
