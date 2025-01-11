@@ -1,11 +1,14 @@
 import pytest
+from pytestqt.qtbot import QtBot
 
 from spectrumapp.windows.splash_screen_window import SplashScreenWindow
 from spectrumapp.windows.splash_screen_window.splash_screen_window import ContentWidget
 
 
 @pytest.fixture
-def splash_screen_window() -> SplashScreenWindow:
+def splash_screen_window(
+    qtbot: QtBot,
+) -> SplashScreenWindow:
 
     splash_screen_window = SplashScreenWindow()
 

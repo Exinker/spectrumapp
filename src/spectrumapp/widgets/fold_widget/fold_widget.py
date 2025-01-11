@@ -3,23 +3,76 @@ import sys
 from PySide6 import QtCore, QtWidgets
 
 
-ICONS = {
-    True: b'\xE2\x8F\xB5'.decode(),
-    False: b'\xE2\x8F\xB7'.decode(),
-}
-STYLESHEET = """
-QPushButton {
-    text-align: left;
+class ToggleWidget(QtWidgets.QPushButton):
 
-    padding: 5px;
-    border: none;
-}
-"""
+    ICONS = {
+        True: b'\xE2\x8F\xB5'.decode(),
+        False: b'\xE2\x8F\xB7'.decode(),
+    }
+    TEXT_TEMPLATE = ' {icon}\t{title}'
+    STYLESHEET = """
+    QPushButton {
+        text-align: left;
+
+        padding: 5px;
+        border: none;
+    }
+    """
+
+    def __init__(
+        self,
+        title: str,
+        is_folded: bool,
+        *args,
+        **kwargs,
+    ) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.setObjectName('toggleWidget')
+        self.setCheckable(True)
+        self.setChecked(is_folded)
+        self.setStyleSheet(self.STYLESHEET)
+        self.clicked.connect(self.on_clicked)
+
+        # setup title
+        self._title = title
+        self._update_title(
+            is_folded=is_folded,
+        )
+
+    def on_clicked(self):
+        self._update_height(
+            is_folded=self.isChecked(),
+        )
+        self._update_title(
+            is_folded=self.isChecked(),
+        )
+
+    def _update_height(self, is_folded: bool):
+        widget = self.parent().findChild(QtWidgets.QFrame, 'wrappedWidget')
+        widget._update_height(
+            is_folded=is_folded,
+        )
+
+        widget = self.parent()
+        widget._update_height()
+
+    def _update_title(self, is_folded: bool):
+        self.setText(self.TEXT_TEMPLATE.format(
+            icon=self.ICONS[is_folded],
+            title=self._title,
+        ))
 
 
 class WrappedWidget(QtWidgets.QFrame):
 
-    def __init__(self, __widget: QtWidgets.QWidget, *args, is_folded: bool, **kwargs):
+    def __init__(
+        self,
+        __widget: QtWidgets.QWidget,
+        *args,
+        is_folded: bool,
+        **kwargs,
+    ) -> None:
         super().__init__(*args, **kwargs)
 
         self.setObjectName('wrappedWidget')
@@ -30,74 +83,30 @@ class WrappedWidget(QtWidgets.QFrame):
         layout.setSpacing(0)
         layout.addWidget(__widget)
 
-        #
+        # setup height
         self._update_height(
             is_folded=is_folded,
         )
 
     def _update_height(self, is_folded: bool):
 
-        # update container height
-        container_height = {
+        height = {
             False: self.sizeHint().height(),
             True: 0,
         }[is_folded]
-
-        self.setFixedHeight(container_height)
-
-        # update parent height
-        parent = self.parent()
-
-        fold_height = parent.sizeHint().height()
-        parent.setFixedHeight(fold_height)
-        parent.adjustSize()
-
-        # update parent of parent height
-        parent = self.parent().parent()
-        if parent:
-            widget_height = parent.sizeHint().height()
-
-            parent.setMaximumHeight(widget_height)
-            parent.adjustSize()
-
-
-class ToggleWidget(QtWidgets.QPushButton):
-
-    def __init__(self, title: str, is_folded: bool, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.setObjectName('toggleWidget')
-        self.setCheckable(True)
-        self.setChecked(is_folded)
-        self.setStyleSheet(STYLESHEET)
-        self.clicked.connect(self._on_pressed)
-
-        # setup title
-        self._title = title
-        self._update_title(
-            is_folded=is_folded,
-        )
-
-    def _update_title(self, is_folded: bool):
-        self.setText(' {icon}\t{title}'.format(
-            icon=ICONS[is_folded],
-            title=self._title,
-        ))
-
-    def _on_pressed(self):
-        self._update_title(
-            is_folded=self.isChecked(),
-        )
-
-        widget = self.parent().findChild(QtWidgets.QFrame, 'wrappedWidget')
-        widget._update_height(
-            is_folded=self.isChecked(),
-        )
+        self.setFixedHeight(height)
 
 
 class FoldWidget(QtWidgets.QWidget):
 
-    def __init__(self, __widget: QtWidgets.QWidget, *args, title: str, is_folded: bool = True, **kwargs):
+    def __init__(
+        self,
+        __widget: QtWidgets.QWidget,
+        *args,
+        title: str,
+        is_folded: bool = True,
+        **kwargs,
+    ) -> None:
         super().__init__(*args, **kwargs)
 
         # layout
@@ -125,6 +134,18 @@ class FoldWidget(QtWidgets.QWidget):
             max([child.width() for child in children]),
             sum([child.height() for child in children]),
         )
+
+    def _update_height(self):
+
+        height = self.sizeHint().height()
+        self.setFixedHeight(height)
+        self.adjustSize()
+
+        parent = self.parent()
+        if parent:
+            height = parent.sizeHint().height()
+            parent.setMaximumHeight(height)
+            parent.adjustSize()
 
 
 if __name__ == '__main__':

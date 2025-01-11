@@ -18,7 +18,8 @@ class SplashScreenWindow(QtWidgets.QWidget):
 
     updated = QtCore.Signal(SplashScreenState)
 
-    DAFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint  # noqa: E501
+    DEFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint  # noqa: E501
+    DEFAULT_SIZE = QtCore.QSize(680, 400)
 
     def __init__(self, flags: QtCore.Qt.WindowType | None = None):
         super().__init__()
@@ -29,7 +30,7 @@ class SplashScreenWindow(QtWidgets.QWidget):
         self.updated.connect(self.on_updated)
 
         # flags
-        flags = flags or self.DAFAULT_FLAGS
+        flags = flags or self.DEFAULT_FLAGS
         self.setWindowFlags(flags)
 
         # style
@@ -49,7 +50,7 @@ class SplashScreenWindow(QtWidgets.QWidget):
         ))
 
         # geometry
-        self.setFixedSize(QtCore.QSize(680, 400))
+        self.setFixedSize(self.DEFAULT_SIZE)
 
     def on_updated(
         self,
