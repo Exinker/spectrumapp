@@ -23,8 +23,8 @@ class Expected:
 
 @pytest.fixture()
 def mock(
-    mocker,
     level: ExceptionLevel,
+    mocker,
 ) -> Mock:
     mock = mocker.patch({
         ExceptionLevel.ERROR: 'PySide6.QtWidgets.QMessageBox.critical',
