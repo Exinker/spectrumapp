@@ -57,14 +57,12 @@ def getdefault_geometry(window: QtWidgets.QWidget) -> QtCore.QRect:
 
     def get_screen_size(default: tuple[int, int] = (1920, 1080)) -> tuple[int, int]:
 
-        match platform.system():
-            case 'Windows':
-                root = Tk()
-                root.withdraw()
-                return root.winfo_screenwidth(), root.winfo_screenheight()
+        if platform.system() == 'Windows':
+            root = Tk()
+            root.withdraw()
+            return root.winfo_screenwidth(), root.winfo_screenheight()
 
-            case _:
-                return default
+        return default
 
     screen_width, screen_height = get_screen_size()
 

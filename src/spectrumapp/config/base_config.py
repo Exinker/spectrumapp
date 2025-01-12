@@ -3,7 +3,6 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
-from enum import Enum
 from typing import ClassVar, Mapping
 
 from spectrumapp.config import AbstractConfig
@@ -14,25 +13,23 @@ LOGGER = logging.getLogger('spectrumapp')
 
 
 @dataclass(frozen=True, slots=True)
-class File(AbstractConfig):
+class BaseConfig(AbstractConfig):
     version: str
     directory: DirPath
 
     FILEPATH: ClassVar[str] = field(default=os.path.join(os.getcwd(), 'config.json'))
 
-    def dumps(self) -> Mapping[str, str | int | float | list]:
+    def dumps(self) -> Mapping[str, str]:
         """Serialize config to mapping object."""
 
         data = {}
         for key, value in dataclasses.asdict(self).items():
-            if isinstance(value, Enum):
-                value = value.value
             data[key] = value
 
         return data
 
     @classmethod
-    def load(cls) -> 'File':
+    def load(cls) -> 'BaseConfig':
         """Load config from file (json)."""
 
         try:
@@ -47,11 +44,11 @@ class File(AbstractConfig):
                     error=error,
                 ),
             )
-            setdefault_file()
+            setdefault_config()
             return cls.load()
 
         try:
-            config = File(
+            config = cls(
                 version=data['version'],
                 directory=data['directory'],
             )
@@ -62,7 +59,7 @@ class File(AbstractConfig):
                     error=error,
                 ),
             )
-            setdefault_file()
+            setdefault_config()
             return cls.load()
 
         return config
@@ -77,15 +74,15 @@ class File(AbstractConfig):
         }
 
 
-def setdefault_file() -> None:
+def setdefault_config() -> None:
     """Create default config file."""
 
-    config = File.default()
+    config = BaseConfig.default()
     config.dump()
 
 
 if __name__ == '__main__':
     os.environ['APPLICATION_VERSION'] = '0'
 
-    config = File.default()
+    config = BaseConfig.default()
     print(config.to_dict())

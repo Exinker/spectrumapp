@@ -19,8 +19,10 @@ class MyDatum:
 
 class MyGraphWidget(BaseGraphWidget):
 
-    def __init__(self, *args, size: tuple[int, int] = (640, 480), tight_layout: bool = True, **kwargs):
-        super().__init__(*args, size=size, tight_layout=tight_layout, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.show()
 
     def _pick_event(self, event: PickEvent) -> None:
 
@@ -63,14 +65,18 @@ class MyGraphWidget(BaseGraphWidget):
             #
             self.canvas.draw()
 
-    def _set_full_lims(self, data: Mapping[str, MyDatum]):
+    def set_full_lims(self, data: Mapping[str, MyDatum]):
         xlim = (min(data['y'].x), max(data['y'].x))
         ylim = (min(data['y'].y), max(data['y'].y))
         lims = xlim, ylim
 
         self._full_lims = lims
 
-    def update(self, data: Mapping[str, MyDatum] = None, pattern: Mapping[str, Any] | None = None) -> None:
+    def update(
+        self,
+        data: Mapping[str, MyDatum] = None,
+        pattern: Mapping[str, Any] | None = None,
+    ) -> None:
         """Update graph's data."""
 
         if data is None:
@@ -89,7 +95,7 @@ class MyGraphWidget(BaseGraphWidget):
         }
 
         # update full lims
-        self._set_full_lims(data)
+        self.set_full_lims(data)
 
         # update graphs
         self.canvas.axes.clear()
@@ -144,7 +150,7 @@ class MyGraphWidget(BaseGraphWidget):
         )
 
         # set lims
-        lims = self._crop_lims if self._crop_lims else self._full_lims
+        lims = self._cropped_lims if self._cropped_lims else self._full_lims
         xlim, ylim = lims
         self.canvas.axes.set_xlim(xlim)
         self.canvas.axes.set_ylim(ylim)
@@ -162,6 +168,7 @@ class MyGraphWidget(BaseGraphWidget):
 
 
 if __name__ == '__main__':
+
     n_points = 100
 
     x = np.linspace(-2*np.pi, +2*np.pi, n_points)

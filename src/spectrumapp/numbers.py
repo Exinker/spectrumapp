@@ -1,81 +1,80 @@
+from typing import Any
+
 import numpy as np
 
 from spectrumapp.types import Array
 
 
-def format_number(__value: float, precision: int = 4) -> str:
-    """Format the value for clear representaion in TableView."""
+def format_number(
+    number: float,
+    precision: int = 4,
+) -> str:
+    """Format `number` for clear representaion in QTableView."""
 
-    try:
-        value = np.format_float_positional(__value)
-    except Exception:
-        raise ValueError(f'The value {__value} could not be formatted!')
+    # int number
+    if isinstance(number, int):
+        return str(number)
 
-    # int value
-    if value.endswith('.'):
-        result = value.rstrip('.')
-
-        return result
-
-    # float value
-    value = float(value)
-
-    # float value / check: zero value
-    if value == 0:
+    # float number
+    if np.isclose(number, 0):
         return '0'
 
-    # float value / check: missing values
-    if np.isnan(value) or np.isinf(value):
+    if np.isnan(number) or np.isinf(number):
         return ''
 
-    # float value / check: n_digits
-    n_digits = len(f'{value}'.split('.')[-1])
+    n_digits = len(f'{number}'.split('.')[-1])
     if n_digits <= precision:
-        result = f'{value:0.{n_digits}f}'
+        result = f'{number:0.{n_digits}f}'
         result = result.rstrip('0').rstrip('.')
         return result
 
-    # float value / check: floating point error
-    if round(value, precision) == round(value, precision + 5):
-        result = f'{round(value, precision)}'
+    if round(number, precision) == round(number, precision + 5):
+        result = f'{round(number, precision)}'
         result = result.rstrip('0').rstrip('.')
         return result
 
-    # float value / check: otherwise
-    result = f'{value:0.{precision}f}'
+    result = f'{number:0.{precision}f}'
     return result
 
 
-def restrict_number(__value: float, lims: tuple[float, float], verbose: bool = False) -> str:
-    """Restrict the value with the given limits.
+def restrict_number(
+    number: float,
+    lims: tuple[float, float],
+    verbose: bool = False,
+) -> str:
+    """Restrict `number` with the given 'lims'.
 
     Params:
         lims - range of restriction limits;
         verbose - show formatted value in brackets.
     """
     c_min, c_max = lims
-
-    # restrict cases
     template = '{sign} {lim} ({verbose})' if verbose else '{sign} {lim}'
 
-    if __value < c_min:
-        sign = '<'
-        lim = format_number(c_min)
+    if number < c_min:
+        return template.format(
+            sign='<',
+            lim=format_number(c_min),
+            verbose={format_number(number, precision=4)},
+        )
 
-        return template.format(sign=sign, lim=lim, verbose={format_number(__value, precision=4)})
+    if number > c_max:
+        return template.format(
+            sign='>',
+            lim=format_number(c_max),
+            verbose={format_number(number, precision=4)},
+        )
 
-    if __value > c_max:
-        sign = '>'
-        lim = format_number(c_max)
-
-        return template.format(sign=sign, lim=lim, verbose={format_number(__value, precision=4)})
-
-    # otherwise
-    return format_number(__value)
+    return format_number(number)
 
 
-def restrict_numbers(__values: Array, lims: tuple[float, float], tolerance: int = 0, verbose: bool = False) -> Array:
-    """Restrict the values with the given limits and tolerance (допуск). Values out of the limits are formated only.
+def restrict_numbers(
+    numbers: Array,
+    lims: tuple[float, float],
+    tolerance: int = 0,
+    verbose: bool = False,
+) -> Array:
+    """Restrict `numbers` with the given `lims` and `tolerance` (допуск). Values out of the limits are formated only.
 
     Params:
         lims - range of restriction limits;
@@ -84,47 +83,48 @@ def restrict_numbers(__values: Array, lims: tuple[float, float], tolerance: int 
     """
     c_min, c_max = lims
 
-    result = __values.copy()
+    result = numbers.copy()
     result = result.astype(str)
 
     # restrict numbers
-    cond = __values < c_min*(1 - tolerance/100)
+    cond = numbers < c_min*(1 - tolerance/100)
     result[cond] = [
-        restrict_number(value, lims=lims, verbose=verbose)
-        for value in __values[cond]
+        restrict_number(number, lims=lims, verbose=verbose)
+        for number in numbers[cond]
     ]
 
-    cond = __values > c_max*(1 + tolerance/100)
+    cond = numbers > c_max*(1 + tolerance/100)
     result[cond] = [
-        restrict_number(value, lims=lims, verbose=verbose)
-        for value in __values[cond]
+        restrict_number(number, lims=lims, verbose=verbose)
+        for number in numbers[cond]
     ]
 
-    #
     return result
 
 
-def truncate_number(value: float, n=4) -> str:
-    """Truncate number for clear representaion in TableView."""
+def truncate_number(
+    number: Any,
+    n: int = 4,
+) -> str:
+    """Truncate `number` for clear representaion in QTableView."""
 
     try:
-        value = f'{float(value):.12f}'
-
-        if value[:4] == '0.00':
-            value = f'{float(value):.2e}'
-
-        else:
-            integer, fractional = value.split('.')
-
-            if len(integer) > 3:
-                n -= len(integer) - 3
-            if n < 0:
-                n = 0
-
-            value = '.'.join([integer, fractional[:n]])
-            value = value.rstrip('0').rstrip('.')  # strip excess sep and zeros
-
-        return value
-
+        number = f'{float(number):.12f}'
     except (ValueError, TypeError):
         return ''
+
+    if number[:4] == '0.00':
+        number = f'{float(number):.2e}'
+
+    else:
+        integer, fractional = number.split('.')
+
+        if len(integer) > 3:
+            n -= len(integer) - 3
+        if n < 0:
+            n = 0
+
+        number = '.'.join([integer, fractional[:n]])
+        number = number.rstrip('0').rstrip('.')  # strip excess sep and zeros
+
+    return number

@@ -1,4 +1,4 @@
-import sys
+import platform
 
 import pytest
 from PySide6 import QtWidgets
@@ -21,7 +21,6 @@ class FakeExceptionDialog(ExceptionDialog):
         cls.DIALOGS.append(self)
 
 
-@pytest.mark.skipif(condition=sys.platform == 'darwin', reason='FIXME: fix it in Mac OS')
 def test_on_click_error_when_env_file_not_found(
     report_issue_window: ReportIssueWindow,
     monkeypatch: pytest.MonkeyPatch,
@@ -32,8 +31,9 @@ def test_on_click_error_when_env_file_not_found(
     button = report_issue_window.findChild(QtWidgets.QPushButton, 'dumpRemotePushButton')
     button.click()
 
-    dialog, *_ = FakeExceptionDialog.DIALOGS
     assert len(FakeExceptionDialog.DIALOGS) == 1
-    assert dialog.level == ExceptionLevel.WARNING
+
+    dialog, *_ = FakeExceptionDialog.DIALOGS
     assert dialog.message == 'Send message failed with AuthorizationError!'
     assert dialog.info == 'File is not found. Create .env file with Telegram credentials!'
+    assert dialog.level == ExceptionLevel.WARNING

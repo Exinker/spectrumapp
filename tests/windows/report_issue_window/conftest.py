@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pytest
 
-from spectrumapp.config import File
+from spectrumapp.config import BaseConfig
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
 from spectrumapp.windows.report_issue_window.archiver import (
     AbstractArchiver,
@@ -29,9 +29,9 @@ def timestamp() -> str:
     return datetime.now().strftime('%Y.%m.%d %H:%M')
 
 
-@pytest.fixture
-def description() -> str:
-    return 'test description'
+@pytest.fixture(params=['test'])
+def description(request) -> str:
+    return request.param
 
 
 @pytest.fixture
@@ -63,7 +63,7 @@ def report_issue_window(
     delivery: AbstractDelivery,
     monkeypatch: pytest.MonkeyPatch,
 ) -> ReportIssueWindow:
-    monkeypatch.setattr('time.sleep', lambda *args, **kwargs: ...)
+    # monkeypatch.setattr('time.sleep', lambda *args, **kwargs: ...)
 
     report_issue_window = ReportIssueWindow(
         archiver=archiver,
@@ -81,12 +81,12 @@ def create_files(
     tmpdir: tempfile.TemporaryDirectory,
     monkeypatch: pytest.MonkeyPatch,
 ):
-    monkeypatch.setattr(File, 'FILEPATH', os.path.join(tmpdir.name, 'config.json'))
-    file = File(
+    monkeypatch.setattr(BaseConfig, 'FILEPATH', os.path.join(tmpdir.name, 'config.json'))
+    config = BaseConfig(
         version=os.environ['APPLICATION_VERSION'],
         directory=tmpdir.name,
     )
-    file.dump()
+    config.dump()
 
     filepath = os.path.join(tmpdir.name, 'settings.ini')
     with open(filepath, 'w') as file:
