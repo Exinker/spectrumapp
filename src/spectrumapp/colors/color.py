@@ -10,9 +10,30 @@ from spectrumapp.colors.alpha import DefaultAlphaset, format_alpha
 Color: TypeAlias = QtGui.QColor | str | Sequence[float, float, float] | Sequence[float, float, float, float]
 
 
+class RedOrangeYellowGreenColorset(Enum):
+    """https://www.schemecolor.com/red-orange-green-gradient.php"""
+
+    RED = '#FF0D0D'
+    ORANGE = '#FF8E15'
+    YELLOW = '#FAB733'
+    GREEN = '#69B34C'
+
+
+class BluePinkColorset(Enum):
+
+    BLUE = (0, 0.4470, 0.7410)
+    PINK = (1, 0.4470, 0.7410)
+
+
+class MarkColorset(Enum):
+
+    SELECTED = (0, 0.37254902, 0.88627451, .5)
+    SHADOW = '#707C80'
+
+
 def format_color(
     color: Color,
-    alpha: float = DefaultAlphaset.DEFAULT,
+    alpha: float = DefaultAlphaset.DEFAULT.value,
     is_faded: bool = False,
 ) -> QtGui.QColor:
 
@@ -40,24 +61,3 @@ def format_color(
         return color
 
     raise NotImplementedError(f'Color {type(color)} is not supported yet!')
-
-
-class RedOrangeYellowGreenColorset(Enum):
-    """https://www.schemecolor.com/red-orange-green-gradient.php"""
-
-    RED = '#FF0D0D'
-    ORANGE = '#FF8E15'
-    YELLOW = '#FAB733'
-    GREEN = '#69B34C'
-
-
-class BluePinkColorset(Enum):
-
-    BLUE = (0, 0.4470, 0.7410)
-    PINK = (1, 0.4470, 0.7410)
-
-
-class MarkColorset(Enum):
-
-    IS_NOT_ACTIVE = '#707C80'
-    SELECTED = (0, 0.37254902, 0.88627451, .5)

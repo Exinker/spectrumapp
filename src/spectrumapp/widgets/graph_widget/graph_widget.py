@@ -1,14 +1,25 @@
-from typing import Any, Mapping, TypeAlias
+from dataclasses import dataclass
+from typing import Any, Mapping, NewType
 
+from PySide6 import QtCore, QtWidgets
 from matplotlib.backend_bases import KeyEvent, MouseEvent, PickEvent
-from PySide6 import QtCore, QtWidgets  # noqa: I100
 
 from spectrumapp.helpers import getdefault_object_name
 from spectrumapp.types import Lims
 from spectrumapp.widgets.graph_widget.canvas import MplCanvas
 
 
-Data: TypeAlias = Any
+DEFAULT_SIZE = QtCore.QSize(640, 480)
+DEFAULT_LIMS = ((0, 1), (0, 1))
+
+
+Index = NewType('Index', str)
+
+
+@dataclass
+class AxisLabel:
+    xlabel: str
+    ylabel: str
 
 
 class BaseGraphWidget(QtWidgets.QWidget):
@@ -24,39 +35,29 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self,
         *args,
         object_name: str | None = None,
-        size: tuple[int, int] = (640, 480),
+        size: QtCore.QSize = DEFAULT_SIZE,
         tight_layout: bool = True,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
 
+        self._widget_size = size
+
+        self._data = None
+        self._point_labels = None
+        self._axis_labels = None
+        self._point_annotation = None
+        self._zoom_region = None
+        self._full_lims = None
+        self._cropped_lims = None
+
         # object name
         object_name = object_name or getdefault_object_name(self)
         self.setObjectName(object_name)
 
-        #
-        self._data: Data | None = None
-        self._labels: Mapping[str, str] = {}
-        self._params = {
-            'xlabel': None,
-            'ylabel': None,
-        }
-        self.annotate = None
-        self.zoom_line = None
-
         # focus
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.setFocus()
-
-        # pressed mouse and keys events
-        self._pressed_event: MouseEvent | None = None
-        self._pressed_shift = False  # shift event modifier
-        self._pressed_ctrl = False  # ctrl event modifier
-
-        # graph limits
-        self._default_lims: Lims = ((0, 1), (0, 1))
-        self._full_lims: Lims | None = None
-        self._crop_lims: Lims | None = None
 
         # layout and canvas
         layout = QtWidgets.QHBoxLayout(self)
@@ -70,156 +71,211 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self.canvas.mpl_connect('motion_notify_event', self._motion_notify_event)
         layout.addWidget(self.canvas)
 
+        # pressed mouse and keys events
+        self._mouse_event: MouseEvent | None = None
+        self._ctrl_modified = False
+        self._shift_modified = False
+
         # geometry
-        self._size = size
-        self.setFixedSize(*self._size)
+        self.setFixedSize(self._widget_size)
 
-        # show
-        self.show()
+    @property
+    def data(self) -> Mapping[Index, Any] | None:
+        return self._data
 
-    def sizeHint(self):  # noqa: N802
-        return QtCore.QSize(*self._size)
+    @property
+    def point_labels(self) -> Mapping[Index, tuple[str, ...]] | None:
+        return self._point_labels
 
-    def keyPressEvent(self, event: KeyEvent):  # noqa: N802
+    @property
+    def axis_labels(self) -> AxisLabel | None:
+        return self._axis_labels
 
-        if event.key() == QtCore.Qt.Key_Control:
-            self._pressed_ctrl = True
-        if event.key() == QtCore.Qt.Key_Shift:
-            self._pressed_shift = True
+    @property
+    def default_lims(self) -> Lims:
+        return DEFAULT_LIMS
 
-    def keyReleaseEvent(self, event: KeyEvent):  # noqa: N802
+    @property
+    def full_lims(self) -> Lims | None:
+        return self._full_lims
 
-        if event.key() == QtCore.Qt.Key_Control:
-            self._pressed_ctrl = False
-        if event.key() == QtCore.Qt.Key_Shift:
-            self._pressed_shift = False
+    @property
+    def cropped_lims(self) -> Lims | None:
+        return self._cropped_lims
+
+    @property
+    def ctrl_modified(self) -> bool:
+        return self._ctrl_modified
+
+    @property
+    def shift_modified(self) -> bool:
+        return self._shift_modified
 
     def update(
         self,
-        data: Data | None = None,
-        pattern: Mapping[str, Any] | None = None,
+        data: Mapping[Index, Any] | None = None,
+        pattern: Mapping[Index, Any] | None = None,
     ) -> None:
-        """Update graph's data."""
+        """Update graph's `data`."""
+
+        data = data or self.data
+        if data is None:
+            return None
+
         raise NotImplementedError
 
-    def filtrate(self, pattern: Mapping[str, Any] | None = None):
-        """Filtrate graph's data with given pattern."""
-        self._update(pattern=pattern)
+    def filtrate(
+        self,
+        pattern: Mapping[Index, Any] | None = None,
+    ) -> None:
+        """Filtrate graph's `data` with given `pattern`."""
 
-    def _pick_event(self, event: PickEvent) -> None:
-        raise NotImplementedError
+        self.update(pattern=pattern)
 
-    def _button_press_event(self, event: MouseEvent):
-        self._pressed_event = event
+    def update_zoom(self, lims: Lims | None = None) -> None:
+        """Update zoom to given `lims`."""
+
+        xlim, ylim = lims or self.full_lims or self.default_lims
+
+        self.canvas.axes.set_xlim(xlim)
+        self.canvas.axes.set_ylim(ylim)
+        self.canvas.draw_idle()
+
+    def set_full_lims(self, lims: Lims) -> None:
+        """Set full lims (maximum) to given `lims`."""
+
+        self._full_lims = lims
+
+    def set_cropped_lims(self, lims: Lims | None) -> None:
+        """Set cropped lims to given `lims`."""
+
+        self._cropped_lims = lims
+
+    def set_shift_modified(self, __state: bool) -> None:
+        self._shift_modified = __state
+
+    def set_ctrl_modified(self, __state: bool) -> None:
+        self._ctrl_modified = __state
+
+    def sizeHint(self) -> QtCore.QSize:  # noqa: N802
+        return self._widget_size
+
+    def keyPressEvent(self, event: KeyEvent) -> None:  # noqa: N802
+
+        match event.key():
+            case QtCore.Qt.Key.Key_Control:
+                self.set_ctrl_modified(True)
+            case QtCore.Qt.Key.Key_Shift:
+                self.set_shift_modified(True)
+            case _:
+                return None
+
+    def keyReleaseEvent(self, event: KeyEvent) -> None:  # noqa: N802
+
+        match event.key():
+            case QtCore.Qt.Key.Key_Control:
+                self.set_ctrl_modified(False)
+            case QtCore.Qt.Key.Key_Shift:
+                self.set_shift_modified(False)
+            case _:
+                return None
+
+    def _pick_event(self, event: PickEvent) -> None:  # pragma: no cover
+        return None
+
+    def _button_press_event(self, event: MouseEvent) -> None:  # pragma: no cover
+        self._mouse_event = event
 
         # update zoom and pan
-        if self._pressed_ctrl and self._pressed_shift:
-            pass
+        if self.ctrl_modified and self.shift_modified:
+            return None
 
-        elif self._pressed_ctrl:
-            pass
+        if self.ctrl_modified:
+            return None
 
-        elif self._pressed_shift:
-            pass
+        if self.shift_modified:
+            return None
 
-        else:
-            if event.button == 3 and event.dblclick:
-                self._pressed_event = None
-                self._crop_lims = None
-                self._update_zoom(lims=self._full_lims)
+        if event.button == 3 and event.dblclick:
+            self._mouse_event = None
+            self.set_cropped_lims(lims=None)
+            self.update_zoom(lims=self.full_lims)
 
-    def _button_release_event(self, event: MouseEvent):
+    def _button_release_event(self, event: MouseEvent) -> None:  # pragma: no cover
 
         # update annotate
-        self.annotate.set_visible(False)
+        self._point_annotation.set_visible(False)
         self.canvas.draw_idle()
 
         # update zoom and pan
-        if self._pressed_ctrl and self._pressed_shift:
-            pass
+        if self.ctrl_modified and self.shift_modified:
+            return None
 
-        elif self._pressed_ctrl:
-            pass
+        if self.ctrl_modified:
+            return None
 
-        elif self._pressed_shift:
+        if self.shift_modified:
             if event.button == 1:
                 self._pan_event(
-                    self._pressed_event,
+                    self._mouse_event,
                     event,
                 )
+            return None
 
-        else:
-            if event.button == 3:
-                self._zoom_event(
-                    self._pressed_event,
-                    event,
-                )
+        if event.button == 3:
+            self._zoom_event(
+                self._mouse_event,
+                event,
+            )
 
-    def _motion_notify_event(self, event: MouseEvent):
+    def _motion_notify_event(self, event: MouseEvent) -> None:  # pragma: no cover
 
         # update zoom and pan
-        if self._pressed_ctrl and self._pressed_shift:
-            pass
+        if self.ctrl_modified and self.shift_modified:
+            return None
 
-        elif self._pressed_ctrl:
-            pass
+        if self.ctrl_modified:
+            return None
 
-        elif self._pressed_shift:
+        if self.shift_modified:
             if event.button == 1:
                 self._pan_event(
-                    self._pressed_event,
+                    self._mouse_event,
                     event,
                 )
+                return None
 
-        else:
-            pass
+    def _zoom_event(self, press_event: MouseEvent, release_event: MouseEvent) -> None:  # pragma: no cover
 
-    def _zoom_event(self, press_event: MouseEvent, release_event: MouseEvent) -> None:
+        # update crop lims
         xlim = tuple(sorted(
             (event.xdata for event in (press_event, release_event)),
         ))
         ylim = tuple(sorted(
             (event.ydata for event in (press_event, release_event)),
         ))
-        lims = xlim, ylim
-
-        # set crop lims
-        self._crop_lims = lims
+        self.set_cropped_lims(
+            lims=(xlim, ylim),
+        )
 
         # update zoom
-        self._update_zoom(
-            lims=self._crop_lims,
+        self.update_zoom(
+            lims=self.cropped_lims,
         )
 
-    def _pan_event(self, press_event: MouseEvent, release_event: MouseEvent) -> None:
-        xlim, ylim = self.canvas.axes.get_xlim(), self.canvas.axes.get_ylim()
-        xshift, yshift = release_event.xdata - press_event.xdata, release_event.ydata - press_event.ydata
-        lims = (
-            [value - xshift for value in xlim],
-            [value - yshift for value in ylim],
-        )
+    def _pan_event(self, press_event: MouseEvent, release_event: MouseEvent) -> None:  # pragma: no cover
 
         # update crop lims
-        self._crop_lims = lims
-
-        # update zoom
-        self._update_zoom(
-            lims=self._crop_lims,
+        xlim, ylim = self.canvas.axes.get_xlim(), self.canvas.axes.get_ylim()
+        xshift, yshift = release_event.xdata - press_event.xdata, release_event.ydata - press_event.ydata
+        self.set_cropped_lims(
+            lims=(
+                [value - xshift for value in xlim],
+                [value - yshift for value in ylim],
+            ),
         )
 
-    def _set_full_lims(self, data: Data) -> None:
-        raise NotImplementedError
-
-    def _set_crop_lims(self, lims: Lims) -> None:
-        self._crop_lims = lims
-
-    def _update_zoom(self, lims: Lims | None = None) -> None:
-        if lims is None:
-            lims = self._full_lims if self._full_lims else self._default_lims
-
-        xlim, ylim = lims
-
-        #
-        self.canvas.axes.set_xlim(xlim)
-        self.canvas.axes.set_ylim(ylim)
-        self.canvas.draw_idle()
+        # update zoom
+        self.update_zoom(
+            lims=self._cropped_lims,
+        )

@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from abc import ABC, abstractmethod
-from typing import Mapping
+from typing import Any, Mapping
 
 
 ENCODING = 'utf-8'
@@ -31,7 +31,7 @@ class AbstractConfig(ABC):
                 name=self.__class__.__name__,
             ))
 
-    def update(self, /, **kwargs: Mapping[str, str | int | float | list]) -> None:
+    def update(self, /, **kwargs: Mapping[str, Any]) -> None:
         """Update config file."""
 
         # load data
@@ -47,7 +47,7 @@ class AbstractConfig(ABC):
         )
 
     @abstractmethod
-    def dumps(self) -> Mapping[str, str | int | float | list]:
+    def dumps(self) -> Mapping[str, Any]:
         """Serialize config to mapping object."""
         raise NotImplementedError
 
@@ -89,23 +89,21 @@ class AbstractConfig(ABC):
 
     @classmethod
     @abstractmethod
-    def _default(cls) -> Mapping[str, str | int | float | list]:  # noqa: N805
+    def _default(cls) -> Mapping[str, Any]:  # noqa: N805
         """Get default serialized data."""
         raise NotImplementedError
 
     @classmethod
-    def _load(cls) -> Mapping[str, str | int | float | list]:
+    def _load(cls) -> Mapping[str, Any]:
         """Load serialized data."""
 
-        filepath = cls.FILEPATH
-        with open(filepath, 'r', encoding=ENCODING) as file:
+        with open(cls.FILEPATH, 'r', encoding=ENCODING) as file:
             data = json.load(file)
 
         return data
 
-    def _dump(self, data: Mapping[str, str | int | float | list]) -> None:
+    def _dump(self, data: Mapping[str, Any]) -> None:
         """Dump serialized data."""
-        filepath = self.FILEPATH
 
-        with open(filepath, 'w', encoding=ENCODING) as file:
+        with open(self.FILEPATH, 'w', encoding=ENCODING) as file:
             json.dump(data, file)

@@ -1,19 +1,32 @@
 import sys
 import traceback
+from typing import TextIO
 
 
 def format_exception(limit: int = 2) -> str:
     return traceback.format_exc(limit=limit)
 
 
-def eprint(msg: str | None = None, info: str | None = None) -> None:
-    """Print exception traceback to stdout."""
-    template = '{info}' if msg is None else '{msg}{info}'
+def eprint(
+    message: str = '',
+    info: str = '',
+    file: TextIO = sys.stdout,
+) -> None:
+    """Print exception traceback to file."""
 
-    info = info or format_exception()
+    template = _get_text_template(
+        message=message,
+    )
     text = template.format(
-        msg=msg,
-        info=info,
+        message=message,
+        info=info or format_exception(),
     )
 
-    print(text, file=sys.stdout)
+    print(text, file=file)
+
+
+def _get_text_template(message: str) -> str:
+
+    if message:
+        return '{message}{info}'
+    return '{info}'

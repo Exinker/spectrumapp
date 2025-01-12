@@ -2,10 +2,10 @@ import sys
 
 from PySide6 import QtWidgets
 
-from spectrumapp.application import AbstractApplication
+from spectrumapp.application import BaseApplication
 from spectrumapp.loggers import log
 from spectrumapp.windows.main_window import BaseMainWindow
-from spectrumapp.windows.splash_screen_window import splashscreen
+from spectrumapp.windows.splash_screen_window import utils
 from utils import (
     setdefault_environ,
     setdefault_logger,
@@ -59,7 +59,7 @@ class CentralWidget(QtWidgets.QWidget):
 
 class Window(BaseMainWindow):
 
-    @splashscreen(progress=100, info='<strong>LOADING</strong> user interface...', delay=1)
+    @utils.splashscreen(progress=100, info='<strong>LOADING</strong> user interface...', delay=1)
     def __init__(self, *args, show: bool = False, **kwargs):
         super().__init__(*args, show=show, **kwargs)
 
@@ -73,16 +73,16 @@ class Window(BaseMainWindow):
     def on_directory_opened(self, *args, **kwargs):  # noqa: N802
         super().on_directory_opened(*args, **kwargs)
 
-    @splashscreen(progress=50, info='<strong>RESET</strong> user interface...', delay=1)
+    @utils.splashscreen(progress=50, info='<strong>RESET</strong> user interface...', delay=1)
     def on_resetted(self, *args, **kwargs):  # noqa: N802
         super().on_resetted(*args, **kwargs)
 
-    @splashscreen(progress=100, info='<strong>REFRESH</strong> user interface...', delay=1)
+    @utils.splashscreen(progress=100, info='<strong>REFRESH</strong> user interface...', delay=1)
     def on_refreshed(self, *args, **kwargs):  # noqa: N802
         super().on_refreshed(*args, **kwargs)
 
 
-class Application(AbstractApplication):
+class Application(BaseApplication):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

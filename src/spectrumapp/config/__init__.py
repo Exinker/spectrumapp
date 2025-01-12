@@ -1,15 +1,18 @@
-from .config import (
+from .abstract_config import (
     AbstractConfig,
     LOGGING_LEVEL,
     LOGGING_LEVEL_MAP,
 )
-from .file import File, setdefault_file
+from .base_config import (
+    BaseConfig,
+    setdefault_config,
+)
 
 
 __all__ = [
     LOGGING_LEVEL,
     LOGGING_LEVEL_MAP,
     AbstractConfig,
-    File,
-    setdefault_file,
+    BaseConfig,
+    setdefault_config,
 ]

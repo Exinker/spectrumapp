@@ -1,14 +1,25 @@
 import os
+from dataclasses import dataclass, field
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.paths import pave
 
 
+@dataclass
+class SplashScreenState:
+    progress: int | None = field(default=None)
+    info: str | None = field(default=None)
+    message: str | None = field(default=None)
+
+
 class SplashScreenWindow(QtWidgets.QWidget):
     """Splash screen decorator for Qt applications and long time processes."""
 
-    DAFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint  # noqa: E501
+    updated = QtCore.Signal(SplashScreenState)
+
+    DEFAULT_FLAGS = QtCore.Qt.WindowType.Window | QtCore.Qt.WindowType.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint  # noqa: E501
+    DEFAULT_SIZE = QtCore.QSize(680, 400)
 
     def __init__(self, flags: QtCore.Qt.WindowType | None = None):
         super().__init__()
@@ -16,8 +27,10 @@ class SplashScreenWindow(QtWidgets.QWidget):
         self.setObjectName('splashScreenWindow')
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
+        self.updated.connect(self.on_updated)
+
         # flags
-        flags = flags or self.DAFAULT_FLAGS
+        flags = flags or self.DEFAULT_FLAGS
         self.setWindowFlags(flags)
 
         # style
@@ -37,28 +50,32 @@ class SplashScreenWindow(QtWidgets.QWidget):
         ))
 
         # geometry
-        self.setFixedSize(QtCore.QSize(680, 400))
+        self.setFixedSize(self.DEFAULT_SIZE)
 
-    def update(self, progress: int | None = None, info: str | None = None, message: str | None = None):
+    def on_updated(self, state: SplashScreenState) -> None:
 
-        if progress:
+        if state.progress:
             widget = self.findChild(QtWidgets.QProgressBar, 'progressBar')
-            widget.setValue(progress)
+            widget.setValue(state.progress)
 
-        if info:
+        if state.info:
             widget = self.findChild(QtWidgets.QLabel, 'infoLabel')
-            widget.setText(info)
+            widget.setText(state.info)
 
-        if message:
+        if state.message:
             widget = self.findChild(QtWidgets.QLabel, 'messageLabel')
-            widget.setText(message)
+            widget.setText(state.message)
 
-        #
+        # process events on the main window
         app = QtWidgets.QApplication.instance()
         app.processEvents()
 
 
 class ContentWidget(QtWidgets.QFrame):
+
+    DEFAULT_PROGRESS = 0
+    DEFAULT_INFO = '<strong>LOADING</strong>...'
+    DEFAULT_MESSAGE = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,19 +102,28 @@ class ContentWidget(QtWidgets.QFrame):
         layout.addSpacing(50)
         layout.addWidget(ProgressBarWidget(
             objectName='progressBar',
+            value=self.DEFAULT_PROGRESS,
             parent=self,
         ))
         layout.addWidget(LabelWidget(
             objectName='infoLabel',
-            text='<strong>LOADING</strong>...',
+            text=self.DEFAULT_INFO,
             parent=self,
         ))
         layout.addWidget(LabelWidget(
             objectName='messageLabel',
-            text='',
+            text=self.DEFAULT_MESSAGE,
             parent=self,
         ))
         layout.addSpacing(50)
+
+
+class ProgressBarWidget(QtWidgets.QProgressBar):
+
+    def __init__(self, value: int, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.setValue(value)
 
 
 class LabelWidget(QtWidgets.QLabel):
@@ -106,11 +132,3 @@ class LabelWidget(QtWidgets.QLabel):
         super().__init__(*args, **kwargs)
 
         self.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-
-
-class ProgressBarWidget(QtWidgets.QProgressBar):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.setValue(0)
