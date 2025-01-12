@@ -19,7 +19,7 @@ from spectrumapp.windows.progress_window.utils.progress import (
 T = TypeVar('T')
 
 
-@pytest.fixture(params=[0, 1])
+@pytest.fixture(params=[0, 1, 42])
 def n_values(request) -> int:
     return request.param
 
@@ -50,7 +50,6 @@ def expected(
     return tuple(calls)
 
 
-# @pytest.mark.skip(reason='Flaky test')
 def test_progress(
     values: Sequence[T],
     default_info: str,
@@ -59,10 +58,8 @@ def test_progress(
     mocker,
 ):
     spy_on_updated = mocker.spy(progress_window, 'on_updated')
-    # mock_close = mocker.patch.object(progress_window, 'close')
 
     for _ in utils.progress(values, info=default_info):
-        time.sleep(0.0)
+        time.sleep(0.001)
 
     spy_on_updated.assert_has_calls(expected)
-    # mock_close.assert_called_once()

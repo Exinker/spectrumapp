@@ -52,7 +52,6 @@ def expected(
     return tuple(calls)
 
 
-# @pytest.mark.skip(reason='Flaky test')
 def test_progress(
     values: Iterable[T],
     default_info: str,
@@ -61,7 +60,6 @@ def test_progress(
     mocker,
 ):
     spy = mocker.spy(progress_window, 'on_updated')
-    # mock_close = mocker.patch.object(progress_window, 'close')
 
     for _ in utils.progress(values, info=default_info):
         time.sleep(0.001)
@@ -70,4 +68,3 @@ def test_progress(
         spy.assert_has_calls(expected)
     except AssertionError:
         print()
-    # mock_close.assert_called_once()

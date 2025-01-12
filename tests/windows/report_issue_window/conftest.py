@@ -63,7 +63,7 @@ def report_issue_window(
     delivery: AbstractDelivery,
     monkeypatch: pytest.MonkeyPatch,
 ) -> ReportIssueWindow:
-    monkeypatch.setattr('time.sleep', lambda *args, **kwargs: ...)
+    # monkeypatch.setattr('time.sleep', lambda *args, **kwargs: ...)
 
     report_issue_window = ReportIssueWindow(
         archiver=archiver,

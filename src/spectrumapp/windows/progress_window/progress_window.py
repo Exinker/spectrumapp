@@ -52,9 +52,6 @@ class ProgressWindow(QtWidgets.QWidget):
         # geometry
         self.setFixedSize(self.DEFAULT_SIZE)
 
-        # show window
-        self.show()
-
         # move window
         window = find_window('splashScreenWindow')
         if window:

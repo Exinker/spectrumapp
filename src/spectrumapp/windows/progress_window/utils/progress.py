@@ -9,7 +9,7 @@ from spectrumapp.windows.progress_window.progress_window import (
 
 def progress(items: Iterable[Any], info: str | None = '') -> Generator:
     """Progress wrapper for long time processes."""
-    window_name = 'splashScreenWindow'
+    window_name = 'progressWindow'
 
     try:
         n_items = len(items)
@@ -28,8 +28,8 @@ def progress(items: Iterable[Any], info: str | None = '') -> Generator:
             ))
 
             yield item
+
     finally:
-        window.setParent(None)
         window.close()
 
 

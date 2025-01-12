@@ -1,5 +1,3 @@
-import platform
-
 import pytest
 from pytestqt.qtbot import QtBot
 
@@ -12,10 +10,6 @@ from spectrumapp.windows.keyboard_shortcuts_window import BaseKeyboardShortcutsW
 from spectrumapp.windows.main_window import BaseMainWindow
 
 
-@pytest.mark.skipif(
-    condition=platform.system() in ['Darwin'],
-    reason='Only Windows is supported!',
-)
 def test_on_report_issue_window_opened_by_menu(
     main_window: BaseMainWindow,
     qtbot: QtBot,

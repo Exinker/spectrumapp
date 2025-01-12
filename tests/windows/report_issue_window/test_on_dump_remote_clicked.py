@@ -21,7 +21,6 @@ class FakeExceptionDialog(ExceptionDialog):
         cls.DIALOGS.append(self)
 
 
-@pytest.mark.skipif(condition=platform.system() == 'Darwin', reason='FIXME: fix it in Mac OS')
 def test_on_click_error_when_env_file_not_found(
     report_issue_window: ReportIssueWindow,
     monkeypatch: pytest.MonkeyPatch,
