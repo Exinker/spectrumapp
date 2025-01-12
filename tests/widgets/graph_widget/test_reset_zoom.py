@@ -21,7 +21,7 @@ def test_reset_zoom(
     qtbot.mouseDClick(graph_widget.canvas, QtCore.Qt.MouseButton.RightButton)
 
     assert graph_widget._mouse_event is None
-    assert graph_widget._crop_lims is None
+    assert graph_widget._cropped_lims is None
     spy_set_xlim.assert_called_once_with(xlims)
     spy_set_ylim.assert_called_once_with(ylims)
     spy_draw_idle.assert_called_once()

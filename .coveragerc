@@ -6,7 +6,7 @@ omit =
 	tests/
 
 [report]
-exclude_lines =
+exclude_also =
     import *
     from * import *
     @abstractmethod

@@ -5,7 +5,8 @@ from datetime import datetime
 from PySide6 import QtWidgets
 
 from spectrumapp.config import BaseConfig
-from spectrumapp.decorators import attempt, wait
+from spectrumapp.windows.exception_window import attempt
+from spectrumapp.windows.modifiers import wait
 from spectrumapp.windows.report_issue_window.archiver import AbstractArchiver, ZipArchiver
 from spectrumapp.windows.report_issue_window.delivery import AbstractDelivery, TelegramDelivery
 from spectrumapp.windows.report_issue_window.utils import explore

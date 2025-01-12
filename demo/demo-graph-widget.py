@@ -150,7 +150,7 @@ class MyGraphWidget(BaseGraphWidget):
         )
 
         # set lims
-        lims = self._crop_lims if self._crop_lims else self._full_lims
+        lims = self._cropped_lims if self._cropped_lims else self._full_lims
         xlim, ylim = lims
         self.canvas.axes.set_xlim(xlim)
         self.canvas.axes.set_ylim(ylim)

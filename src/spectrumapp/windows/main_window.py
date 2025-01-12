@@ -2,13 +2,13 @@ import os
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from spectrumapp.decorators import attempt, wait
 from spectrumapp.helpers import find_action, find_window
 from spectrumapp.loggers import log
 from spectrumapp.paths import pave
 from spectrumapp.settings import get_setting, set_setting
-from spectrumapp.windows.exception_window import ExceptionLevel
+from spectrumapp.windows.exception_window import ExceptionLevel, attempt
 from spectrumapp.windows.keyboard_shortcuts_window import BaseKeyboardShortcutsWindow
+from spectrumapp.windows.modifiers import wait
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
 
 

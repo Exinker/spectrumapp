@@ -1,4 +1,3 @@
-from .decorators import progress
 from .progress_window import (
     ProgressState,
     ProgressWindow,
@@ -7,5 +6,4 @@ from .progress_window import (
 __all__ = [
     ProgressState,
     ProgressWindow,
-    progress,
 ]

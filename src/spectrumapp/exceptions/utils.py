@@ -8,17 +8,25 @@ def format_exception(limit: int = 2) -> str:
 
 
 def eprint(
-    message: str | None = None,
-    info: str | None = None,
+    message: str = '',
+    info: str = '',
     file: TextIO = sys.stdout,
 ) -> None:
     """Print exception traceback to file."""
-    template = '{info}' if message is None else '{msg}{info}'
 
-    info = info or format_exception()
+    template = _get_text_template(
+        message=message,
+    )
     text = template.format(
-        msg=message,
-        info=info,
+        message=message,
+        info=info or format_exception(),
     )
 
     print(text, file=file)
+
+
+def _get_text_template(message: str) -> str:
+
+    if message:
+        return '{message}{info}'
+    return '{info}'

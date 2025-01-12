@@ -6,14 +6,12 @@ from typing import Any
 from PySide6 import QtCore
 
 from spectrumapp.loggers import log
-from spectrumapp.types import DirPath
 
 
-def load_settings(filedir: DirPath | None = None) -> QtCore.QSettings:
+def load_settings() -> QtCore.QSettings:
     """Load settings (GUI only) object from `settings.ini` file."""
-    filedir = filedir or os.getcwd()
 
-    filepath = os.path.join(filedir, 'settings.ini')
+    filepath = os.path.join('settings.ini')
     return QtCore.QSettings(filepath, QtCore.QSettings.IniFormat)
 
 

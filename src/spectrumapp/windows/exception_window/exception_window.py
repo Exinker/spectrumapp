@@ -56,7 +56,7 @@ class ExceptionDialog:
     @property
     def text(self) -> str:
 
-        template = get_text_template(
+        template = _get_text_template(
             message=self.message,
         )
         return template.format(
@@ -74,7 +74,7 @@ class ExceptionDialog:
         )
 
 
-def get_text_template(message: str) -> str:
+def _get_text_template(message: str) -> str:
 
     if message:
         return '{message}\n\n{info}'

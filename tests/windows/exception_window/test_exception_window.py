@@ -3,13 +3,14 @@ from unittest.mock import Mock
 
 import pytest
 from PySide6 import QtWidgets
+from pytestqt.qtbot import QtBot
 
 from spectrumapp.exceptions import format_exception
 from spectrumapp.windows.exception_window import (
     ExceptionDialog,
     ExceptionLevel,
-    get_text_template,
 )
+from spectrumapp.windows.exception_window.exception_window import _get_text_template
 
 
 @dataclass
@@ -48,7 +49,7 @@ def expected(
             ExceptionLevel.WARNING: 'Warning',
             ExceptionLevel.INFO: 'Info',
         }[level],
-        text=get_text_template(
+        text=_get_text_template(
             message=message,
         ).format(
             message=message,
@@ -65,7 +66,7 @@ def test_exception_window(
     level: ExceptionLevel,
     mock: Mock,
     expected: Expected,
-    qtbot,
+    qtbot: QtBot,
 ):
     dialog = ExceptionDialog(
         message=message,
@@ -84,7 +85,7 @@ def test_exception_window(
 
 
 def test_exception_window_level_invalid(
-    qtbot,
+    qtbot: QtBot,
 ):
     message = ''
     info = ''
