@@ -29,9 +29,9 @@ def timestamp() -> str:
     return datetime.now().strftime('%Y.%m.%d %H:%M')
 
 
-@pytest.fixture
-def description() -> str:
-    return 'test description'
+@pytest.fixture(params=['test'])
+def description(request) -> str:
+    return request.param
 
 
 @pytest.fixture
