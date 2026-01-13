@@ -1,64 +1,69 @@
 import logging
 import os
-from abc import ABC, abstractmethod
+from datetime import datetime
+from pathlib import Path
+from typing import Self
 
-import telepot
+from telepot import Bot
 from telepot.exception import (
     TelegramError,
     UnauthorizedError,
 )
 from urllib3.exceptions import RequestError
 
-from spectrumapp.types import FilePath
 from spectrumapp.windows.exception_window import ExceptionDialog, ExceptionLevel
-from spectrumapp.windows.report_issue_window.exceptions import (
-    AuthorizationError,
-    InternetConnectionError,
-)
+from spectrumapp.windows.report_issue_window.exceptions import AuthorizationError, InternetConnectionError
+from spectrumapp.windows.report_issue_window.report_managers.base_report_manager import ReportManagerABS
 
 
 LOGGER = logging.getLogger('spectrumapp')
 
 
-class AbstractDelivery(ABC):
+class TelegramReportManager(ReportManagerABS):
 
-    @abstractmethod
-    def send(self, filepath: FilePath, description: str) -> None:
-        raise NotImplementedError
+    @classmethod
+    def create(
+        cls,
+        timestamp: float,
+        token: str,
+        chat_id: str,
+    ) -> Self:
 
-
-class TelegramDelivery(AbstractDelivery):
+        return cls(
+            timestamp=timestamp,
+            chat_id=chat_id,
+            bot=Bot(token),
+        )
 
     def __init__(
         self,
-        timestamp: str,
-        token: str,
+        timestamp: float,
         chat_id: str,
-    ):
+        bot: Bot,
+    ) -> None:
+
         self._timestamp = timestamp
-        self._token = token
         self._chat_id = chat_id
+        self._bot = bot
 
-        self._bot = None
-
-    @property
-    def bot(self) -> telepot.Bot:
-
-        if self._bot is None:
-            self._bot = telepot.Bot(self._token)
-
-        return self._bot
-
-    def send(self, filepath: FilePath, description: str) -> None:
+    def send(
+        self,
+        archive_path: Path,
+        description: str,
+    ) -> None:
 
         try:
-            self.bot.sendDocument(
+            self._bot.sendDocument(
                 chat_id=self._chat_id,
-                document=open(filepath, 'rb'),
-                caption=self._get_caption(
-                    description=description,
-                ),
+                document=open(archive_path, 'rb'),
+                caption='\n'.join([
+                    os.environ['APPLICATION_NAME'],
+                    os.environ['APPLICATION_VERSION'],
+                    datetime.fromtimestamp(self._timestamp).strftime('%Y.%m.%d %H:%M'),
+                    description,
+                ]),
             )
+
         except RequestError as error:
             LOGGER.warning(
                 'Send message failed with %s: %s',
@@ -73,6 +78,7 @@ class TelegramDelivery(AbstractDelivery):
                 level=ExceptionLevel.ERROR,
             )
             dialog.show()
+
         except UnauthorizedError as error:
             LOGGER.warning(
                 'Send message failed with %s: %s',
@@ -87,6 +93,7 @@ class TelegramDelivery(AbstractDelivery):
                 level=ExceptionLevel.WARNING,
             )
             dialog.show()
+
         except TelegramError as error:
             LOGGER.warning(
                 'Send message failed with %s: %s',
@@ -113,14 +120,6 @@ class TelegramDelivery(AbstractDelivery):
                 error,
             )
             raise
+
         else:
             LOGGER.debug('Dump file is send successfully.')
-
-    def _get_caption(self, description: str) -> str:
-
-        return '\n'.join([
-            os.environ['APPLICATION_NAME'],
-            os.environ['APPLICATION_VERSION'],
-            self._timestamp,
-            description,
-        ])

@@ -13,6 +13,7 @@ def progress(items: Iterable[Any], info: str | None = '') -> Generator:
 
     try:
         n_items = len(items)
+
     except (TypeError, AttributeError):
         n_items = None
 

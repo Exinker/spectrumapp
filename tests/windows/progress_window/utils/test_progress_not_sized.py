@@ -66,5 +66,6 @@ def test_progress(
 
     try:
         spy.assert_has_calls(expected)
+
     except AssertionError:
         print()

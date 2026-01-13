@@ -1,14 +1,8 @@
-from pathlib import Path
 from typing import NewType, TypeAlias
 
 import pandas as pd
 from PySide6 import QtCore, QtWidgets
 from numpy.typing import NDArray  # noqa: I100
-
-
-# --------        paths        --------
-DirPath: TypeAlias = str | Path
-FilePath: TypeAlias = str | Path
 
 
 # --------        structures        --------

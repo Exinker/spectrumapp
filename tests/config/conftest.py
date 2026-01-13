@@ -4,19 +4,18 @@ from pathlib import Path
 import pytest
 
 from spectrumapp.config import BaseConfig
-from spectrumapp.types import FilePath
 
 
 @pytest.fixture()
 def filepath(
     tmp_path: Path,
-) -> FilePath:
+) -> Path:
     return tmp_path / 'config.json'
 
 
 @pytest.fixture(autouse=True)
 def cleanup_files(
-    filepath: FilePath,
+    filepath: Path,
     monkeypatch: pytest.MonkeyPatch,
 ):
     monkeypatch.setattr(BaseConfig, 'FILEPATH', filepath)

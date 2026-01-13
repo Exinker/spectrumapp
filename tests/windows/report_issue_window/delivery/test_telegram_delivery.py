@@ -5,18 +5,16 @@ from pathlib import Path
 import pytest
 from telepot.exception import (
     TelegramError,
-    UnauthorizedError,
 )
-from urllib3.exceptions import RequestError
 
 from spectrumapp.windows.exception_window import ExceptionDialog, ExceptionLevel
-from spectrumapp.windows.report_issue_window.delivery import TelegramDelivery
+from spectrumapp.windows.report_issue_window.report_managers import TelegramReportManager
 
 
 @pytest.fixture(scope='function')
 def filepath(
     tmp_path: Path,
-) -> str:
+) -> Path:
 
     filepath = tmp_path / f'{uuid.uuid4()}.zip'
     with open(filepath, 'wb') as file:
@@ -29,15 +27,15 @@ def filepath(
 
 @pytest.mark.skip(reason='FIXNE: переделать на mock!')
 def test_telegram_delivery_send(
-    delivery: TelegramDelivery,
-    filepath: str,
+    report_manager: TelegramReportManager,
+    filepath: Path,
     description: str,
     mocker,
 ):
-    mock = mocker.patch.object(delivery.bot, 'sendDocument')
+    mock = mocker.patch.object(report_manager.bot, 'sendDocument')
 
-    delivery.send(
-        filepath=filepath,
+    report_manager.send(
+        archive_path=filepath,
         description=description,
     )
 
@@ -105,8 +103,8 @@ def assert_dialog(
 
 @pytest.mark.skip(reason='FIXNE: переделать на mock!')
 def test_telegram_delivery_send_with_telegram_error_raised(
-    delivery: TelegramDelivery,
-    filepath: str,
+    report_manager: TelegramReportManager,
+    filepath: Path,
     description: str,
     telegram_error_code: int,
     expected: FakeExceptionDialog,
@@ -114,15 +112,15 @@ def test_telegram_delivery_send_with_telegram_error_raised(
     mocker,
 ):
     monkeypatch.setattr('spectrumapp.windows.report_issue_window.delivery.ExceptionDialog', FakeExceptionDialog)
-    mock = mocker.patch.object(delivery.bot, 'sendDocument', side_effect=raise_exception(
+    mock = mocker.patch.object(report_manager.bot, 'sendDocument', side_effect=raise_exception(
         TelegramError,
         description='',
         error_code=telegram_error_code,
         json='',
     ))
 
-    delivery.send(
-        filepath=filepath,
+    report_manager.send(
+        archive_path=filepath,
         description=description,
     )
 

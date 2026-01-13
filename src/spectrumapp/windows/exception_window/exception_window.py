@@ -88,6 +88,7 @@ if __name__ == '__main__':
     message = 'Try to calculate "1/0".'
     try:
         1/0
+
     except ZeroDivisionError:
         dialog = ExceptionDialog(
             message=message,

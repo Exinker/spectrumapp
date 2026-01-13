@@ -114,6 +114,7 @@ def truncate_number(
 
     try:
         number = f'{float(number):.12f}'
+
     except (ValueError, TypeError):
         return ''
 
