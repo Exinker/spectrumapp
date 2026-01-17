@@ -5,7 +5,7 @@ import os
 from PySide6 import QtCore
 
 import spectrumapp
-from spectrumapp.config import LOGGING_LEVEL
+from spectrumapp.configs import LOGGING_LEVEL
 
 
 def setdefault_environ() -> None:

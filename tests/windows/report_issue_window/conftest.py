@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from spectrumapp.config import BaseConfig
+from spectrumapp.configs import BaseConfig
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
 from spectrumapp.windows.report_issue_window.archive_managers import ZipArchiveManager
 from spectrumapp.windows.report_issue_window.archive_managers.base_archive_manager import ArchiveManagerABC

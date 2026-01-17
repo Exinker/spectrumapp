@@ -24,12 +24,16 @@ class TelegramReportManager(ReportManagerABS):
     @classmethod
     def create(
         cls,
+        application_name: str,
+        application_version: str,
         timestamp: float,
         token: str,
         chat_id: str,
     ) -> Self:
 
         return cls(
+            application_name=application_name,
+            application_version=application_version,
             timestamp=timestamp,
             chat_id=chat_id,
             bot=Bot(token),
@@ -37,11 +41,15 @@ class TelegramReportManager(ReportManagerABS):
 
     def __init__(
         self,
+        application_name: str,
+        application_version: str,
         timestamp: float,
         chat_id: str,
         bot: Bot,
     ) -> None:
 
+        self._application_name = application_name
+        self._application_version = application_version
         self._timestamp = timestamp
         self._chat_id = chat_id
         self._bot = bot
@@ -57,8 +65,8 @@ class TelegramReportManager(ReportManagerABS):
                 chat_id=self._chat_id,
                 document=open(archive_path, 'rb'),
                 caption='\n'.join([
-                    os.environ['APPLICATION_NAME'],
-                    os.environ['APPLICATION_VERSION'],
+                    self._application_name,
+                    self._application_version,
                     datetime.fromtimestamp(self._timestamp).strftime('%Y.%m.%d %H:%M'),
                     description,
                 ]),
