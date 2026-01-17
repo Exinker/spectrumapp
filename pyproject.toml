@@ -36,9 +36,11 @@ linting = [
 testing = [
     "pytest",
     "pytest-cov",
+    "pytest-faker>=2.0.0",
     "pytest-flake8",
     "pytest-mock",
-    "pytest-qt",
+    "pytest-repeat>=0.9.4",
+    "pytest-qt>=4.5.0",
 ]
 dev = [
     {include-group = "linting"},
