@@ -26,7 +26,7 @@ def test_on_click_error_when_env_file_not_found(
     monkeypatch: pytest.MonkeyPatch,
     qtbot: QtBot,
 ):
-    monkeypatch.setattr('spectrumapp.windows.report_issue_window.delivery.ExceptionDialog', FakeExceptionDialog)
+    monkeypatch.setattr('spectrumapp.windows.report_issue_window.report_managers.telegram_report_managers.ExceptionDialog', FakeExceptionDialog)  # noqa: E501
 
     button = report_issue_window.findChild(QtWidgets.QPushButton, 'dumpRemotePushButton')
     button.click()

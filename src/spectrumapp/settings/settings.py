@@ -23,6 +23,7 @@ def get_setting(key: str) -> Any:
 
     try:
         return json.loads(value)
+
     except Exception:
         return value
 

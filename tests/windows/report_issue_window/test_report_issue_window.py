@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from PySide6 import QtWidgets
 from pytestqt.qtbot import QtBot
@@ -12,7 +13,7 @@ from spectrumapp.windows.report_issue_window.report_issue_window import (
 
 def test_report_issue_window(
     description: str,
-    timestamp: str,
+    timestamp: float,
     report_issue_window: ReportIssueWindow,
     qtbot: QtBot,
 ):
@@ -20,6 +21,6 @@ def test_report_issue_window(
     assert report_issue_window.windowTitle() == 'Report Issue Window'
     assert report_issue_window.findChild(QtWidgets.QLabel, 'appNameLabel').text() == os.environ['APPLICATION_NAME']
     assert report_issue_window.findChild(QtWidgets.QLabel, 'appVersionLabel').text() == os.environ['APPLICATION_VERSION']  # noqa: E501
-    assert report_issue_window.findChild(QtWidgets.QLabel, 'timestampLabel').text() == timestamp
+    assert report_issue_window.findChild(QtWidgets.QLabel, 'datetimeLabel').text() == datetime.fromtimestamp(timestamp).strftime('%Y.%m.%d %H:%M')  # noqa: E501
     assert report_issue_window.findChild(DescriptionPlainText, 'descriptionPlainText').toPlainText() == description
     assert report_issue_window.findChild(AttacheDumpCheckBox, 'attacheDumpCheckBox').isChecked() is True

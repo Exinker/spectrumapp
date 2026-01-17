@@ -6,10 +6,14 @@ from spectrumapp.types import Array
 
 
 def format_number(
-    number: float,
+    number: str | int | float,
     precision: int = 4,
 ) -> str:
     """Format `number` for clear representaion in QTableView."""
+
+    # str
+    if isinstance(number, str):
+        return number
 
     # int number
     if isinstance(number, int):
@@ -110,6 +114,7 @@ def truncate_number(
 
     try:
         number = f'{float(number):.12f}'
+
     except (ValueError, TypeError):
         return ''
 

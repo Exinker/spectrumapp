@@ -3,10 +3,10 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import ClassVar, Mapping
 
 from spectrumapp.config import AbstractConfig
-from spectrumapp.types import DirPath
 
 
 LOGGER = logging.getLogger('spectrumapp')
@@ -14,26 +14,31 @@ LOGGER = logging.getLogger('spectrumapp')
 
 @dataclass(frozen=True, slots=True)
 class BaseConfig(AbstractConfig):
-    version: str
-    directory: DirPath
 
-    FILEPATH: ClassVar[str] = field(default=os.path.join(os.getcwd(), 'config.json'))
+    version: str
+    directory: Path | None
+
+    FILEPATH: ClassVar[str] = field(default=Path.cwd() / 'config.json')
 
     def dumps(self) -> Mapping[str, str]:
         """Serialize config to mapping object."""
 
         data = {}
         for key, value in dataclasses.asdict(self).items():
+
+            if value is None:
+                continue
             data[key] = value
 
         return data
 
     @classmethod
     def load(cls) -> 'BaseConfig':
-        """Load config from file (json)."""
+        """Load config from json file."""
 
         try:
             data = cls._load()
+
         except (
             FileNotFoundError,
             PermissionError,
@@ -48,10 +53,12 @@ class BaseConfig(AbstractConfig):
             return cls.load()
 
         try:
+            directory = data.get('directory', None)
             config = cls(
                 version=data['version'],
-                directory=data['directory'],
+                directory=Path(directory) if directory else None,
             )
+
         except (json.JSONDecodeError, TypeError, ValueError, KeyError) as error:
             LOGGER.warning(
                 'Parsing %s is failed!', cls.FILEPATH,
@@ -70,7 +77,7 @@ class BaseConfig(AbstractConfig):
 
         return {
             'version': os.environ['APPLICATION_VERSION'],
-            'directory': '',
+            'directory': None,
         }
 
 

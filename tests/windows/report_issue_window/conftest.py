@@ -1,22 +1,18 @@
 import os
 import tempfile
 from datetime import datetime
+from pathlib import Path
 
 import pytest
 
 from spectrumapp.config import BaseConfig
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
-from spectrumapp.windows.report_issue_window.archiver import (
-    AbstractArchiver,
-    ZipArchiver,
-)
-from spectrumapp.windows.report_issue_window.delivery import (
-    AbstractDelivery,
-    TelegramDelivery,
-)
-from spectrumapp.windows.report_issue_window.report_issue_window import (
-    DescriptionPlainText,
-)
+from spectrumapp.windows.report_issue_window.archive_managers import ZipArchiveManager
+from spectrumapp.windows.report_issue_window.archive_managers.base_archive_manager import ArchiveManagerABC
+from spectrumapp.windows.report_issue_window.archive_managers.utils import explore
+from spectrumapp.windows.report_issue_window.report_issue_window import DescriptionPlainText
+from spectrumapp.windows.report_issue_window.report_managers import TelegramReportManager
+from spectrumapp.windows.report_issue_window.report_managers.base_report_manager import ReportManagerABS
 
 
 @pytest.fixture
@@ -25,8 +21,8 @@ def tmpdir() -> tempfile.TemporaryDirectory:
 
 
 @pytest.fixture
-def timestamp() -> str:
-    return datetime.now().strftime('%Y.%m.%d %H:%M')
+def timestamp() -> float:
+    return datetime.timestamp(datetime.now())
 
 
 @pytest.fixture(params=['test'])
@@ -35,21 +31,22 @@ def description(request) -> str:
 
 
 @pytest.fixture
-def archiver(
+def archive_manager(
     tmpdir: tempfile.TemporaryDirectory,
-    timestamp: str,
-) -> ZipArchiver:
-    return ZipArchiver(
-        filename=timestamp,
-        filedir=tmpdir.name,
+    timestamp: float,
+) -> ZipArchiveManager:
+    return ZipArchiveManager(
+        files=explore([], prefix=None),
+        archive_name='{}'.format(int(timestamp)),
+        archive_dir=Path(tmpdir.name),
     )
 
 
 @pytest.fixture
-def delivery(
-    timestamp: str,
-) -> TelegramDelivery:
-    return TelegramDelivery(
+def report_manager(
+    timestamp: float,
+) -> TelegramReportManager:
+    return TelegramReportManager.create(
         timestamp=timestamp,
         token='',
         chat_id='',
@@ -59,15 +56,17 @@ def delivery(
 @pytest.fixture
 def report_issue_window(
     description: str,
-    archiver: AbstractArchiver,
-    delivery: AbstractDelivery,
+    timestamp: float,
+    archive_manager: ArchiveManagerABC,
+    report_manager: ReportManagerABS,
     monkeypatch: pytest.MonkeyPatch,
 ) -> ReportIssueWindow:
     # monkeypatch.setattr('time.sleep', lambda *args, **kwargs: ...)
 
     report_issue_window = ReportIssueWindow(
-        archiver=archiver,
-        delivery=delivery,
+        timestamp=timestamp,
+        archive_manager=archive_manager,
+        report_manager=report_manager,
     )
 
     plain_text = report_issue_window.findChild(DescriptionPlainText, 'descriptionPlainText')

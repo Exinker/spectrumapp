@@ -227,6 +227,7 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
         try:
             set_setting(key=f'geometry/{self.objectName()}', value=self.geometry())
+
         finally:
             super().closeEvent(event)
 

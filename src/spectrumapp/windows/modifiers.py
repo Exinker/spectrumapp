@@ -17,8 +17,10 @@ def wait(func: Callable) -> Callable:
 
         try:
             return func(*args, **kwargs)
+
         except Exception:
             raise
+
         finally:
             if is_decorated:
                 QtWidgets.QApplication.restoreOverrideCursor()
@@ -36,8 +38,10 @@ def refresh(__window_name: str = 'mainWindow') -> Callable:
 
             try:
                 return func(*args, **kwargs)
+
             except Exception:
                 raise
+
             finally:
                 window = find_window(__window_name)
                 window.refreshed.emit()

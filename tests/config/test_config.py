@@ -1,13 +1,13 @@
 import os
+from pathlib import Path
 
 import pytest
 
 from spectrumapp.config import BaseConfig, setdefault_config
-from spectrumapp.types import DirPath, FilePath
 
 
 def test_setdefault_config(
-    filepath: FilePath,
+    filepath: Path,
 ):
     setdefault_config()
 
@@ -18,7 +18,7 @@ def test_setdefault_config(
 
 
 def test_load_config(
-    filepath: FilePath,
+    filepath: Path,
 ):
     setdefault_config()
 
@@ -33,7 +33,7 @@ def test_load_config(
         os.path.join(os.getcwd(), 'tests'),
     ],
 )
-def test_config_update_directory(directory: DirPath):
+def test_config_update_directory(directory: Path):
     setdefault_config()
 
     config = BaseConfig.load()

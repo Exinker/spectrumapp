@@ -5,13 +5,13 @@ class ArchiverError(BaseApplicationError):
     pass
 
 
-class DeliveryError(BaseApplicationError):
+class ProviderManagerError(BaseApplicationError):
     pass
 
 
-class InternetConnectionError(DeliveryError):
+class InternetConnectionError(ProviderManagerError):
     pass
 
 
-class AuthorizationError(DeliveryError):
+class AuthorizationError(ProviderManagerError):
     pass
