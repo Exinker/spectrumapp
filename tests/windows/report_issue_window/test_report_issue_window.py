@@ -12,6 +12,8 @@ from spectrumapp.windows.report_issue_window.report_issue_window import (
 
 
 def test_report_issue_window(
+    application_name: str,
+    application_version: str,
     description: str,
     timestamp: float,
     report_issue_window: ReportIssueWindow,
@@ -19,8 +21,8 @@ def test_report_issue_window(
 ):
 
     assert report_issue_window.windowTitle() == 'Report Issue Window'
-    assert report_issue_window.findChild(QtWidgets.QLabel, 'appNameLabel').text() == os.environ['APPLICATION_NAME']
-    assert report_issue_window.findChild(QtWidgets.QLabel, 'appVersionLabel').text() == os.environ['APPLICATION_VERSION']  # noqa: E501
+    assert report_issue_window.findChild(QtWidgets.QLabel, 'appNameLabel').text() == application_name
+    assert report_issue_window.findChild(QtWidgets.QLabel, 'appVersionLabel').text() == application_version  # noqa: E501
     assert report_issue_window.findChild(QtWidgets.QLabel, 'datetimeLabel').text() == datetime.fromtimestamp(timestamp).strftime('%Y.%m.%d %H:%M')  # noqa: E501
     assert report_issue_window.findChild(DescriptionPlainText, 'descriptionPlainText').toPlainText() == description
     assert report_issue_window.findChild(AttacheDumpCheckBox, 'attacheDumpCheckBox').isChecked() is True

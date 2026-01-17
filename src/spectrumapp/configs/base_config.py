@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import ClassVar, Mapping
 
-from spectrumapp.config import AbstractConfig
+from spectrumapp.configs import AbstractConfig
 
 
 LOGGER = logging.getLogger('spectrumapp')

@@ -5,6 +5,7 @@ from pathlib import Path
 
 from PySide6 import QtWidgets
 
+from spectrumapp.configs import TELEGRAM_CONFIG
 from spectrumapp.windows.exception_window import attempt
 from spectrumapp.windows.modifiers import wait
 from spectrumapp.windows.report_issue_window.archive_managers.base_archive_manager import ArchiveManagerABC
@@ -117,6 +118,8 @@ class ReportIssueWindow(BaseWindow):
     def __init__(
         self,
         *args,
+        application_name: str,
+        application_version: str,
         timestamp: float,
         archive_manager: ArchiveManagerABC,
         report_manager: ReportManagerABS,
@@ -138,12 +141,12 @@ class ReportIssueWindow(BaseWindow):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(5)
         layout.addRow('Application:', QtWidgets.QLabel(
-            os.environ['APPLICATION_NAME'],
+            application_name,
             objectName='appNameLabel',
             parent=self,
         ))
         layout.addRow('Version:', QtWidgets.QLabel(
-            os.environ['APPLICATION_VERSION'],
+            application_version,
             objectName='appVersionLabel',
             parent=self,
         ))
@@ -174,8 +177,8 @@ class ReportIssueWindow(BaseWindow):
             archive_manager=archive_manager,
             report_manager=report_manager,
             is_enabled=all([
-                os.environ.get('TELEGRAM_TOKEN', ''),
-                os.environ.get('TELEGRAM_CHAT_ID', ''),
+                TELEGRAM_CONFIG.token,
+                TELEGRAM_CONFIG.chat_id,
             ]),
             parent=self,
         ))
@@ -203,14 +206,15 @@ if __name__ == '__main__':
     from spectrumapp.windows.report_issue_window.archive_managers.utils import explore
     from spectrumapp.windows.report_issue_window.report_managers import TelegramReportManager
 
-    os.environ['APPLICATION_NAME'] = 'Demo'
-    os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
-    os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
+    application_name = 'Demo'
+    application_version = spectrumapp.__version__
 
     app = QtWidgets.QApplication()
 
     timestamp = datetime.timestamp(datetime.now())
     window = ReportIssueWindow(
+        application_name=application_name,
+        application_version=application_version,
         timestamp=timestamp,
         archive_manager=ZipArchiveManager(
             files=explore(
@@ -225,9 +229,11 @@ if __name__ == '__main__':
             archive_name='{}'.format(int(timestamp)),
         ),
         report_manager=TelegramReportManager.create(
+            application_name=application_name,
+            application_version=application_version,
             timestamp=timestamp,
-            token=os.environ.get('TELEGRAM_TOKEN', ''),
-            chat_id=os.environ.get('TELEGRAM_CHAT_ID', ''),
+            token=TELEGRAM_CONFIG.token,
+            chat_id=TELEGRAM_CONFIG.chat_id,
         ),
     )
     window.show()

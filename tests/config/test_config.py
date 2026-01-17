@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from spectrumapp.config import BaseConfig, setdefault_config
+from spectrumapp.configs import BaseConfig, setdefault_config
 
 
 def test_setdefault_config(

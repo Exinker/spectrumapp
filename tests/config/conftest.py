@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from spectrumapp.config import BaseConfig
+from spectrumapp.configs import BaseConfig
 
 
 @pytest.fixture()
