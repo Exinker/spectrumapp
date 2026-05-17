@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 import pytest
 from pytest import MonkeyPatch
@@ -14,27 +15,27 @@ def state(request) -> None:
 
 
 @pytest.fixture
-def relative_path() -> str:
-    return os.getcwd()
+def relative_path() -> Path:
+    return Path(os.getcwd())
 
 
 @pytest.fixture
 def expected(
-    relative_path: str,
+    relative_path: Path,
     state: str,
-) -> str:
+) -> Path:
 
     match state:
         case 'develop':
             return relative_path
         case 'deploy':
-            return os.path.join('test', relative_path)
+            return Path('test') / relative_path
 
 
 def test_pave(
-    relative_path: str,
+    relative_path: Path,
     state: str,
-    expected: str,
+    expected: Path,
     monkeypatch: MonkeyPatch,
 ):
 

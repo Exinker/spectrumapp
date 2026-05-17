@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.helpers import find_window
-from spectrumapp.paths import pave
+from spectrumapp.paths import static_path
 
 
 @dataclass
@@ -34,14 +34,16 @@ class ProgressWindow(QtWidgets.QWidget):
         self.setWindowFlags(flags)
 
         # style
-        filepath = pave(os.path.join('.', 'static', 'progress-window.css'))
-        style = open(filepath, 'r').read()
-        self.setStyleSheet(style)
+        filepath = static_path('progress-window.css')
+        if filepath.exists():
+            style = open(filepath, 'r').read()
+            self.setStyleSheet(style)
 
         # icon
-        filepath = pave(os.path.join('.', 'static', 'icon.ico'))
-        icon = QtGui.QIcon(filepath)
-        self.setWindowIcon(icon)
+        filepath = static_path('icon.ico')
+        if filepath.exists():
+            icon = QtGui.QIcon(str(filepath))
+            self.setWindowIcon(icon)
 
         # layout
         layout = QtWidgets.QVBoxLayout(self)
