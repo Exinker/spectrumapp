@@ -12,7 +12,6 @@ from spectrumapp.windows.main_window import BaseMainWindow
 
 def test_on_report_issue_window_opened_by_menu(
     main_window: BaseMainWindow,
-    qtbot: QtBot,
 ):
     menu = find_menu(main_window, '&Help')
     action = find_action(menu, '&Keyboard Shortcuts')
@@ -32,7 +31,6 @@ def test_on_report_issue_window_opened_once(
     counts: int,
     main_window: BaseMainWindow,
     monkeypatch: pytest.MonkeyPatch,
-    qtbot: QtBot,
 ):
     class FakeBaseKeyboardShortcutsWindow(BaseKeyboardShortcutsWindow):
         counts = 0

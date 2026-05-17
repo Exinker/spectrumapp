@@ -1,21 +1,33 @@
-from PySide6 import QtWidgets
-from pytestqt.qtbot import QtBot
+import pytest
 
 from spectrumapp.windows.modifiers import close
 
 
 def test_close(
     object_name: str,
-    window: QtWidgets.QWidget,
+    window,
+    monkeypatch: pytest.MonkeyPatch,
     mocker,
-    qtbot: QtBot,
 ):
-    spy_close = mocker.spy(window, 'close')
+    wrapped = mocker.Mock()
+    monkeypatch.setattr('spectrumapp.windows.modifiers.find_window', lambda *args, **kwargs: window)
 
-    @close(object_name)
-    def func() -> None:
-        pass
+    decorated = close(object_name)(wrapped)
+    decorated()
 
-    func()
+    window.close_mock.assert_called_once_with()
+    wrapped.assert_called_once_with()
 
-    spy_close.assert_called_once_with()
+
+def test_close_window_not_found(
+    object_name: str,
+    monkeypatch: pytest.MonkeyPatch,
+    mocker,
+):
+    wrapped = mocker.Mock()
+    monkeypatch.setattr('spectrumapp.windows.modifiers.find_window', lambda *args, **kwargs: None)
+
+    decorated = close(object_name)(wrapped)
+    decorated()
+
+    wrapped.assert_called_once_with()

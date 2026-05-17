@@ -10,7 +10,6 @@ from spectrumapp.windows.main_window import BaseMainWindow
 
 def test_on_close_clicked_by_menu(
     main_window: BaseMainWindow,
-    qtbot: QtBot,
 ):
     menu = find_menu(main_window, '&File')
     action = find_action(menu, '&Quit')
@@ -22,7 +21,6 @@ def test_on_close_clicked_by_menu(
 
 def test_on_close_clicked_by_shortcut(
     main_window: BaseMainWindow,
-    qtbot: QtBot,
 ):
 
     QtTest.QTest.keyClick(

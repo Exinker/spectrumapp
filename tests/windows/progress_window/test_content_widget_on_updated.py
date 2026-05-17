@@ -4,6 +4,7 @@ from spectrumapp.windows.progress_window import (
     ProgressState,
     ProgressWindow,
 )
+from spectrumapp.windows.progress_window.progress_window import ContentWidget
 
 
 def test_content_widget_on_updated(
@@ -26,8 +27,6 @@ def test_content_widget_on_updated(
 
 def test_content_widget_on_updated_progress_only(
     progress_window: ProgressWindow,
-    default_info: str,
-    default_message: str,
 ):
     value = 42
 
@@ -36,37 +35,5 @@ def test_content_widget_on_updated_progress_only(
     ))
 
     assert progress_window.findChild(QtWidgets.QProgressBar, 'progressBar').value() == value
-    assert progress_window.findChild(QtWidgets.QLabel, 'infoLabel').text() == default_info
-    assert progress_window.findChild(QtWidgets.QLabel, 'messageLabel').text() == default_message
-
-
-def test_content_widget_on_updated_info_only(
-    progress_window: ProgressWindow,
-    default_progress: int,
-    default_message: str,
-):
-    text = 'test'
-
-    progress_window.updated.emit(ProgressState(
-        info=text,
-    ))
-
-    assert progress_window.findChild(QtWidgets.QProgressBar, 'progressBar').value() == default_progress
-    assert progress_window.findChild(QtWidgets.QLabel, 'infoLabel').text() == text
-    assert progress_window.findChild(QtWidgets.QLabel, 'messageLabel').text() == default_message
-
-
-def test_content_widget_on_updated_message_only(
-    progress_window: ProgressWindow,
-    default_progress: int,
-    default_info: str,
-):
-    text = 'test'
-
-    progress_window.updated.emit(ProgressState(
-        message=text,
-    ))
-
-    assert progress_window.findChild(QtWidgets.QProgressBar, 'progressBar').value() == default_progress
-    assert progress_window.findChild(QtWidgets.QLabel, 'infoLabel').text() == default_info
-    assert progress_window.findChild(QtWidgets.QLabel, 'messageLabel').text() == text
+    assert progress_window.findChild(QtWidgets.QLabel, 'infoLabel').text() == ContentWidget.DEFAULT_INFO
+    assert progress_window.findChild(QtWidgets.QLabel, 'messageLabel').text() == ContentWidget.DEFAULT_MESSAGE

@@ -8,16 +8,15 @@ from spectrumapp.windows.progress_window.progress_window import (
 
 
 def test_content_widget_default(
-    default_logging_text: str,
-    default_progress: int,
-    default_info: str,
-    default_message: str,
     progress_window: ProgressWindow,
 ):
     content_widget = progress_window.findChild(ContentWidget, 'contentWidget')
 
     assert isinstance(content_widget, ContentWidget)
-    assert content_widget.findChild(LoggingPlainTextEditWidget, 'loggingPlainText').toPlainText() == default_logging_text  # noqa: E501
-    assert content_widget.findChild(ProgressBarWidget, 'progressBar').value() == default_progress
-    assert content_widget.findChild(LabelWidget, 'infoLabel').text() == default_info
-    assert content_widget.findChild(LabelWidget, 'messageLabel').text() == default_message
+    assert content_widget.findChild(
+        LoggingPlainTextEditWidget,
+        'loggingPlainText',
+    ).toPlainText() == ContentWidget.DEFAULT_LOGGING_TEXT
+    assert content_widget.findChild(ProgressBarWidget, 'progressBar').value() == ContentWidget.DEFAULT_PROGRESS
+    assert content_widget.findChild(LabelWidget, 'infoLabel').text() == ContentWidget.DEFAULT_INFO
+    assert content_widget.findChild(LabelWidget, 'messageLabel').text() == ContentWidget.DEFAULT_MESSAGE
