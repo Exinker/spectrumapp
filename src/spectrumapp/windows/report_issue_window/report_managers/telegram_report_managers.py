@@ -61,16 +61,17 @@ class TelegramReportManager(ReportManagerABS):
     ) -> None:
 
         try:
-            self._bot.sendDocument(
-                chat_id=self._chat_id,
-                document=open(archive_path, 'rb'),
-                caption='\n'.join([
-                    self._application_name,
-                    self._application_version,
-                    datetime.fromtimestamp(self._timestamp).strftime('%Y.%m.%d %H:%M'),
-                    description,
-                ]),
-            )
+            with open(archive_path, 'rb') as document:
+                self._bot.sendDocument(
+                    chat_id=self._chat_id,
+                    document=document,
+                    caption='\n'.join([
+                        self._application_name,
+                        self._application_version,
+                        datetime.fromtimestamp(self._timestamp).strftime('%Y.%m.%d %H:%M'),
+                        description,
+                    ]),
+                )
 
         except RequestError as error:
             LOGGER.warning(

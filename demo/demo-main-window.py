@@ -71,15 +71,18 @@ class Window(BaseMainWindow):
         self.show()
 
     def on_directory_opened(self, *args, **kwargs):  # noqa: N802
-        super().on_directory_opened(*args, **kwargs)
+        pass
 
     @utils.splashscreen(progress=50, info='<strong>RESET</strong> user interface...', delay=1)
     def on_resetted(self, *args, **kwargs):  # noqa: N802
-        super().on_resetted(*args, **kwargs)
+        pass
 
     @utils.splashscreen(progress=100, info='<strong>REFRESH</strong> user interface...', delay=1)
     def on_refreshed(self, *args, **kwargs):  # noqa: N802
-        super().on_refreshed(*args, **kwargs)
+        pass
+
+    def on_report_issue_window_opened(self, *args, **kwargs):  # noqa: N802
+        pass
 
 
 class Application(BaseApplication):

@@ -2,8 +2,11 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
+from typing import Callable
 
 import pytest
+from PySide6 import QtCore, QtWidgets
+from pytestqt.qtbot import QtBot
 
 from spectrumapp.configs import BaseConfig
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
@@ -45,6 +48,20 @@ def description(request) -> str:
 
 
 @pytest.fixture
+def token(
+    faker,
+) -> str:
+    return faker.sha256()
+
+
+@pytest.fixture
+def chat_id(
+    faker,
+) -> str:
+    return faker.numerify('########')
+
+
+@pytest.fixture
 def archive_manager(
     tmpdir: tempfile.TemporaryDirectory,
     timestamp: float,
@@ -72,24 +89,52 @@ def report_manager(
 
 
 @pytest.fixture
-def report_issue_window(
-    description: str,
+def create_report_issue_window(
     application_name: str,
     application_version: str,
     timestamp: float,
     archive_manager: ArchiveManagerABC,
     report_manager: ReportManagerABS,
-    monkeypatch: pytest.MonkeyPatch,
-) -> ReportIssueWindow:
-    # monkeypatch.setattr('time.sleep', lambda *args, **kwargs: ...)
+    qtbot: QtBot,
+) -> Callable[[], ReportIssueWindow]:
 
-    report_issue_window = ReportIssueWindow(
-        application_name=application_name,
-        application_version=application_version,
-        timestamp=timestamp,
-        archive_manager=archive_manager,
-        report_manager=report_manager,
-    )
+    def inner() -> ReportIssueWindow:
+        report_issue_window = ReportIssueWindow(
+            application_name=application_name,
+            application_version=application_version,
+            timestamp=timestamp,
+            archive_manager=archive_manager,
+            report_manager=report_manager,
+        )
+        report_issue_window.setAttribute(QtCore.Qt.WA_DeleteOnClose, False)
+        qtbot.addWidget(report_issue_window)
+
+        return report_issue_window
+
+    return inner
+
+
+@pytest.fixture
+def create_dump_remote_button(
+    create_report_issue_window: Callable[[], ReportIssueWindow],
+) -> Callable[[], QtWidgets.QPushButton]:
+    report_issue_windows = []
+
+    def inner() -> QtWidgets.QPushButton:
+        report_issue_window = create_report_issue_window()
+        report_issue_windows.append(report_issue_window)
+
+        return report_issue_window.findChild(QtWidgets.QPushButton, 'dumpRemotePushButton')
+
+    return inner
+
+
+@pytest.fixture
+def report_issue_window(
+    description: str,
+    create_report_issue_window: Callable[[], ReportIssueWindow],
+) -> ReportIssueWindow:
+    report_issue_window = create_report_issue_window()
 
     plain_text = report_issue_window.findChild(DescriptionPlainText, 'descriptionPlainText')
     plain_text.setPlainText(description)

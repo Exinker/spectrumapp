@@ -4,12 +4,11 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.helpers import find_action, find_window
 from spectrumapp.loggers import log
-from spectrumapp.paths import pave
+from spectrumapp.paths import static_path
 from spectrumapp.settings import get_setting, set_setting
 from spectrumapp.windows.exception_window import ExceptionLevel, attempt
 from spectrumapp.windows.keyboard_shortcuts_window import BaseKeyboardShortcutsWindow
 from spectrumapp.windows.modifiers import wait
-from spectrumapp.windows.report_issue_window import ReportIssueWindow
 
 
 class BaseMainWindow(QtWidgets.QMainWindow):
@@ -23,14 +22,16 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         super().__init__(*args, objectName=object_name, **kwargs)
 
         # style
-        filepath = pave(os.path.join('.', 'static', 'app.css'))
-        style = open(filepath, 'r').read()
-        self.setStyleSheet(style)
+        filepath = static_path('app.css')
+        if filepath.exists():
+            style = open(filepath, 'r').read()
+            self.setStyleSheet(style)
 
         # icon
-        filepath = pave(os.path.join('.', 'static', 'icon.ico'))
-        icon = QtGui.QIcon(filepath)
-        self.setWindowIcon(icon)
+        filepath = static_path('icon.ico')
+        if filepath.exists():
+            icon = QtGui.QIcon(str(filepath))
+            self.setWindowIcon(icon)
 
         # title
         filepath = ''
@@ -139,13 +140,13 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @wait
     def on_refreshed(self, *args, **kwargs):
         """Refresh the app."""
-        self.not_implemented_plug(*args, **kwargs)
+        raise NotImplementedError
 
     @log(message='main-window: reset action')
     @wait
     def on_resetted(self, *args, **kwargs):
         """Update settings, config and refresh (optionally) the app."""
-        self.not_implemented_plug(*args, **kwargs)
+        raise NotImplementedError
 
     @log(message='main-window: quit action')
     @wait
@@ -156,38 +157,19 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @wait
     def on_directory_opened(self, *args, **kwargs):
         """Open new directory action."""
-        self.not_implemented_plug(*args, **kwargs)
+        raise NotImplementedError
 
     @log(message='main-window: open report-issue-window')
     @wait
     def on_report_issue_window_opened(self, *args, **kwargs):
         """Report an issue."""
-
-        window = find_window('reportIssueWindow')
-        if window is not None:
-            window.show()
-        else:
-            window = ReportIssueWindow(
-                parent=self,
-                flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-            )
+        raise NotImplementedError
 
     @log(message='main-window: open help-window')
     @wait
     @attempt(level=ExceptionLevel.ERROR)
     def on_help_window_opened(self):
         raise NotImplementedError
-        # window_name = 'helpWindow'
-
-        # window = find_window(window_name)
-        # if window is not None:
-        #     window.show()
-
-        # else:
-        #     window = HelpWindow(
-        #         parent=self,
-        #         flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-        #     )
 
     @log(message='main-window: open keyboard-shortcuts-window')
     @wait
@@ -210,17 +192,6 @@ class BaseMainWindow(QtWidgets.QMainWindow):
     @attempt(level=ExceptionLevel.ERROR)
     def on_about_window_opened(self):
         raise NotImplementedError
-        # window_name = 'aboutWindow'
-
-        # window = find_window(window_name)
-        # if window is not None:
-        #     window.show()
-
-        # else:
-        #     window = AboutWindow(
-        #         parent=self,
-        #         flags=QtCore.Qt.Window | QtCore.Qt.WindowStaysOnTopHint,
-        #     )
 
     @log(message='main-window: close event')
     def closeEvent(self, event: QtCore.QEvent):  # noqa: N802
@@ -230,7 +201,3 @@ class BaseMainWindow(QtWidgets.QMainWindow):
 
         finally:
             super().closeEvent(event)
-
-    @staticmethod
-    def not_implemented_plug(*args, **kwargs):
-        raise NotImplementedError

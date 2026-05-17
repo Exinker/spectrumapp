@@ -1,8 +1,6 @@
-import os
 from datetime import datetime
 
 from PySide6 import QtWidgets
-from pytestqt.qtbot import QtBot
 
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
 from spectrumapp.windows.report_issue_window.report_issue_window import (
@@ -17,7 +15,6 @@ def test_report_issue_window(
     description: str,
     timestamp: float,
     report_issue_window: ReportIssueWindow,
-    qtbot: QtBot,
 ):
 
     assert report_issue_window.windowTitle() == 'Report Issue Window'

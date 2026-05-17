@@ -14,7 +14,7 @@ def test_setdefault_config(
     config = BaseConfig.load()
     assert config.FILEPATH == filepath
     assert config.version == os.environ['APPLICATION_VERSION']
-    assert config.directory == ''
+    assert config.directory is None
 
 
 def test_load_config(
@@ -25,12 +25,12 @@ def test_load_config(
     config = BaseConfig.load()
     assert config.FILEPATH == filepath
     assert config.version == os.environ['APPLICATION_VERSION']
-    assert config.directory == ''
+    assert config.directory is None
 
 
 @pytest.mark.parametrize(
     'directory', [
-        os.path.join(os.getcwd(), 'tests'),
+        Path(os.getcwd()) / 'tests',
     ],
 )
 def test_config_update_directory(directory: Path):
