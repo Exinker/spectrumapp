@@ -177,7 +177,7 @@ class ReportIssueWindow(BaseWindow):
             archive_manager=archive_manager,
             report_manager=report_manager,
             is_enabled=all([
-                TELEGRAM_CONFIG.token,
+                TELEGRAM_CONFIG.token.get_secret_value(),
                 TELEGRAM_CONFIG.chat_id,
             ]),
             parent=self,
@@ -232,7 +232,7 @@ if __name__ == '__main__':
             application_name=application_name,
             application_version=application_version,
             timestamp=timestamp,
-            token=TELEGRAM_CONFIG.token,
+            token=TELEGRAM_CONFIG.token.get_secret_value(),
             chat_id=TELEGRAM_CONFIG.chat_id,
         ),
     )

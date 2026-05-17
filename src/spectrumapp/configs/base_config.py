@@ -4,7 +4,7 @@ import logging
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import ClassVar, Mapping
+from typing import Any, ClassVar, Mapping
 
 from spectrumapp.configs import AbstractConfig
 
@@ -20,17 +20,25 @@ class BaseConfig(AbstractConfig):
 
     FILEPATH: ClassVar[str] = field(default=Path.cwd() / 'config.json')
 
-    def dumps(self) -> Mapping[str, str]:
+    def dumps(self) -> Mapping[str, str | None]:
         """Serialize config to mapping object."""
 
         data = {}
         for key, value in dataclasses.asdict(self).items():
-
-            if value is None:
-                continue
-            data[key] = value
+            data[key] = str(value) if isinstance(value, Path) else value
 
         return data
+
+    def update(self, /, **kwargs: Mapping[str, Any]) -> None:
+        """Update config file."""
+
+        data = self._load()
+        for key, value in kwargs.items():
+            data[key] = str(value) if isinstance(value, Path) else value
+
+        self._dump(
+            data=data,
+        )
 
     @classmethod
     def load(cls) -> 'BaseConfig':
