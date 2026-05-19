@@ -16,5 +16,11 @@ def pave(__relative_path: str) -> Path:
     return Path(__relative_path).resolve()
 
 
-def static_path(*parts: str) -> Path:
+def path_static(*parts: str) -> Path:
     return pave(os.path.join('.', 'static', *parts))
+
+
+def read_static(filepath: Path) -> str:
+
+    with open(filepath, 'r', encoding='utf-8') as file:
+        return file.read()

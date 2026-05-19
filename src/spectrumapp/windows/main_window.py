@@ -4,7 +4,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.helpers import find_action, find_window
 from spectrumapp.loggers import log
-from spectrumapp.paths import static_path
+from spectrumapp.paths import path_static, read_static
 from spectrumapp.settings import get_setting, set_setting
 from spectrumapp.windows.exception_window import ExceptionLevel, attempt
 from spectrumapp.windows.keyboard_shortcuts_window import BaseKeyboardShortcutsWindow
@@ -22,13 +22,12 @@ class BaseMainWindow(QtWidgets.QMainWindow):
         super().__init__(*args, objectName=object_name, **kwargs)
 
         # style
-        filepath = static_path('app.css')
+        filepath = path_static('app.css')
         if filepath.exists():
-            style = open(filepath, 'r').read()
-            self.setStyleSheet(style)
+            self.setStyleSheet(read_static(filepath))
 
         # icon
-        filepath = static_path('icon.ico')
+        filepath = path_static('icon.ico')
         if filepath.exists():
             icon = QtGui.QIcon(str(filepath))
             self.setWindowIcon(icon)
