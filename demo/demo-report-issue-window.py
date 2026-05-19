@@ -5,7 +5,7 @@ from pathlib import Path
 
 from PySide6 import QtWidgets
 
-from spectrumapp.application import BaseApplication
+from spectrumapp.applications import ApplicationABC
 from spectrumapp.configs import TELEGRAM_CONFIG
 from spectrumapp.loggers import log
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
@@ -18,7 +18,7 @@ from utils import (
 )
 
 
-class Application(BaseApplication):
+class Application(ApplicationABC):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -52,12 +52,17 @@ if __name__ == '__main__':
     setdefault_environ()
     setdefault_logger()
 
-    app = Application(sys.argv)
+    app = Application(
+        sys.argv,
+        application_name=os.environ.get('APPLICATION_NAME', 'DEMO'),
+        application_version=os.environ.get('APPLICATION_VERSION', '0.0.0'),
+        organization_name=os.environ.get('ORGANIZATION_NAME', 'DEMO'),
+    )
     timestamp = datetime.timestamp(datetime.now())
 
     window = ReportIssueWindow(
-        application_name=os.environ['APPLICATION_NAME'],
-        application_version=os.environ['APPLICATION_VERSION'],
+        application_name=app.applicationName(),
+        application_version=app.applicationVersion(),
         timestamp=timestamp,
         archive_manager=ZipArchiveManager(
             files=explore(
@@ -72,8 +77,8 @@ if __name__ == '__main__':
             archive_name='{}'.format(int(timestamp)),
         ),
         report_manager=TelegramReportManager.create(
-            application_name=os.environ['APPLICATION_NAME'],
-            application_version=os.environ['APPLICATION_VERSION'],
+            application_name=app.applicationName(),
+            application_version=app.applicationVersion(),
             timestamp=timestamp,
             token=TELEGRAM_CONFIG.token.get_secret_value(),
             chat_id=TELEGRAM_CONFIG.chat_id,

@@ -24,20 +24,6 @@ def tmpdir() -> tempfile.TemporaryDirectory:
 
 
 @pytest.fixture
-def application_name(
-    faker,
-) -> str:
-    return '-'.join(faker.catch_phrase().lower().split(' '))
-
-
-@pytest.fixture
-def application_version(
-    faker,
-) -> str:
-    return faker.numerify("%#.%#.%#")
-
-
-@pytest.fixture
 def timestamp() -> float:
     return datetime.timestamp(datetime.now())
 
