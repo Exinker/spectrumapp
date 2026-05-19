@@ -19,12 +19,13 @@ LOGGING_LEVEL_MAP = {
 LOGGING_LEVEL = LOGGING_LEVEL_MAP.get(os.environ.get('LOGGING_LEVEL'), logging.DEBUG)
 
 
-class AbstractConfig(ABC):
+class ConfigABC(ABC):
     """Abstract type for application's config (not GUI)."""
     FILEPATH = ''
 
-    def __init__(self, version: str, **data):
-        self.version = version  # config's version (have to be corresponded to the application's version)
+    def __init__(self, *args, version: str, **data):
+
+        self.version = version
 
         if self.__class__.FILEPATH == '':
             raise AttributeError('{name}: setup FILEPATH attribute!'.format(
@@ -59,15 +60,15 @@ class AbstractConfig(ABC):
         )
 
     @classmethod
-    def default(cls) -> 'AbstractConfig':
+    def default(cls, *args, **kwargs) -> 'ConfigABC':
         """Default config."""
-        data = cls._default()
+        data = cls._default(*args, **kwargs)
 
         return cls(**data)
 
     @classmethod
     @abstractmethod
-    def load(cls) -> 'AbstractConfig':
+    def load(cls) -> 'ConfigABC':
         """Load config from file (json)."""
 
         # load data
@@ -89,7 +90,7 @@ class AbstractConfig(ABC):
 
     @classmethod
     @abstractmethod
-    def _default(cls) -> Mapping[str, Any]:  # noqa: N805
+    def _default(cls, *, version: str) -> Mapping[str, Any]:  # noqa: N805
         """Get default serialized data."""
         raise NotImplementedError
 

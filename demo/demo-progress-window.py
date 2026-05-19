@@ -3,11 +3,9 @@ import time
 from PySide6 import QtWidgets
 
 from spectrumapp.windows.progress_window import ProgressWindow
-from utils import setdefault_environ
 
 
 if __name__ == '__main__':
-    setdefault_environ()
 
     app = QtWidgets.QApplication()
 

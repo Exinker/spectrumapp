@@ -1,4 +1,3 @@
-import os
 from dataclasses import dataclass, field
 
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -84,19 +83,21 @@ class ContentWidget(QtWidgets.QFrame):
         self.setObjectName('contentWidget')
 
         # layout
+        app = QtWidgets.QApplication.instance()
+
         layout = QtWidgets.QVBoxLayout(self)
         layout.addStretch()
         layout.addWidget(LabelWidget(
             objectName='appNameLabel',
             text='<strong>{name}</strong>'.format(
-                name=os.environ['APPLICATION_NAME'].upper(),
+                name=app.applicationName().upper(),
             ),
             parent=self,
         ))
         layout.addWidget(LabelWidget(
             objectName='appVersionLabel',
             text='<strong>VERSION</strong> {version}'.format(
-                version=os.environ['APPLICATION_VERSION'],
+                version=app.applicationVersion(),
             ),
             parent=self,
         ))

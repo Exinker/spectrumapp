@@ -4,14 +4,7 @@ import os
 
 from PySide6 import QtCore
 
-import spectrumapp
 from spectrumapp.configs import LOGGING_LEVEL
-
-
-def setdefault_environ() -> None:
-    os.environ['APPLICATION_NAME'] = 'Demo'
-    os.environ['APPLICATION_VERSION'] = spectrumapp.__version__
-    os.environ['ORGANIZATION_NAME'] = spectrumapp.__organization__
 
 
 def setdefault_logger():

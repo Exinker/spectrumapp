@@ -6,11 +6,9 @@ from spectrumapp.windows.splash_screen_window import (
     SplashScreenState,
     SplashScreenWindow,
 )
-from utils import setdefault_environ
 
 
 if __name__ == '__main__':
-    setdefault_environ()
 
     app = QtWidgets.QApplication()
 

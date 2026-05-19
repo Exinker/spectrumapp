@@ -49,6 +49,8 @@ def setup_environ(
 
     yield
 
+    monkeypatch.undo()
+
 
 @pytest.fixture(scope='session')
 def qapp_cls():

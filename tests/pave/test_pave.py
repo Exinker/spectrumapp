@@ -16,7 +16,7 @@ def state(request) -> None:
 
 @pytest.fixture
 def relative_path() -> Path:
-    return Path(os.getcwd())
+    return Path.cwd()
 
 
 @pytest.fixture

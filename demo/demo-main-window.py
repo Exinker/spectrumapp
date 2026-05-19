@@ -3,15 +3,19 @@ import sys
 
 from PySide6 import QtWidgets
 
+import spectrumapp
 from spectrumapp.applications import ApplicationABC
 from spectrumapp.loggers import log
 from spectrumapp.windows.main_window import BaseMainWindow
 from spectrumapp.windows.splash_screen_window import utils
 from utils import (
-    setdefault_environ,
     setdefault_logger,
     setdefault_setting,
 )
+
+APPLICATION_NAME = 'Demo'
+APPLICATION_VERSION = spectrumapp.__version__
+ORGANIZATION_NAME = spectrumapp.__organization__
 
 
 class EmptyWidget(QtWidgets.QWidget):
@@ -119,15 +123,14 @@ class Application(ApplicationABC):
 
 
 if __name__ == '__main__':
-    setdefault_environ()
     setdefault_setting()
     setdefault_logger()
 
     app = Application(
         sys.argv,
-        application_name=os.environ.get('APPLICATION_NAME', 'DEMO'),
-        application_version=os.environ.get('APPLICATION_VERSION', '0.0.0'),
-        organization_name=os.environ.get('ORGANIZATION_NAME', 'DEMO'),
+        application_name=APPLICATION_NAME,
+        application_version=APPLICATION_VERSION,
+        organization_name=ORGANIZATION_NAME,
     )
     app.run()
 

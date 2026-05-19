@@ -130,12 +130,13 @@ def report_issue_window(
 
 @pytest.fixture(autouse=True)
 def create_files(
+    application_version: str,
     tmpdir: tempfile.TemporaryDirectory,
     monkeypatch: pytest.MonkeyPatch,
 ):
     monkeypatch.setattr(BaseConfig, 'FILEPATH', os.path.join(tmpdir.name, 'config.json'))
     config = BaseConfig(
-        version=os.environ['APPLICATION_VERSION'],
+        version=application_version,
         directory=tmpdir.name,
     )
     config.dump()

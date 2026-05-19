@@ -7,7 +7,7 @@ from spectrumapp.windows.splash_screen_window import SplashScreenWindow
 def test_splash_screen_window(
     splash_screen_window: SplashScreenWindow,
 ):
-    filepath = os.path.join('.', 'static', 'progress-window.css')
+    filepath = os.path.join('.', 'static', 'splash-screen-window.css')
     style = read_static(filepath)
 
     assert splash_screen_window.objectName() == 'splashScreenWindow'

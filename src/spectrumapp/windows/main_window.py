@@ -1,5 +1,3 @@
-import os
-
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from spectrumapp.helpers import find_action, find_window
@@ -33,10 +31,11 @@ class BaseMainWindow(QtWidgets.QMainWindow):
             self.setWindowIcon(icon)
 
         # title
-        filepath = ''
+        app = QtWidgets.QApplication.instance()
+
         title = '{name} - [{filepath}]'.format(
-            name=os.environ['APPLICATION_NAME'],
-            filepath=filepath,
+            name=app.applicationName().upper(),
+            filepath='',
         )
         self.setWindowTitle(title)
 

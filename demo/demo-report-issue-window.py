@@ -5,6 +5,7 @@ from pathlib import Path
 
 from PySide6 import QtWidgets
 
+import spectrumapp
 from spectrumapp.applications import ApplicationABC
 from spectrumapp.configs import TELEGRAM_CONFIG
 from spectrumapp.loggers import log
@@ -13,9 +14,12 @@ from spectrumapp.windows.report_issue_window.archive_managers import ZipArchiveM
 from spectrumapp.windows.report_issue_window.archive_managers.utils import explore
 from spectrumapp.windows.report_issue_window.report_managers import TelegramReportManager
 from utils import (
-    setdefault_environ,
     setdefault_logger,
 )
+
+APPLICATION_NAME = 'Demo'
+APPLICATION_VERSION = spectrumapp.__version__
+ORGANIZATION_NAME = spectrumapp.__organization__
 
 
 class Application(ApplicationABC):
@@ -49,14 +53,13 @@ class Application(ApplicationABC):
 
 
 if __name__ == '__main__':
-    setdefault_environ()
     setdefault_logger()
 
     app = Application(
         sys.argv,
-        application_name=os.environ.get('APPLICATION_NAME', 'DEMO'),
-        application_version=os.environ.get('APPLICATION_VERSION', '0.0.0'),
-        organization_name=os.environ.get('ORGANIZATION_NAME', 'DEMO'),
+        application_name=APPLICATION_NAME,
+        application_version=APPLICATION_VERSION,
+        organization_name=ORGANIZATION_NAME,
     )
     timestamp = datetime.timestamp(datetime.now())
 

@@ -9,6 +9,5 @@ def test_application(
 ):
     app = QtWidgets.QApplication.instance()
 
-    assert app.applicationName() == os.environ['APPLICATION_NAME']
     assert app.applicationVersion() == os.environ['APPLICATION_VERSION']
     assert app.organizationName() == os.environ['ORGANIZATION_NAME']

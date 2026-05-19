@@ -1,19 +1,18 @@
 import dataclasses
 import json
 import logging
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ClassVar, Mapping
 
-from spectrumapp.configs import AbstractConfig
+from spectrumapp.configs import ConfigABC
 
 
 LOGGER = logging.getLogger('spectrumapp')
 
 
 @dataclass(frozen=True, slots=True)
-class BaseConfig(AbstractConfig):
+class BaseConfig(ConfigABC):
 
     version: str
     directory: Path | None
@@ -41,7 +40,7 @@ class BaseConfig(AbstractConfig):
         )
 
     @classmethod
-    def load(cls) -> 'BaseConfig':
+    def load(cls, *, version: str) -> 'BaseConfig':
         """Load config from json file."""
 
         try:
@@ -57,8 +56,8 @@ class BaseConfig(AbstractConfig):
                     error=error,
                 ),
             )
-            setdefault_config()
-            return cls.load()
+            setdefault_config(version=version)
+            return cls.load(version=version)
 
         try:
             directory = data.get('directory', None)
@@ -74,30 +73,32 @@ class BaseConfig(AbstractConfig):
                     error=error,
                 ),
             )
-            setdefault_config()
-            return cls.load()
+            setdefault_config(version=version)
+            return cls.load(version=version)
 
         return config
 
     @classmethod
-    def _default(cls) -> Mapping[str, str | int | float | list]:
+    def _default(cls, *, version: str) -> Mapping[str, str | int | float | list]:
         """Get default serialized data."""
 
         return {
-            'version': os.environ['APPLICATION_VERSION'],
+            'version': version,
             'directory': None,
         }
 
 
-def setdefault_config() -> None:
+def setdefault_config(version: str) -> None:
     """Create default config file."""
 
-    config = BaseConfig.default()
+    config = BaseConfig.default(
+        version=version,
+    )
     config.dump()
 
 
 if __name__ == '__main__':
-    os.environ['APPLICATION_VERSION'] = '0'
-
-    config = BaseConfig.default()
+    config = BaseConfig.default(
+        version='0.0.0',
+    )
     print(config.to_dict())
