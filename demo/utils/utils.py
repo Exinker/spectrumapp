@@ -4,7 +4,7 @@ import os
 
 from PySide6 import QtCore
 
-from spectrumapp.configs import LOGGING_LEVEL
+from spectrumapp.configs import LOGGING_CONFIG
 
 
 def setdefault_logger():
@@ -40,7 +40,7 @@ def setdefault_logger():
 
         'loggers': {
             'spectrumapp': {
-                'level': LOGGING_LEVEL,
+                'level': LOGGING_CONFIG.logging_level.value,
                 'handlers': [
                     'file_handler',
                     'stream_handler',

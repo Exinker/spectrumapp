@@ -1,13 +1,14 @@
-import os
-
-from PySide6 import QtWidgets
-from pytestqt.qtbot import QtBot
+from spectrumapp.applications import BaseApplication
 
 
 def test_application(
-    qtbot: QtBot,
+    application_name: str,
+    application_version: str,
+    organization_name: str,
+    qapp_cls: BaseApplication,
 ):
-    app = QtWidgets.QApplication.instance()
+    app = qapp_cls()
 
-    assert app.applicationVersion() == os.environ['APPLICATION_VERSION']
-    assert app.organizationName() == os.environ['ORGANIZATION_NAME']
+    assert app.applicationName() == application_name
+    assert app.applicationVersion() == application_version
+    assert app.organizationName() == organization_name

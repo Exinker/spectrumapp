@@ -20,7 +20,7 @@ def set_app_id(
         windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
 
 
-class ApplicationABC(QtWidgets.QApplication):
+class BaseApplication(QtWidgets.QApplication):
 
     def __init__(
         self,

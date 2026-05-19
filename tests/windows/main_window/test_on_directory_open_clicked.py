@@ -1,5 +1,3 @@
-from PySide6 import QtCore, QtTest
-
 from spectrumapp.helpers import (
     find_action,
     find_menu,
@@ -21,10 +19,10 @@ def test_on_directory_open_clicked_by_menu(
 def test_on_directory_open_clicked_by_shortcut(
     main_window: BaseMainWindow,
 ):
-    QtTest.QTest.keyClick(
-        main_window,
-        QtCore.Qt.Key.Key_O,
-        QtCore.Qt.KeyboardModifier.ControlModifier,
-    )
+    action = find_action(main_window, '&Open...')
+
+    assert action.shortcut().toString() == 'Ctrl+O'
+
+    action.trigger()
 
     main_window.on_directory_opened_mock.assert_called()

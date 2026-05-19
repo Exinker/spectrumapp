@@ -1,8 +1,13 @@
+import importlib
+
 from spectrumapp.windows.splash_screen_window import (
     SplashScreenState,
     SplashScreenWindow,
 )
 from spectrumapp.windows.splash_screen_window import utils
+
+
+splashscreen_module = importlib.import_module('spectrumapp.windows.splash_screen_window.utils.splashscreen')
 
 
 def test_splashscreen(
@@ -12,6 +17,8 @@ def test_splashscreen(
     splash_screen_window: SplashScreenWindow,
     mocker,
 ):
+    mocker.patch.object(splashscreen_module, 'find_window', return_value=splash_screen_window)
+
     spy_on_updated = mocker.spy(splash_screen_window, 'on_updated')
     spy_close = mocker.spy(splash_screen_window, 'close')
 

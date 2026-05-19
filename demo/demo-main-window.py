@@ -1,10 +1,9 @@
-import os
 import sys
 
 from PySide6 import QtWidgets
 
 import spectrumapp
-from spectrumapp.applications import ApplicationABC
+from spectrumapp.applications import BaseApplication
 from spectrumapp.loggers import log
 from spectrumapp.windows.main_window import BaseMainWindow
 from spectrumapp.windows.splash_screen_window import utils
@@ -90,7 +89,7 @@ class Window(BaseMainWindow):
         pass
 
 
-class Application(ApplicationABC):
+class Application(BaseApplication):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

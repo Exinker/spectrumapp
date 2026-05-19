@@ -1,12 +1,11 @@
 import json
 import logging
-import logging.config
 from functools import wraps
 from typing import Any, Callable
 
 from PySide6 import QtCore
 
-from spectrumapp.configs import LOGGING_LEVEL
+from spectrumapp.configs import LOGGING_CONFIG
 
 
 LOGGER = logging.getLogger('spectrumapp')
@@ -20,7 +19,8 @@ def log(message: str, level: int = logging.DEBUG) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
 
-            if level or (LOGGING_LEVEL > logging.DEBUG):
+            logging_level = logging.getLevelName(LOGGING_CONFIG.logging_level.value)
+            if level or (logging_level > logging.DEBUG):
 
                 context = _parse_context(*args, **kwargs)
                 if context:

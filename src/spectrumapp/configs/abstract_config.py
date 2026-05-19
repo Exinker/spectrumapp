@@ -1,22 +1,9 @@
 import json
-import logging
-import os
 from abc import ABC, abstractmethod
 from typing import Any, Mapping
 
 
 ENCODING = 'utf-8'
-
-LOGGING_LEVEL_MAP = {
-    'NOTSET': logging.NOTSET,
-    'DEBUG': logging.DEBUG,
-    'INFO': logging.INFO,
-    'WARNING': logging.WARNING,
-    'ERROR': logging.ERROR,
-    'FATAL': logging.FATAL,
-    'CRITICAL': logging.CRITICAL,
-}
-LOGGING_LEVEL = LOGGING_LEVEL_MAP.get(os.environ.get('LOGGING_LEVEL'), logging.DEBUG)
 
 
 class ConfigABC(ABC):
@@ -68,7 +55,7 @@ class ConfigABC(ABC):
 
     @classmethod
     @abstractmethod
-    def load(cls) -> 'ConfigABC':
+    def load(cls, *, version: str) -> 'ConfigABC':
         """Load config from file (json)."""
 
         # load data

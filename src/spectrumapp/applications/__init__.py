@@ -1,5 +1,5 @@
-from .base_application import ApplicationABC
+from .base_application import BaseApplication
 
 __all__ = [
-    'ApplicationABC',
+    'BaseApplication',
 ]

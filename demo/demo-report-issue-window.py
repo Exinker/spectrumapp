@@ -6,7 +6,7 @@ from pathlib import Path
 from PySide6 import QtWidgets
 
 import spectrumapp
-from spectrumapp.applications import ApplicationABC
+from spectrumapp.applications import BaseApplication
 from spectrumapp.configs import TELEGRAM_CONFIG
 from spectrumapp.loggers import log
 from spectrumapp.windows.report_issue_window import ReportIssueWindow
@@ -22,7 +22,7 @@ APPLICATION_VERSION = spectrumapp.__version__
 ORGANIZATION_NAME = spectrumapp.__organization__
 
 
-class Application(ApplicationABC):
+class Application(BaseApplication):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

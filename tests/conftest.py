@@ -3,8 +3,9 @@ import sys
 
 import pytest
 from faker import Faker
+from PySide6 import QtWidgets
 
-from spectrumapp.applications import ApplicationABC
+from spectrumapp.applications import BaseApplication
 
 
 if (
@@ -36,33 +37,21 @@ def organization_name(faker_session: Faker):
     return faker_session.company()
 
 
-@pytest.fixture(scope='session', autouse=True)
-def setup_environ(
+@pytest.fixture(scope='session')
+def qapp_cls(
     application_name: str,
     application_version: str,
     organization_name: str,
 ):
-    monkeypatch = pytest.MonkeyPatch()
-    monkeypatch.setenv('APPLICATION_NAME', application_name)
-    monkeypatch.setenv('APPLICATION_VERSION', application_version)
-    monkeypatch.setenv('ORGANIZATION_NAME', organization_name)
 
-    yield
-
-    monkeypatch.undo()
-
-
-@pytest.fixture(scope='session')
-def qapp_cls():
-
-    class TestApplication(ApplicationABC):
+    class TestApplication(BaseApplication):
 
         def __init__(self, *args, **kwargs) -> None:
             super().__init__(
                 *args,
-                application_name=os.environ['APPLICATION_NAME'],
-                application_version=os.environ['APPLICATION_VERSION'],
-                organization_name=os.environ['ORGANIZATION_NAME'],
+                application_name=application_name,
+                application_version=application_version,
+                organization_name=organization_name,
                 **kwargs,
             )
 

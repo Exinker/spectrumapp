@@ -1,5 +1,3 @@
-from PySide6 import QtCore, QtTest
-
 from spectrumapp.helpers import (
     find_action,
     find_menu,
@@ -21,10 +19,10 @@ def test_on_reset_clicked_by_menu(
 def test_on_reset_clicked_by_shortcut(
     main_window: BaseMainWindow,
 ):
-    QtTest.QTest.keyClick(
-        main_window,
-        QtCore.Qt.Key.Key_R,
-        QtCore.Qt.KeyboardModifier.ControlModifier | QtCore.Qt.KeyboardModifier.ShiftModifier,
-    )
+    action = find_action(main_window, '&Reset')
+
+    assert action.shortcut().toString() == 'Ctrl+Shift+R'
+
+    action.trigger()
 
     main_window.on_resetted_mock.assert_called()

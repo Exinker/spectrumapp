@@ -1,6 +1,3 @@
-from PySide6 import QtCore, QtTest
-from pytestqt.qtbot import QtBot
-
 from spectrumapp.helpers import (
     find_action,
     find_menu,
@@ -22,11 +19,10 @@ def test_on_close_clicked_by_menu(
 def test_on_close_clicked_by_shortcut(
     main_window: BaseMainWindow,
 ):
+    action = find_action(main_window, '&Quit')
 
-    QtTest.QTest.keyClick(
-        main_window,
-        QtCore.Qt.Key.Key_Q,
-        QtCore.Qt.KeyboardModifier.ControlModifier,
-    )
+    assert action.shortcut().toString() == 'Ctrl+Q'
+
+    action.trigger()
 
     assert not main_window.isVisible()
