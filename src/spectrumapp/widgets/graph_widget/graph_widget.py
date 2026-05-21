@@ -76,6 +76,9 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self._shift_modified = False
 
         # geometry
+        self.setMinimumSize(*self.canvas.DEFAULT_SIZE)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+
         if self._size:
             self.setFixedSize(self._size)
 
