@@ -9,7 +9,6 @@ from spectrumapp.types import Lims
 from spectrumapp.widgets.graph_widget.canvas import MplCanvas
 
 
-DEFAULT_SIZE = QtCore.QSize(640, 480)
 DEFAULT_LIMS = ((0, 1), (0, 1))
 
 
@@ -35,13 +34,13 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self,
         *args,
         object_name: str | None = None,
-        size: QtCore.QSize = DEFAULT_SIZE,
+        size: QtCore.QSize | None = None,
         tight_layout: bool = True,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
 
-        self._widget_size = size
+        self._size = size
 
         self._data = None
         self._point_labels = None
@@ -77,7 +76,8 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self._shift_modified = False
 
         # geometry
-        self.setFixedSize(self._widget_size)
+        if self._size:
+            self.setFixedSize(self._size)
 
     @property
     def data(self) -> Mapping[Index, Any] | None:
@@ -158,7 +158,10 @@ class BaseGraphWidget(QtWidgets.QWidget):
         self._ctrl_modified = __state
 
     def sizeHint(self) -> QtCore.QSize:  # noqa: N802
-        return self._widget_size
+
+        if self._size:
+            return self._size
+        return super().sizeHint()
 
     def keyPressEvent(self, event: KeyEvent) -> None:  # noqa: N802
 
