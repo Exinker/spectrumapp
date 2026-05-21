@@ -35,6 +35,7 @@ class BaseGraphWidget(QtWidgets.QWidget):
         *args,
         object_name: str | None = None,
         size: QtCore.QSize | None = None,
+        rc_params: Mapping[str, Any] | None = None,
         tight_layout: bool = True,
         **kwargs,
     ):
@@ -63,7 +64,10 @@ class BaseGraphWidget(QtWidgets.QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        self.canvas = MplCanvas(tight_layout=tight_layout)
+        self.canvas = MplCanvas(
+            rc_params=rc_params,
+            tight_layout=tight_layout,
+        )
         self.canvas.mpl_connect('pick_event', self._pick_event)
         self.canvas.mpl_connect('button_press_event', self._button_press_event)
         self.canvas.mpl_connect('button_release_event', self._button_release_event)
@@ -210,7 +214,8 @@ class BaseGraphWidget(QtWidgets.QWidget):
     def _button_release_event(self, event: MouseEvent) -> None:  # pragma: no cover
 
         # update annotate
-        self._point_annotation.set_visible(False)
+        if self._point_annotation is not None:
+            self._point_annotation.set_visible(False)
         self.canvas.draw_idle()
 
         # update zoom and pan
